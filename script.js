@@ -1,28 +1,221 @@
-const hfA1Base = "https://huggingface.co/datasets/InternRobotics/InternData-A1/blob/main";
-const internDataA1Tasks = [
-  "collect_the_shoes_language",
-  "organize_the_alarm_clocks_language",
-  "organize_the_brushes",
-  "organize_the_colorful_cups",
-  "organize_the_glues_language",
-  "organize_the_teaboxes_language",
-  "pick_the_priced_item",
-  "select_a_drink",
-  "sort_the_table_waste",
-  "track_the_targets"
+const hfA1TreeBase = "https://huggingface.co/datasets/InternRobotics/InternData-A1/tree/main";
+const hfA1BlobBase = "https://huggingface.co/datasets/InternRobotics/InternData-A1/blob/main";
+const internDataA1Directories = [
+  {
+    category: "articulation_tasks",
+    embodiment: "franka",
+    tasks: [
+      "close_the_electriccooker",
+      "close_the_laptop",
+      "close_the_microwave",
+      "open_the_electriccooker",
+      "open_the_laptop",
+      "open_the_microwave",
+      "turn_off_the_faucet",
+      "turn_on_the_faucet"
+    ]
+  },
+  {
+    category: "articulation_tasks",
+    embodiment: "lift2",
+    tasks: [
+      "close_the_electriccooker",
+      "close_the_laptop",
+      "close_the_microwave",
+      "open_the_electriccooker",
+      "open_the_laptop",
+      "open_the_microwave",
+      "turn_off_the_faucet",
+      "turn_on_the_faucet"
+    ]
+  },
+  {
+    category: "articulation_tasks",
+    embodiment: "split_aloha",
+    tasks: [
+      "close_the_electriccooker",
+      "close_the_laptop",
+      "close_the_microwave",
+      "open_the_electriccooker",
+      "open_the_laptop",
+      "open_the_microwave",
+      "turn_off_the_faucet",
+      "turn_on_the_faucet"
+    ]
+  },
+  {
+    category: "basic_tasks",
+    embodiment: "franka",
+    tasks: [
+      "collect_the_shoes_language",
+      "organize_the_alarm_clocks_language",
+      "organize_the_brushes",
+      "organize_the_colorful_cups",
+      "organize_the_glues_language",
+      "organize_the_teaboxes_language",
+      "pick_the_priced_item",
+      "select_a_drink",
+      "sort_the_table_waste",
+      "track_the_targets"
+    ]
+  },
+  {
+    category: "basic_tasks",
+    embodiment: "genie1",
+    tasks: [
+      "collect_the_shoes_language",
+      "organize_the_alarm_clocks_language",
+      "organize_the_brushes",
+      "organize_the_colorful_cups",
+      "organize_the_glues_language",
+      "organize_the_teaboxes_language",
+      "pick_the_priced_item",
+      "select_a_drink",
+      "sort_the_table_waste",
+      "track_the_targets"
+    ]
+  },
+  {
+    category: "basic_tasks",
+    embodiment: "lift2",
+    tasks: [
+      "collect_the_shoes_language",
+      "organize_the_alarm_clocks_language",
+      "organize_the_brushes",
+      "organize_the_colorful_cups",
+      "organize_the_glues_language",
+      "organize_the_teaboxes_language",
+      "pick_the_priced_item",
+      "select_a_drink",
+      "sort_the_table_waste",
+      "track_the_targets"
+    ]
+  },
+  {
+    category: "basic_tasks",
+    embodiment: "split_aloha",
+    tasks: [
+      "collect_the_shoes_language",
+      "organize_the_alarm_clocks_language",
+      "organize_the_brushes",
+      "organize_the_colorful_cups",
+      "organize_the_glues_language",
+      "organize_the_teaboxes_language",
+      "pick_the_priced_item",
+      "select_a_drink",
+      "sort_the_table_waste",
+      "track_the_targets",
+      "watering_plants_left_arm",
+      "watering_plants_right_arm"
+    ]
+  },
+  {
+    category: "long_horizon_tasks",
+    embodiment: "franka",
+    tasks: [
+      "use_the_coffee_machine"
+    ]
+  },
+  {
+    category: "long_horizon_tasks",
+    embodiment: "lift2",
+    tasks: [
+      "store_the_groceries"
+    ]
+  },
+  {
+    category: "long_horizon_tasks",
+    embodiment: "split_aloha",
+    tasks: [
+      "put_the_sauce_into_the_fridge",
+      "store_the_groceries",
+      "use_the_coffee_machine"
+    ]
+  },
+  {
+    category: "pick_and_place_tasks",
+    embodiment: "franka",
+    tasks: [
+      "blocks_stack_easy",
+      "blocks_stack_hard",
+      "collect_toys",
+      "place_bread_in_skillet",
+      "place_bread_on_plate",
+      "place_bread_on_skillet",
+      "place_bread_on_top_left_plate",
+      "put_apple_into_basket",
+      "put_banana_into_basket",
+      "put_orange_into_basket"
+    ]
+  },
+  {
+    category: "pick_and_place_tasks",
+    embodiment: "genie1",
+    tasks: [
+      "blocks_stack_easy",
+      "blocks_stack_hard",
+      "collect_toys",
+      "place_bread_in_skillet",
+      "place_bread_on_skillet",
+      "put_apple_into_basket",
+      "put_orange_into_basket"
+    ]
+  },
+  {
+    category: "pick_and_place_tasks",
+    embodiment: "lift2",
+    tasks: [
+      "blocks_stack_easy",
+      "blocks_stack_hard",
+      "collect_toys",
+      "place_bread_in_skillet",
+      "place_bread_on_plate",
+      "place_bread_on_skillet",
+      "place_bread_on_top_left_plate",
+      "put_apple_into_basket",
+      "put_banana_into_basket",
+      "put_eggplant_into_basket",
+      "put_orange_into_basket",
+      "put_strawberry_into_basket",
+      "put_watermelon_into_basket"
+    ]
+  },
+  {
+    category: "pick_and_place_tasks",
+    embodiment: "split_aloha",
+    tasks: [
+      "blocks_stack_easy",
+      "blocks_stack_hard",
+      "collect_toys",
+      "place_bread_in_skillet",
+      "place_bread_on_plate",
+      "place_bread_on_skillet",
+      "place_bread_on_top_left_plate",
+      "put_apple_into_basket",
+      "put_banana_into_basket",
+      "put_orange_into_basket"
+    ]
+  }
 ];
 
-const makeInternDataA1Task = (task) => ({
-  task,
-  dataLinks: {
-    "tar.gz": `${hfA1Base}/sim/basic_tasks/franka/${task}.tar.gz`
-  },
-  observations: ["RGB", "Proprio", "Language"],
-  actions: ["End Effector Pose", "Gripper"],
-  demos: "TBD",
-  envs: "TBD",
-  license: "CC BY-NC-SA 4.0"
-});
+const makeInternDataA1Task = ({ category, embodiment, task }) => {
+  const path = `sim/${category}/${embodiment}/${task}.tar.gz`;
+  return {
+    task: `${category} / ${embodiment} / ${task}`,
+    dataLinks: {
+      "tar.gz": `${hfA1BlobBase}/${path}`
+    },
+    observations: ["RGB", "Proprio", "Language"],
+    actions: ["End Effector Pose", "Gripper"],
+    demos: "TBD",
+    envs: "TBD",
+    license: "CC BY-NC-SA 4.0"
+  };
+};
+
+const internDataA1Rows = internDataA1Directories.flatMap((directory) =>
+  directory.tasks.map((task) => makeInternDataA1Task({ ...directory, task }))
+);
 
 const datasetGroups = [
   {
@@ -47,14 +240,17 @@ const datasetGroups = [
     id: "interndata-a1",
     project: "InternData-A1",
     source: "simulation",
-    summary: "Simulation manipulation dataset from InternRobotics. This group indexes the 10 visible Franka basic-task archives under sim/basic_tasks/franka.",
+    summary: "Simulation manipulation dataset from InternRobotics. This group indexes all visible sim task archives across articulation, basic, long-horizon, and pick-and-place task folders.",
     projectLinks: {
-      HuggingFace: "https://huggingface.co/datasets/InternRobotics/InternData-A1/tree/main",
-      "basic_tasks/franka": "https://huggingface.co/datasets/InternRobotics/InternData-A1/tree/main/sim/basic_tasks/franka",
+      HuggingFace: `${hfA1TreeBase}`,
+      "sim/articulation_tasks": `${hfA1TreeBase}/sim/articulation_tasks`,
+      "sim/basic_tasks": `${hfA1TreeBase}/sim/basic_tasks`,
+      "sim/long_horizon_tasks": `${hfA1TreeBase}/sim/long_horizon_tasks`,
+      "sim/pick_and_place_tasks": `${hfA1TreeBase}/sim/pick_and_place_tasks`,
       Paper: "https://arxiv.org/abs/2406.05839"
     },
     defaultOpen: true,
-    rows: internDataA1Tasks.map(makeInternDataA1Task)
+    rows: internDataA1Rows
   },
   {
     id: "m1-simulation",
