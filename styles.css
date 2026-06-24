@@ -347,7 +347,7 @@ select {
 
 table {
   width: 100%;
-  min-width: 1220px;
+  min-width: 1080px;
   border-collapse: collapse;
 }
 
@@ -378,10 +378,78 @@ tbody tr:hover {
   background: #fbfcf8;
 }
 
-.dataset-name {
+.group-row {
+  background: #f7faf9;
+}
+
+.group-row:hover {
+  background: #f3f7f5;
+}
+
+.group-row td {
+  padding: 16px 18px;
+  border-top: 2px solid var(--line);
+}
+
+.group-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 14px 8px 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--teal);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.group-summary {
   display: block;
-  max-width: 240px;
-  margin-bottom: 5px;
+  max-width: 880px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.group-links {
+  display: inline-flex;
+  gap: 6px;
+  margin-top: 8px;
+  color: var(--teal);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.group-links a,
+.link-list a {
+  color: var(--teal);
+  font-weight: 760;
+}
+
+.task-row td:first-child {
+  padding-left: 42px;
+}
+
+.task-name {
+  display: block;
+  min-width: 190px;
+  font-weight: 760;
+}
+
+.dataset-name {
+  display: inline-flex;
+  max-width: 420px;
   font-weight: 790;
 }
 
@@ -412,11 +480,6 @@ tbody tr:hover {
   flex-direction: column;
   gap: 5px;
   min-width: 118px;
-}
-
-.link-list a {
-  color: var(--teal);
-  font-weight: 760;
 }
 
 .muted {

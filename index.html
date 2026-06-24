@@ -106,16 +106,13 @@
           <table>
             <thead>
               <tr>
-                <th>Project / Dataset</th>
-                <th>Source</th>
                 <th>Task</th>
-                <th>Robot</th>
+                <th>Data Links</th>
                 <th>Observations</th>
                 <th>Actions</th>
-                <th>Demos</th>
-                <th>Envs</th>
-                <th>Links</th>
-                <th>Notes</th>
+                <th># Demos</th>
+                <th># Envs</th>
+                <th>License</th>
               </tr>
             </thead>
             <tbody id="datasetRows"></tbody>
@@ -129,16 +126,15 @@
           <h2>Suggested fields for each dataset split</h2>
         </div>
         <pre><code>{
-  project: "A1 Locomotion Simulation",
+  project: "InternData-A1",
   source: "simulation",
-  task: "Legged Locomotion / Rough Terrain",
-  robot: "Unitree A1",
-  observations: ["RGB", "Depth", "IMU", "Joint State", "Command"],
-  actions: ["Joint Position", "Joint Torque"],
-  demos: 120000,
-  envs: 512,
-  links: { dataset: "...", docs: "..." },
-  notes: "One row per task-oriented split."
+  task: "close_the_electriccooker",
+  dataLinks: { HuggingFace: "https://..." },
+  observations: ["RGB", "Proprio", "Language"],
+  actions: ["End Effector Pose", "Gripper"],
+  demos: "TBD",
+  envs: "TBD",
+  license: "CC BY-NC-SA 4.0"
 }</code></pre>
       </section>
     </main>

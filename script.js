@@ -1,109 +1,96 @@
-const datasets = [
+const hfA1Base = "https://huggingface.co/datasets/InternRobotics/InternData-A1/blob/main";
+const internDataA1Tasks = [
+  "close_the_electriccooker",
+  "open_the_electriccooker",
+  "close_the_microwave",
+  "open_the_microwave",
+  "close_the_refrigerator",
+  "open_the_refrigerator",
+  "close_the_drawer",
+  "open_the_drawer",
+  "close_the_laptop",
+  "open_the_laptop",
+  "close_the_cabinet",
+  "open_the_cabinet",
+  "close_the_door",
+  "open_the_door",
+  "turn_on_the_faucet",
+  "turn_off_the_faucet"
+];
+
+const makeInternDataA1Task = (task) => ({
+  task,
+  dataLinks: {
+    "tar.gz": `${hfA1Base}/sim/articulation_tasks/franka/${task}.tar.gz`
+  },
+  observations: ["RGB", "Proprio", "Language"],
+  actions: ["End Effector Pose", "Gripper"],
+  demos: "TBD",
+  envs: "TBD",
+  license: "CC BY-NC-SA 4.0"
+});
+
+const datasetGroups = [
   {
+    id: "real-robot-data",
     project: "Real Robot Data",
-    split: "Placeholder",
     source: "real",
-    task: "General Manipulation",
-    robot: "Real robot platform",
-    observations: ["RGB", "Proprio", "Wrist Camera"],
-    actions: ["6 DoF End Effector", "Gripper"],
-    demos: "TBD",
-    envs: "TBD",
-    links: {},
-    notes: "Reserved section for your collected real robot demonstrations."
+    summary: "Reserved section for your collected real robot demonstrations.",
+    defaultOpen: true,
+    rows: [
+      {
+        task: "General Manipulation",
+        dataLinks: {},
+        observations: ["RGB", "Proprio", "Wrist Camera"],
+        actions: ["6 DoF End Effector", "Gripper"],
+        demos: "TBD",
+        envs: "TBD",
+        license: "TBD"
+      }
+    ]
   },
   {
-    project: "A1 Locomotion Simulation",
-    split: "Rough terrain locomotion",
+    id: "interndata-a1",
+    project: "InternData-A1",
     source: "simulation",
-    task: "Legged Locomotion",
-    robot: "Unitree A1",
-    observations: ["Depth", "Height Map", "IMU", "Joint State", "Velocity Command"],
-    actions: ["Joint Position", "Joint Torque"],
-    demos: 120000,
-    envs: 512,
-    links: { docs: "#format" },
-    notes: "Large-scale simulated quadruped data for uneven terrain, slope, and obstacle crossing."
+    summary: "Simulation manipulation dataset from InternRobotics. The public project describes 630k+ trajectories, 4 embodiments, and 70 tasks. This group currently seeds the Franka articulation task rows and is ready for the remaining task file names.",
+    projectLinks: {
+      HuggingFace: "https://huggingface.co/datasets/InternRobotics/InternData-A1",
+      Paper: "https://arxiv.org/abs/2406.05839"
+    },
+    defaultOpen: true,
+    rows: internDataA1Tasks.map(makeInternDataA1Task)
   },
   {
-    project: "A1 Locomotion Simulation",
-    split: "Stairs and gaps",
+    id: "m1-simulation",
+    project: "M1 Simulation Data",
     source: "simulation",
-    task: "Legged Locomotion",
-    robot: "Unitree A1",
-    observations: ["Depth", "IMU", "Foot Contact", "Joint State"],
-    actions: ["Joint Position", "Joint Torque"],
-    demos: 68000,
-    envs: 384,
-    links: { docs: "#format" },
-    notes: "Task split for step climbing, gap crossing, and recovery behaviors."
-  },
-  {
-    project: "A1 Navigation Simulation",
-    split: "Command following",
-    source: "simulation",
-    task: "Navigation",
-    robot: "Unitree A1",
-    observations: ["RGB", "Depth", "IMU", "Goal Command", "Joint State"],
-    actions: ["Base Velocity", "Joint Target"],
-    demos: 85000,
-    envs: 256,
-    links: { docs: "#format" },
-    notes: "Goal-conditioned navigation with obstacle avoidance in indoor and outdoor scenes."
-  },
-  {
-    project: "M1 Manipulation Simulation",
-    split: "Tabletop pick and place",
-    source: "simulation",
-    task: "Object Manipulation",
-    robot: "M1 Mobile Manipulator",
-    observations: ["RGB", "Depth", "Segmentation", "Proprio"],
-    actions: ["6 DoF End Effector", "Parallel Gripper"],
-    demos: 95000,
-    envs: 320,
-    links: { docs: "#format" },
-    notes: "Single-arm grasping, placing, stacking, and object rearrangement task family."
-  },
-  {
-    project: "M1 Manipulation Simulation",
-    split: "Articulated object interaction",
-    source: "simulation",
-    task: "Articulated Interaction",
-    robot: "M1 Mobile Manipulator",
-    observations: ["RGB", "Depth", "Point Cloud", "Proprio"],
-    actions: ["6 DoF End Effector", "Gripper"],
-    demos: 52000,
-    envs: 180,
-    links: { docs: "#format" },
-    notes: "Drawer opening, cabinet opening, handle pulling, and door interaction split."
-  },
-  {
-    project: "M1 Mobile Manipulation Simulation",
-    split: "Room-scale rearrangement",
-    source: "simulation",
-    task: "Mobile Manipulation",
-    robot: "M1 Mobile Manipulator",
-    observations: ["RGB", "Depth", "Map", "Proprio", "Object State"],
-    actions: ["Base Velocity", "6 DoF End Effector", "Gripper"],
-    demos: 76000,
-    envs: 240,
-    links: { docs: "#format" },
-    notes: "Mobile base plus arm demonstrations for navigation, approach, grasp, and place sequences."
-  },
-  {
-    project: "M1 Mobile Manipulation Simulation",
-    split: "Long-horizon household tasks",
-    source: "simulation",
-    task: "Long-horizon Tasks",
-    robot: "M1 Mobile Manipulator",
-    observations: ["RGB", "Depth", "Language", "Map", "Proprio"],
-    actions: ["Base Velocity", "End Effector Pose", "Gripper"],
-    demos: 34000,
-    envs: 96,
-    links: { docs: "#format" },
-    notes: "Instruction-conditioned sequences such as sorting, delivery, cleanup, and tool fetch."
+    summary: "Placeholder group for larger M1 simulation task families.",
+    defaultOpen: false,
+    rows: [
+      {
+        task: "Tabletop Pick and Place",
+        dataLinks: {},
+        observations: ["RGB", "Depth", "Segmentation", "Proprio"],
+        actions: ["6 DoF End Effector", "Parallel Gripper"],
+        demos: 95000,
+        envs: 320,
+        license: "TBD"
+      },
+      {
+        task: "Room-scale Rearrangement",
+        dataLinks: {},
+        observations: ["RGB", "Depth", "Map", "Proprio"],
+        actions: ["Base Velocity", "6 DoF End Effector", "Gripper"],
+        demos: 76000,
+        envs: 240,
+        license: "TBD"
+      }
+    ]
   }
 ];
+
+const groupOpenState = Object.fromEntries(datasetGroups.map((group) => [group.id, group.defaultOpen]));
 
 const formatNumber = (value) => {
   if (typeof value !== "number") return value;
@@ -111,6 +98,10 @@ const formatNumber = (value) => {
 };
 
 const unique = (items) => [...new Set(items)];
+
+const getAllRows = () => datasetGroups.flatMap((group) => group.rows.map((row) => ({ ...row, group })));
+
+const normalize = (value) => String(value || "").toLowerCase();
 
 const tagList = (items) => `
   <div class="tag-list">
@@ -123,18 +114,52 @@ const linkList = (links) => {
   if (!entries.length) return '<span class="muted">Coming soon</span>';
   return `
     <div class="link-list">
-      ${entries.map(([label, href]) => `<a href="${href}">${label}</a>`).join("")}
+      ${entries.map(([label, href]) => `<a href="${href}" target="_blank" rel="noreferrer">${label}</a>`).join("")}
     </div>
   `;
 };
 
+const projectLinkList = (links = {}) => {
+  const entries = Object.entries(links);
+  if (!entries.length) return "";
+  return `<span class="group-links">${entries.map(([label, href]) => `<a href="${href}" target="_blank" rel="noreferrer">${label}</a>`).join(" / ")}</span>`;
+};
+
+const rowMatchesFilters = (row, group) => {
+  const query = normalize(document.querySelector("#searchInput").value.trim());
+  const source = document.querySelector("#sourceFilter").value;
+  const task = document.querySelector("#taskFilter").value;
+  const haystack = normalize([
+    group.project,
+    group.source,
+    group.summary,
+    row.task,
+    row.license,
+    ...row.observations,
+    ...row.actions,
+    ...Object.keys(row.dataLinks)
+  ].join(" "));
+
+  return (!query || haystack.includes(query)) &&
+    (source === "all" || group.source === source) &&
+    (task === "all" || row.task === task);
+};
+
+const getFilteredGroups = () => datasetGroups
+  .map((group) => ({
+    ...group,
+    rows: group.rows.filter((row) => rowMatchesFilters(row, group))
+  }))
+  .filter((group) => group.rows.length);
+
 const renderStats = () => {
-  const totalDemos = datasets.reduce((sum, item) => sum + (typeof item.demos === "number" ? item.demos : 0), 0);
+  const rows = getAllRows();
+  const totalDemos = rows.reduce((sum, item) => sum + (typeof item.demos === "number" ? item.demos : 0), 0);
   const stats = [
-    ["Datasets", datasets.length],
-    ["Task groups", unique(datasets.map((item) => item.task)).length],
-    ["Simulation demos", totalDemos],
-    ["Real robot rows", datasets.filter((item) => item.source === "real").length]
+    ["Dataset groups", datasetGroups.length],
+    ["Task rows", rows.length],
+    ["Simulation rows", rows.filter((item) => item.group.source === "simulation").length],
+    ["Real robot rows", rows.filter((item) => item.group.source === "real").length]
   ];
 
   document.querySelector("#stats").innerHTML = stats.map(([label, value]) => `
@@ -146,80 +171,80 @@ const renderStats = () => {
 };
 
 const renderTaskGroups = () => {
-  const groups = unique(datasets.map((item) => item.task)).map((task) => {
-    const rows = datasets.filter((item) => item.task === task);
-    const sources = unique(rows.map((item) => item.source));
-    const demos = rows.reduce((sum, item) => sum + (typeof item.demos === "number" ? item.demos : 0), 0);
-    const robots = unique(rows.map((item) => item.robot));
-    return { task, rows, sources, demos, robots };
-  });
-
-  document.querySelector("#taskGroups").innerHTML = groups.map((group) => `
-    <article class="task-card">
-      <h3>${group.task}</h3>
-      <p>${group.rows.length} dataset rows across ${group.robots.length} robot platform${group.robots.length > 1 ? "s" : ""}.</p>
-      <div class="task-meta">
-        ${group.sources.map((source) => `<span class="pill ${source}">${source}</span>`).join("")}
-        <span class="pill">${formatNumber(group.demos)} demos</span>
-      </div>
-    </article>
-  `).join("");
+  document.querySelector("#taskGroups").innerHTML = datasetGroups.map((group) => {
+    const demos = group.rows.reduce((sum, item) => sum + (typeof item.demos === "number" ? item.demos : 0), 0);
+    return `
+      <article class="task-card">
+        <h3>${group.project}</h3>
+        <p>${group.summary}</p>
+        <div class="task-meta">
+          <span class="pill ${group.source}">${group.source}</span>
+          <span class="pill">${group.rows.length} task rows</span>
+          <span class="pill">${formatNumber(demos)} demos</span>
+        </div>
+      </article>
+    `;
+  }).join("");
 };
 
 const renderTaskFilter = () => {
-  const options = unique(datasets.map((item) => item.task)).sort();
+  const options = unique(getAllRows().map((item) => item.task)).sort();
   document.querySelector("#taskFilter").insertAdjacentHTML(
     "beforeend",
     options.map((task) => `<option value="${task}">${task}</option>`).join("")
   );
 };
 
-const getFilteredRows = () => {
-  const query = document.querySelector("#searchInput").value.trim().toLowerCase();
-  const source = document.querySelector("#sourceFilter").value;
-  const task = document.querySelector("#taskFilter").value;
-
-  return datasets.filter((item) => {
-    const haystack = [
-      item.project,
-      item.split,
-      item.source,
-      item.task,
-      item.robot,
-      item.notes,
-      ...item.observations,
-      ...item.actions
-    ].join(" ").toLowerCase();
-
-    return (!query || haystack.includes(query)) &&
-      (source === "all" || item.source === source) &&
-      (task === "all" || item.task === task);
-  });
-};
-
 const renderRows = () => {
-  const rows = getFilteredRows();
-  document.querySelector("#datasetRows").innerHTML = rows.map((item) => `
+  const groups = getFilteredGroups();
+  const queryActive = Boolean(document.querySelector("#searchInput").value.trim());
+  const taskActive = document.querySelector("#taskFilter").value !== "all";
+
+  document.querySelector("#datasetRows").innerHTML = groups.map((group) => {
+    const isOpen = queryActive || taskActive || groupOpenState[group.id];
+    const groupRow = `
+      <tr class="group-row" data-group="${group.id}">
+        <td colspan="7">
+          <button class="group-toggle" type="button" data-group="${group.id}" aria-expanded="${isOpen}">
+            <span class="chevron">${isOpen ? "v" : ">"}</span>
+            <span class="dataset-name">${group.project}</span>
+            <span class="pill ${group.source}">${group.source}</span>
+            <span class="dataset-sub">${group.rows.length} task rows</span>
+          </button>
+          <span class="group-summary">${group.summary}</span>
+          ${projectLinkList(group.projectLinks)}
+        </td>
+      </tr>
+    `;
+
+    const childRows = isOpen ? group.rows.map((row) => `
+      <tr class="task-row" data-parent="${group.id}">
+        <td>
+          <span class="task-name">${row.task}</span>
+        </td>
+        <td>${linkList(row.dataLinks)}</td>
+        <td>${tagList(row.observations)}</td>
+        <td>${tagList(row.actions)}</td>
+        <td>${formatNumber(row.demos)}</td>
+        <td>${formatNumber(row.envs)}</td>
+        <td>${row.license}</td>
+      </tr>
+    `).join("") : "";
+
+    return groupRow + childRows;
+  }).join("") || `
     <tr>
-      <td>
-        <span class="dataset-name">${item.project}</span>
-        <span class="dataset-sub">${item.split}</span>
-      </td>
-      <td><span class="pill ${item.source}">${item.source}</span></td>
-      <td>${item.task}</td>
-      <td>${item.robot}</td>
-      <td>${tagList(item.observations)}</td>
-      <td>${tagList(item.actions)}</td>
-      <td>${formatNumber(item.demos)}</td>
-      <td>${formatNumber(item.envs)}</td>
-      <td>${linkList(item.links)}</td>
-      <td class="muted">${item.notes}</td>
-    </tr>
-  `).join("") || `
-    <tr>
-      <td colspan="10" class="muted">No dataset rows match the current filters.</td>
+      <td colspan="7" class="muted">No dataset rows match the current filters.</td>
     </tr>
   `;
+
+  document.querySelectorAll(".group-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      const groupId = button.dataset.group;
+      groupOpenState[groupId] = !groupOpenState[groupId];
+      renderRows();
+    });
+  });
 };
 
 renderStats();
