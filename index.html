@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Robot Data Index</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="Robot Data Index home">
+        <span class="brand-mark"></span>
+        <span>Robot Data Index</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#overview">Overview</a>
+        <a href="#tasks">Tasks</a>
+        <a href="#table">Dataset Table</a>
+        <a href="#format">Format</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <img class="hero-image" src="assets/robot-data-hero.png" alt="Robotics lab and simulation dataset panels" />
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="eyebrow">Real Robot Data + Simulation Data</p>
+          <h1>Task-centric robot data catalog</h1>
+          <p class="hero-copy">
+            A compact index for organizing robot datasets by task, embodiment, observation space,
+            action space, environment count, and download format.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#table">Browse table</a>
+            <a class="button secondary" href="#format">Data schema</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="overview" class="section overview">
+        <div class="section-heading">
+          <p class="eyebrow">Overview</p>
+          <h2>Current coverage</h2>
+        </div>
+        <div class="stat-grid" id="stats"></div>
+      </section>
+
+      <section class="section principles" aria-labelledby="principles-title">
+        <div class="section-heading">
+          <p class="eyebrow">Indexing Principles</p>
+          <h2 id="principles-title">Built around tasks first</h2>
+        </div>
+        <div class="principle-grid">
+          <article>
+            <h3>Task taxonomy</h3>
+            <p>Each row maps one dataset split to a concrete task family, so similar skills are easy to compare.</p>
+          </article>
+          <article>
+            <h3>Embodiment clarity</h3>
+            <p>Robots, sensors, observations, and actions are listed explicitly instead of hidden in project notes.</p>
+          </article>
+          <article>
+            <h3>Mixed sources</h3>
+            <p>Real robot and simulation data sit in one table while remaining filterable by source type.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="tasks" class="section tasks-section">
+        <div class="section-heading">
+          <p class="eyebrow">Tasks</p>
+          <h2>Task groups</h2>
+        </div>
+        <div class="task-grid" id="taskGroups"></div>
+      </section>
+
+      <section id="table" class="section table-section">
+        <div class="table-header">
+          <div>
+            <p class="eyebrow">Dataset Table</p>
+            <h2>Robot data by task</h2>
+          </div>
+          <div class="controls">
+            <label class="search">
+              <span>Search</span>
+              <input id="searchInput" type="search" placeholder="Task, robot, dataset..." />
+            </label>
+            <label class="select">
+              <span>Source</span>
+              <select id="sourceFilter">
+                <option value="all">All sources</option>
+                <option value="real">Real robot</option>
+                <option value="simulation">Simulation</option>
+              </select>
+            </label>
+            <label class="select">
+              <span>Task</span>
+              <select id="taskFilter">
+                <option value="all">All tasks</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Project / Dataset</th>
+                <th>Source</th>
+                <th>Task</th>
+                <th>Robot</th>
+                <th>Observations</th>
+                <th>Actions</th>
+                <th>Demos</th>
+                <th>Envs</th>
+                <th>Links</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="datasetRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="format" class="section format-section">
+        <div class="section-heading">
+          <p class="eyebrow">Data Format</p>
+          <h2>Suggested fields for each dataset split</h2>
+        </div>
+        <pre><code>{
+  project: "A1 Locomotion Simulation",
+  source: "simulation",
+  task: "Legged Locomotion / Rough Terrain",
+  robot: "Unitree A1",
+  observations: ["RGB", "Depth", "IMU", "Joint State", "Command"],
+  actions: ["Joint Position", "Joint Torque"],
+  demos: 120000,
+  envs: 512,
+  links: { dataset: "...", docs: "..." },
+  notes: "One row per task-oriented split."
+}</code></pre>
+      </section>
+    </main>
+
+    <footer>
+      <span>Robot Data Index</span>
+      <span>Static catalog prototype for real robot and simulation datasets.</span>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
