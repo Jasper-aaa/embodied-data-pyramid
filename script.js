@@ -1,27 +1,21 @@
 const hfA1Base = "https://huggingface.co/datasets/InternRobotics/InternData-A1/blob/main";
 const internDataA1Tasks = [
-  "close_the_electriccooker",
-  "open_the_electriccooker",
-  "close_the_microwave",
-  "open_the_microwave",
-  "close_the_refrigerator",
-  "open_the_refrigerator",
-  "close_the_drawer",
-  "open_the_drawer",
-  "close_the_laptop",
-  "open_the_laptop",
-  "close_the_cabinet",
-  "open_the_cabinet",
-  "close_the_door",
-  "open_the_door",
-  "turn_on_the_faucet",
-  "turn_off_the_faucet"
+  "collect_the_shoes_language",
+  "organize_the_alarm_clocks_language",
+  "organize_the_brushes",
+  "organize_the_colorful_cups",
+  "organize_the_glues_language",
+  "organize_the_teaboxes_language",
+  "pick_the_priced_item",
+  "select_a_drink",
+  "sort_the_table_waste",
+  "track_the_targets"
 ];
 
 const makeInternDataA1Task = (task) => ({
   task,
   dataLinks: {
-    "tar.gz": `${hfA1Base}/sim/articulation_tasks/franka/${task}.tar.gz`
+    "tar.gz": `${hfA1Base}/sim/basic_tasks/franka/${task}.tar.gz`
   },
   observations: ["RGB", "Proprio", "Language"],
   actions: ["End Effector Pose", "Gripper"],
@@ -53,9 +47,10 @@ const datasetGroups = [
     id: "interndata-a1",
     project: "InternData-A1",
     source: "simulation",
-    summary: "Simulation manipulation dataset from InternRobotics. The public project describes 630k+ trajectories, 4 embodiments, and 70 tasks. This group currently seeds the Franka articulation task rows and is ready for the remaining task file names.",
+    summary: "Simulation manipulation dataset from InternRobotics. This group indexes the 10 visible Franka basic-task archives under sim/basic_tasks/franka.",
     projectLinks: {
-      HuggingFace: "https://huggingface.co/datasets/InternRobotics/InternData-A1",
+      HuggingFace: "https://huggingface.co/datasets/InternRobotics/InternData-A1/tree/main",
+      "basic_tasks/franka": "https://huggingface.co/datasets/InternRobotics/InternData-A1/tree/main/sim/basic_tasks/franka",
       Paper: "https://arxiv.org/abs/2406.05839"
     },
     defaultOpen: true,
