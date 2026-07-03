@@ -290,9 +290,24 @@ h3 {
   color: #8b5416;
 }
 
-.pill.real {
+.pill.robot {
   background: #e8f2ff;
   color: #285d8f;
+}
+
+.pill.umi {
+  background: #edf7e9;
+  color: #3f6b2f;
+}
+
+.pill.ego {
+  background: #f4ebff;
+  color: #6c3d91;
+}
+
+.pill.general {
+  background: #eef0f4;
+  color: #4d5664;
 }
 
 .table-section {
@@ -347,7 +362,7 @@ select {
 
 table {
   width: 100%;
-  min-width: 1080px;
+  min-width: 1280px;
   border-collapse: collapse;
 }
 
@@ -379,19 +394,21 @@ tbody tr:hover {
 }
 
 .group-row {
-  background: #f7faf9;
+  background: #f4f8f7;
 }
 
 .group-row:hover {
-  background: #f3f7f5;
+  background: #eef5f2;
 }
 
 .group-row td {
   padding: 16px 18px;
   border-top: 2px solid var(--line);
+  border-bottom-color: #dce7e3;
 }
 
-.group-toggle {
+.group-toggle,
+.section-toggle {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -402,6 +419,24 @@ tbody tr:hover {
   color: var(--ink);
   font: inherit;
   cursor: pointer;
+  text-align: left;
+}
+
+.section-row {
+  background: #fbfcfb;
+}
+
+.section-row:hover {
+  background: #f7faf8;
+}
+
+.section-row td {
+  padding: 14px 18px 14px 42px;
+  border-bottom-color: #e7eeeb;
+}
+
+.section-toggle .dataset-name {
+  font-weight: 760;
 }
 
 .chevron {
@@ -410,8 +445,12 @@ tbody tr:hover {
   justify-content: center;
   width: 20px;
   height: 20px;
+  border: 1px solid #c8d8d2;
+  border-radius: 5px;
+  background: #ffffff;
   color: var(--teal);
-  font-size: 18px;
+  font-size: 13px;
+  font-weight: 850;
   line-height: 1;
 }
 
@@ -439,6 +478,10 @@ tbody tr:hover {
 
 .task-row td:first-child {
   padding-left: 42px;
+}
+
+.section-task-row td:first-child {
+  padding-left: 72px;
 }
 
 .task-name {
@@ -480,6 +523,32 @@ tbody tr:hover {
   flex-direction: column;
   gap: 5px;
   min-width: 118px;
+}
+
+.citation-details {
+  min-width: 180px;
+}
+
+.citation-details summary {
+  color: var(--teal);
+  font-size: 13px;
+  font-weight: 760;
+  cursor: pointer;
+}
+
+.citation-details pre {
+  overflow: auto;
+  max-width: 420px;
+  max-height: 220px;
+  margin: 10px 0 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #f8faf8;
+  color: #24332e;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-wrap;
 }
 
 .muted {

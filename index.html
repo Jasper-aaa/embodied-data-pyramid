@@ -22,7 +22,7 @@
 
     <main id="top">
       <section class="hero">
-        <img class="hero-image" src="assets/robot-data-hero.png" alt="Robotics lab and simulation dataset panels" />
+        <img class="hero-image" src="assets/robot-data-hero.png" alt="Robot data pyramid with robot, UMI, simulation, ego, exo, and general data examples" />
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <p class="eyebrow">Real Robot Data + Simulation Data</p>
@@ -87,11 +87,14 @@
               <input id="searchInput" type="search" placeholder="Task, robot, dataset..." />
             </label>
             <label class="select">
-              <span>Source</span>
+              <span>Category</span>
               <select id="sourceFilter">
-                <option value="all">All sources</option>
-                <option value="real">Real robot</option>
-                <option value="simulation">Simulation</option>
+                <option value="all">All categories</option>
+                <option value="robot">Robot Data</option>
+                <option value="umi">UMI Data</option>
+                <option value="simulation">Simulation Data</option>
+                <option value="ego">Ego Data</option>
+                <option value="general">General Data</option>
               </select>
             </label>
             <label class="select">
@@ -113,6 +116,7 @@
                 <th># Demos</th>
                 <th># Envs</th>
                 <th>License</th>
+                <th>Citation</th>
               </tr>
             </thead>
             <tbody id="datasetRows"></tbody>
