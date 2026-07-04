@@ -2,68 +2,164 @@ const hfA1TreeBase = "https://huggingface.co/datasets/InternRobotics/InternData-
 const hfA1BlobBase = "https://huggingface.co/datasets/InternRobotics/InternData-A1/blob/main";
 const openXBucketConsoleBase = "https://console.cloud.google.com/storage/browser/gdm-robotics-open-x-embodiment";
 
-const openXEmbodimentSources = [
-  {
-    name: "RT-1",
-    path: "fractal20220817_data",
-    embodiment: "RT-1"
-  },
-  {
-    name: "QT-OPT",
-    path: "kuka",
-    embodiment: "QT-OPT"
-  },
-  {
-    name: "BridgeData / BridgeData V2",
-    path: "bridge",
-    embodiment: "BridgeData"
-  },
-  {
-    name: "RoboTurk",
-    path: "roboturk",
-    embodiment: "RoboTurk"
-  },
-  {
-    name: "Furniture-Bench",
-    path: "furniture_bench_dataset_converted_externally_to_rlds",
-    embodiment: "Furniture-Bench"
-  },
-  {
-    name: "BC-Z",
-    path: "bc_z",
-    embodiment: "BC-Z"
-  },
-  {
-    name: "RoboNet",
-    path: "robo_net",
-    embodiment: "RoboNet"
-  },
-  {
-    name: "DROID",
-    path: null,
-    embodiment: "DROID"
-  },
-  {
-    name: "Mobile-Aloha",
-    path: null,
-    embodiment: "Mobile-Aloha"
-  },
-  {
-    name: "RoboSet",
-    path: null,
-    embodiment: "RoboSet"
-  }
+const openXDefaultActions = ["EEF Pose", "Joint", "Parallel gripper"];
+
+const openXDatasetNames = [
+  "agent_aware_affordances",
+  "asu_table_top_converted_externally_to_rlds",
+  "austin_buds_dataset_converted_externally_to_rlds",
+  "austin_sailor_dataset_converted_externally_to_rlds",
+  "austin_sirius_dataset_converted_externally_to_rlds",
+  "bc_z",
+  "berkeley_autolab_ur5",
+  "berkeley_cable_routing",
+  "berkeley_fanuc_manipulation",
+  "berkeley_gnm_cory_hall",
+  "berkeley_gnm_recon",
+  "berkeley_gnm_sac_son",
+  "berkeley_mvp_converted_externally_to_rlds",
+  "berkeley_rpt_converted_externally_to_rlds",
+  "bridge",
+  "cmu_franka_exploration_dataset_converted_externally_to_rlds",
+  "cmu_play_fusion",
+  "cmu_playing_with_food",
+  "cmu_stretch",
+  "columbia_cairlab_pusht_real",
+  "dlr_edan_shared_control_converted_externally_to_rlds",
+  "dlr_sara_grid_clamp_converted_externally_to_rlds",
+  "dlr_sara_pour_converted_externally_to_rlds",
+  "eth_agent_affordances",
+  "fanuc_manipulation_v2",
+  "fractal20220817_data",
+  "furniture_bench_dataset_converted_externally_to_rlds",
+  "iamlab_cmu_pickup_insert_converted_externally_to_rlds",
+  "imperial_wrist_dataset",
+  "imperialcollege_sawyer_wrist_cam",
+  "jaco_play",
+  "kaist_nonprehensile_converted_externally_to_rlds",
+  "kuka",
+  "language_table",
+  "language_table_blocktoabsolute_oracle_sim",
+  "language_table_blocktoblock_4block_sim",
+  "language_table_blocktoblock_oracle_sim",
+  "language_table_blocktoblock_sim",
+  "language_table_blocktoblockrelative_oracle_sim",
+  "language_table_blocktorelative_oracle_sim",
+  "language_table_separate_oracle_sim",
+  "language_table_sim",
+  "maniskill_dataset_converted_externally_to_rlds",
+  "mt_opt_rlds",
+  "mt_opt_sd",
+  "mutex_dataset",
+  "nyu_door_opening_surprising_effectiveness",
+  "nyu_franka_play_dataset_converted_externally_to_rlds",
+  "nyu_rot_dataset_converted_externally_to_rlds",
+  "qut_dexterous_manpulation",
+  "robo_net",
+  "robot_vqa",
+  "roboturk",
+  "stanford_hydra_dataset_converted_externally_to_rlds",
+  "stanford_kuka_multimodal_dataset_converted_externally_to_rlds",
+  "stanford_mask_vit_converted_externally_to_rlds",
+  "stanford_robocook_converted_externally_to_rlds",
+  "taco_play",
+  "tokyo_u_lsmo_converted_externally_to_rlds",
+  "toto",
+  "ucsd_kitchen_dataset_converted_externally_to_rlds",
+  "ucsd_pick_and_place_dataset_converted_externally_to_rlds",
+  "uiuc_d3field",
+  "usc_cloth_sim_converted_externally_to_rlds",
+  "utaustin_mutex",
+  "utokyo_pr2_opening_fridge_converted_externally_to_rlds",
+  "utokyo_pr2_tabletop_manipulation_converted_externally_to_rlds",
+  "utokyo_saytap_converted_externally_to_rlds",
+  "utokyo_xarm_bimanual_converted_externally_to_rlds",
+  "utokyo_xarm_pick_and_place_converted_externally_to_rlds",
+  "viola"
 ];
 
-const makeOpenXEmbodimentRow = ({ name, path, embodiment }) => ({
-  task: name,
-  dataLinks: {
-    "GCS folder": path ? `${openXBucketConsoleBase}/${path}` : openXBucketConsoleBase
+const openXDatasetAnnotations = {
+  bc_z: {
+    alias: "BC-Z",
+    actions: ["EEF Pose", "Parallel gripper"],
+    links: {
+      Kaggle: "https://www.kaggle.com/datasets/google/bc-z-robot"
+    }
   },
-  observations: ["RLDS", "Robot Observations", "Varies by source"],
-  actions: ["Robot Actions", "Varies by source"],
+  bridge: {
+    alias: "BridgeData / BridgeData V2",
+    links: {
+      Project: "https://rail-berkeley.github.io/bridgedata/",
+      "BridgeData V1": "https://rail.eecs.berkeley.edu/datasets/bridge_release/raw/bridge_data_v1/",
+      "BridgeData V2": "https://rail.eecs.berkeley.edu/datasets/bridge_release/raw/bridge_data_v2/"
+    }
+  },
+  fractal20220817_data: {
+    alias: "RT-1",
+    actions: ["EEF Pose", "Parallel gripper"],
+    links: {
+      Project: "https://robotics-transformer1.github.io/",
+    }
+  },
+  furniture_bench_dataset_converted_externally_to_rlds: {
+    alias: "Furniture-Bench",
+    links: {
+      Project: "https://clvrai.github.io/furniture-bench/"
+    }
+  },
+  kuka: {
+    alias: "QT-OPT",
+    actions: ["EEF Pose", "Parallel gripper"]
+  },
+  mt_opt_rlds: {
+    alias: "MT-Opt RLDS",
+    actions: ["EEF Pose", "Parallel gripper"],
+    links: {
+      RLDS: "https://www.tensorflow.org/datasets/catalog/mt_opt"
+    }
+  },
+  mt_opt_sd: {
+    alias: "MT-Opt SD",
+    actions: ["EEF Pose", "Parallel gripper"]
+  },
+  robo_net: {
+    alias: "RoboNet",
+    links: {
+      Project: "https://www.robonet.wiki/"
+    }
+  },
+  roboset: {
+    alias: "RoboSet",
+    links: {
+      Project: "https://robopen.github.io/roboset/teleoperation.html",
+    }
+  },
+  roboturk: {
+    alias: "RoboTurk",
+    actions: ["Joint", "Parallel gripper"],
+    links: {
+      Project: "https://roboturk.stanford.edu/dataset_real.html"
+    }
+  }
+};
+
+const openXEmbodimentSources = openXDatasetNames.map((name) => ({
+  name,
+  path: name,
+  actions: openXDefaultActions,
+  ...(openXDatasetAnnotations[name] || {})
+}));
+
+const makeOpenXEmbodimentRow = ({ name, path, alias, actions, links = {} }) => ({
+  task: alias ? `${name} (${alias})` : name,
+  dataLinks: {
+    "RLDS": path ? `${openXBucketConsoleBase}/${path}` : openXBucketConsoleBase,
+    ...links
+  },
+  observations: ["RGB-D", "Proprio", "Language", "Force", "Tactile"],
+  actions,
   demos: "TBD",
-  envs: embodiment,
+  envs: "",
   license: "See source"
 });
 
@@ -73,7 +169,7 @@ const hfDatasetBase = (repo) => `https://huggingface.co/datasets/${repo}`;
 const hfDatasetTree = (repo, path = "") => `${hfDatasetBase(repo)}/tree/main${path ? `/${path}` : ""}`;
 const hfDatasetBlob = (repo, path) => `${hfDatasetBase(repo)}/blob/main/${path}`;
 
-const makeLandingRow = ({ task, href, label = "Download", observations = ["TBD"], actions = ["TBD"], demos = "TBD", envs = "TBD", license = "TBD" }) => ({
+const makeLandingRow = ({ task, href, label = "Download", observations = ["TBD"], actions = ["TBD"], demos = "TBD", envs = "", license = "TBD" }) => ({
   task,
   dataLinks: {
     [label]: href
@@ -124,40 +220,213 @@ const roboMindRows = roboMindGroups.map(({ benchmark, embodiment, taskCount }) =
 }));
 
 const agiBotWorldRepo = "agibot-world/AgiBotWorld-Beta";
-const agiBotWorldRows = [
-  makeLandingRow({
-    task: "observations / task-id tar shards",
-    href: hfDatasetTree(agiBotWorldRepo, "observations"),
-    label: "HF folder",
-    observations: ["WebDataset", "Robot Observations"],
-    actions: ["TBD"],
-    envs: "217 task IDs"
-  }),
-  makeLandingRow({
-    task: "parameters / tar shards",
-    href: hfDatasetTree(agiBotWorldRepo, "parameters"),
-    label: "HF folder",
-    observations: ["Robot Parameters"],
-    actions: ["TBD"],
-    envs: "35 shards"
-  }),
-  makeLandingRow({
-    task: "proprio_stats / tar shards",
-    href: hfDatasetTree(agiBotWorldRepo, "proprio_stats"),
-    label: "HF folder",
-    observations: ["Proprio Stats"],
-    actions: ["TBD"],
-    envs: "7 shards"
-  }),
-  makeLandingRow({
-    task: "task_info / task metadata",
-    href: hfDatasetTree(agiBotWorldRepo, "task_info"),
-    label: "HF folder",
-    observations: ["Task Metadata"],
-    actions: ["TBD"],
-    envs: "217 task info files"
-  })
+const agiBotWorldTaskEntries = [
+  { name: "Pickup items in the supermarket", ids: ["327", "354"], demos: 2286, episodes: 725 },
+  { name: "Open the wardrobe and hang the clothes.", ids: ["351"], demos: 7959, episodes: 1137 },
+  { name: "Open the fridge to get food.", ids: ["352"], demos: 5548, episodes: 1387 },
+  { name: "Packing in the supermarket", ids: ["356", "360", "372"], demos: 10827, episodes: 1529 },
+  { name: "Wash dishes with dishwasher", ids: ["357"], demos: 6848, episodes: 428 },
+  { name: "Toast bread", ids: ["358"], demos: 2350, episodes: 470 },
+  { name: "Sort in the warehouse", ids: ["359"], demos: 3220, episodes: 644 },
+  { name: "Flatten shorts", ids: ["361"], demos: 2554, episodes: 2554 },
+  { name: "Fold shorts", ids: ["362", "555"], demos: 19476, episodes: 9738 },
+  { name: "Open the drawer to store clothes.", ids: ["363"], demos: 6318, episodes: 1053 },
+  { name: "Sort personal care products", ids: ["365"], demos: 2515, episodes: 503 },
+  { name: "Sort food", ids: ["366"], demos: 3640, episodes: 728 },
+  { name: "Take toast from toaster", ids: ["367"], demos: 1028, episodes: 257 },
+  { name: "Cook vegetables with oven", ids: ["368"], demos: 7056, episodes: 588 },
+  { name: "Remove clothes from the washing machine", ids: ["369"], demos: 9016, episodes: 1127 },
+  { name: "Sweep the floor", ids: ["373"], demos: 10557, episodes: 1173 },
+  { name: "Sort laundry and personal care products", ids: ["374"], demos: 182, episodes: 91 },
+  { name: "Brew tea", ids: ["375"], demos: 3376, episodes: 422 },
+  { name: "Sort electronic products", ids: ["376"], demos: 2015, episodes: 403 },
+  { name: "Packing in e-commerce", ids: ["377", "380"], demos: 11284, episodes: 1609 },
+  { name: "Clear table in the restaurant", ids: ["378"], demos: 8868, episodes: 739 },
+  { name: "Insert a book into the bookshelf", ids: ["384"], demos: 3232, episodes: 808 },
+  { name: "Pickup in the supermarket produce section", ids: ["385"], demos: 1284, episodes: 214 },
+  { name: "Pickup in the supermarket", ids: ["388", "389"], demos: 1800, episodes: 404 },
+  { name: "Checkout and scan barcode in the supermarket", ids: ["390"], demos: 8250, episodes: 750 },
+  { name: "Brush water bottle", ids: ["392"], demos: 13830, episodes: 977 },
+  { name: "Sort clothes", ids: ["398"], demos: 865, episodes: 173 },
+  { name: "Water Pouring in Restaurant", ids: ["410"], demos: 3273, episodes: 1091 },
+  { name: "Hang clothes with hanger", ids: ["414"], demos: 14434, episodes: 2064 },
+  { name: "Pick up the item to wipe away the stain.", ids: ["421"], demos: 6616, episodes: 1654 },
+  { name: "Pack items for industrial logistics", ids: ["422"], demos: 16712, episodes: 2089 },
+  { name: "Clear the countertop waste", ids: ["424"], demos: 8244, episodes: 916 },
+  { name: "Prepare oatmeal porridge", ids: ["425"], demos: 17612, episodes: 1258 },
+  { name: "Open drawer and store items", ids: ["428"], demos: 14256, episodes: 1782 },
+  { name: "Install memory module", ids: ["429"], demos: 138, episodes: 46 },
+  { name: "Brew coffee with a capsule machine", ids: ["431"], demos: 4044, episodes: 674 },
+  { name: "Make instant coffee", ids: ["433"], demos: 12348, episodes: 882 },
+  { name: "Remove capsules from the coffee machine.", ids: ["434"], demos: 2415, episodes: 483 },
+  { name: "Place the pen into the pen holder.", ids: ["438"], demos: 11890, episodes: 2379 },
+  { name: "Iron clothes", ids: ["440", "491"], demos: 11696, episodes: 1587 },
+  { name: "Fold short sleeve", ids: ["444"], demos: 1640, episodes: 328 },
+  { name: "Open the fridge to get fruits and vegetables.", ids: ["445"], demos: 11460, episodes: 1910 },
+  { name: "Transport table with another robot", ids: ["446"], demos: 360, episodes: 72 },
+  { name: "Make a salad", ids: ["451"], demos: 6509, episodes: 283 },
+  { name: "Slice a lemon to make lemon water.", ids: ["452"], demos: 2605, episodes: 521 },
+  { name: "Make a sandwich", ids: ["453", "454"], demos: 4543, episodes: 372 },
+  { name: "Serve meals", ids: ["455"], demos: 3198, episodes: 533 },
+  { name: "Remove the pillowcase from the clothesline and place it in the basket.", ids: ["460"], demos: 3656, episodes: 914 },
+  { name: "Discard the trash bag into the large bin.", ids: ["462"], demos: 3708, episodes: 618 },
+  { name: "Clean the microwave and range hood.", ids: ["463"], demos: 5340, episodes: 1780 },
+  { name: "Replace the toilet paper roll", ids: ["464"], demos: 4800, episodes: 800 },
+  { name: "Wash clothes in the washing machine.", ids: ["465"], demos: 5535, episodes: 615 },
+  { name: "Separate dark and light clothes", ids: ["466", "548"], demos: 6895, episodes: 949 },
+  { name: "Remove clothes from the drying rack and place them in the basket.", ids: ["468"], demos: 5452, episodes: 1363 },
+  { name: "Tidy the tables at the milk tea shop.", ids: ["470"], demos: 7271, episodes: 661 },
+  { name: "Organize the condiments on the stove.", ids: ["471"], demos: 5500, episodes: 550 },
+  { name: "Arrange flowers", ids: ["474"], demos: 4600, episodes: 575 },
+  { name: "Ironing Clothes", ids: ["475"], demos: 7224, episodes: 903 },
+  { name: "Fold towels on the table", ids: ["477"], demos: 2400, episodes: 400 },
+  { name: "Wipe the mirror cabinet", ids: ["478"], demos: 6630, episodes: 1105 },
+  { name: "Make sandwiches with salad dressing 1213 edition", ids: ["480"], demos: 10076, episodes: 916 },
+  { name: "Place items from the meeting room table into the storage box.", ids: ["483"], demos: 4587, episodes: 417 },
+  { name: "Pick up the scrap paper on the desk and feed it into the shredder for destruction.", ids: ["485"], demos: 2685, episodes: 537 },
+  { name: "Remove bottled water from the carton and arrange it neatly on the table.", ids: ["486"], demos: 4380, episodes: 365 },
+  { name: "Remove bottled water from the carton and arrange neatly on the table.", ids: ["487"], demos: 5844, episodes: 487 },
+  { name: "Pack in the supermarket cashier", ids: ["492"], demos: 10560, episodes: 960 },
+  { name: "Organize the kitchen counter seasonings", ids: ["494"], demos: 6140, episodes: 614 },
+  { name: "Restock in the supermarket", ids: ["497"], demos: 11888, episodes: 1486 },
+  { name: "Make milk tea", ids: ["498"], demos: 7580, episodes: 379 },
+  { name: "Clean the bathroom faucet.", ids: ["501"], demos: 4131, episodes: 459 },
+  { name: "Store toys", ids: ["503", "575"], demos: 19280, episodes: 3265 },
+  { name: "Restock supermarket snacks", ids: ["504", "506"], demos: 19577, episodes: 3128 },
+  { name: "Sort maternity and baby products", ids: ["505"], demos: 6830, episodes: 1366 },
+  { name: "Prepare breakfast", ids: ["507"], demos: 11508, episodes: 822 },
+  { name: "Place items in the bag.", ids: ["508"], demos: 16408, episodes: 2344 },
+  { name: "Fold the towel", ids: ["509"], demos: 2961, episodes: 987 },
+  { name: "Stack dishcloth on the kitchen countertop", ids: ["510"], demos: 7325, episodes: 1465 },
+  { name: "Return the showerhead to its holder.", ids: ["511"], demos: 1107, episodes: 369 },
+  { name: "Wipe the whiteboard", ids: ["512"], demos: 1677, episodes: 559 },
+  { name: "Heat the food in the microwave.", ids: ["515"], demos: 10056, episodes: 1676 },
+  { name: "Fold shorts on the bed", ids: ["520"], demos: 3584, episodes: 1792 },
+  { name: "Dispose of the trash on the desk.", ids: ["521"], demos: 4002, episodes: 667 },
+  { name: "Replenish tissues in the meeting room", ids: ["522"], demos: 4434, episodes: 739 },
+  { name: "Dispose of the takeout box", ids: ["524"], demos: 4280, episodes: 535 },
+  { name: "Place cutlery in the restaurant", ids: ["525"], demos: 18136, episodes: 2267 },
+  { name: "Arrange sofa", ids: ["527"], demos: 27151, episodes: 1429 },
+  { name: "Boil water in the kettle", ids: ["528"], demos: 2610, episodes: 290 },
+  { name: "Wipe the toilet with a cloth.", ids: ["529"], demos: 1300, episodes: 325 },
+  { name: "Packing permanent magnet ingot", ids: ["532"], demos: 8734, episodes: 4367 },
+  { name: "Open the curtains.", ids: ["533"], demos: 3412, episodes: 853 },
+  { name: "Close the curtains", ids: ["534", "688"], demos: 5413, episodes: 1273 },
+  { name: "Hang hair dryer", ids: ["535"], demos: 5223, episodes: 1741 },
+  { name: "Pack groceries at the supermarket", ids: ["536"], demos: 2365, episodes: 215 },
+  { name: "Make the bed", ids: ["537"], demos: 7510, episodes: 751 },
+  { name: "Turn the TV on and off with the remote control", ids: ["540"], demos: 4572, episodes: 1143 },
+  { name: "Clean toilet with a rag", ids: ["541"], demos: 2598, episodes: 866 },
+  { name: "Boil water with a kettle", ids: ["542", "549"], demos: 1995, episodes: 285 },
+  { name: "Packing washing detergent", ids: ["543"], demos: 7972, episodes: 1993 },
+  { name: "Wash the pot and spatula", ids: ["544"], demos: 3042, episodes: 234 },
+  { name: "Wash the dishes and silverware", ids: ["545"], demos: 3220, episodes: 230 },
+  { name: "Sort light and dark clothes", ids: ["547"], demos: 737, episodes: 67 },
+  { name: "Peel fruits and vegetables", ids: ["550"], demos: 5178, episodes: 863 },
+  { name: "Disinfect the countertop", ids: ["551"], demos: 4095, episodes: 585 },
+  { name: "Vacuum crumbs with a handheld vacuum.", ids: ["554"], demos: 2284, episodes: 571 },
+  { name: "Packing schoolbag", ids: ["556"], demos: 9260, episodes: 926 },
+  { name: "Pour water", ids: ["558"], demos: 1020, episodes: 340 },
+  { name: "Flatten and fold shorts", ids: ["561"], demos: 6189, episodes: 2063 },
+  { name: "Remove the baked dessert from the oven.", ids: ["563"], demos: 4164, episodes: 347 },
+  { name: "Place goods from the material box onto the shelves.", ids: ["566", "567", "568"], demos: 2374, episodes: 727 },
+  { name: "Fold the T-shirt on the field", ids: ["570"], demos: 6624, episodes: 2208 },
+  { name: "Open the drawer to store items.", ids: ["573"], demos: 714, episodes: 119 },
+  { name: "Produce ice with an ice maker", ids: ["574"], demos: 3720, episodes: 620 },
+  { name: "Receive the menu", ids: ["577", "740"], demos: 5364, episodes: 1341 },
+  { name: "Disinfect the shelves with a sanitizing gun.", ids: ["578"], demos: 1890, episodes: 315 },
+  { name: "Make juice", ids: ["580"], demos: 756, episodes: 28 },
+  { name: "Discard the trash on the coffee table.", ids: ["582"], demos: 888, episodes: 222 },
+  { name: "Pack permanent magnet ingots", ids: ["584"], demos: 606, episodes: 101 },
+  { name: "Pick up the pen on the desk and place it in the pen holder.", ids: ["587"], demos: 416, episodes: 104 },
+  { name: "Pack the box securely", ids: ["588"], demos: 2043, episodes: 681 },
+  { name: "Shred vegetables with a slicer.", ids: ["589"], demos: 8750, episodes: 625 },
+  { name: "Place the desktop items into the felt bag.", ids: ["590"], demos: 680, episodes: 136 },
+  { name: "Untie the curtain ties and draw the curtains.", ids: ["591"], demos: 8526, episodes: 1218 },
+  { name: "Arrange fruits in a fruit bowl.", ids: ["593"], demos: 524, episodes: 131 },
+  { name: "Hand the menu", ids: ["595", "739"], demos: 3135, episodes: 1045 },
+  { name: "Place the inner pot with rice into the rice cooker to cook.", ids: ["596"], demos: 4890, episodes: 815 },
+  { name: "Restock the hanging basket area", ids: ["597", "602", "609"], demos: 10908, episodes: 2727 },
+  { name: "Pour the tea", ids: ["598"], demos: 4275, episodes: 225 },
+  { name: "Fold the shorts", ids: ["599", "658", "681"], demos: 7358, episodes: 3679 },
+  { name: "Hang the key on the hook and place the bag in the storage box.", ids: ["600"], demos: 2444, episodes: 611 },
+  { name: "Scan the code to pack.", ids: ["603"], demos: 5731, episodes: 521 },
+  { name: "Chop vegetables into cubes with a dicer.", ids: ["604"], demos: 49, episodes: 7 },
+  { name: "Scan and package the goods", ids: ["607"], demos: 1672, episodes: 152 },
+  { name: "Water the flowers", ids: ["608"], demos: 1516, episodes: 758 },
+  { name: "Insert the pen cap", ids: ["613"], demos: 3005, episodes: 601 },
+  { name: "Fold T-shirts", ids: ["616"], demos: 420, episodes: 140 },
+  { name: "Grab the toy", ids: ["619"], demos: 376, episodes: 188 },
+  { name: "Print documents with a printer.", ids: ["620"], demos: 1500, episodes: 150 },
+  { name: "Add the seasoning to the pot.", ids: ["621"], demos: 8190, episodes: 390 },
+  { name: "Pack takeout", ids: ["622"], demos: 1000, episodes: 125 },
+  { name: "Pack the medicine", ids: ["660"], demos: 6564, episodes: 547 },
+  { name: "Hammer the toy", ids: ["664"], demos: 7182, episodes: 798 },
+  { name: "Close the pen cap", ids: ["666"], demos: 1125, episodes: 225 },
+  { name: "Insert the straw", ids: ["675"], demos: 1197, episodes: 399 },
+  { name: "Unplug the charger", ids: ["676"], demos: 435, episodes: 145 },
+  { name: "Insert the plug", ids: ["677"], demos: 526, episodes: 263 },
+  { name: "Confirm the meeting room status", ids: ["679"], demos: 1425, episodes: 285 },
+  { name: "Serve the meal", ids: ["682", "683", "785"], demos: 2776, episodes: 389 },
+  { name: "Lower the curtain", ids: ["689"], demos: 7535, episodes: 685 },
+  { name: "Draw the curtains", ids: ["692"], demos: 10098, episodes: 594 },
+  { name: "Twist the bottle cap", ids: ["694", "707"], demos: 7410, episodes: 1235 },
+  { name: "Turn on the fan", ids: ["695"], demos: 5900, episodes: 1180 },
+  { name: "Restock tea bags", ids: ["698"], demos: 7972, episodes: 1993 },
+  { name: "Shoot the basketball", ids: ["705"], demos: 1098, episodes: 549 },
+  { name: "Place name tags", ids: ["708"], demos: 13180, episodes: 659 },
+  { name: "Pack the medicines", ids: ["709"], demos: 16752, episodes: 1396 },
+  { name: "Open the red wine", ids: ["710"], demos: 588, episodes: 98 },
+  { name: "Mop the floor", ids: ["711"], demos: 4240, episodes: 848 },
+  { name: "Carry bottled water.", ids: ["712"], demos: 5128, episodes: 641 },
+  { name: "Open the door and turn off the light.", ids: ["714"], demos: 1360, episodes: 170 },
+  { name: "Insert the key and open the door.", ids: ["715"], demos: 3896, episodes: 974 },
+  { name: "Stamp the document and place the reimbursement form in the reimbursement box.", ids: ["716"], demos: 5000, episodes: 625 },
+  { name: "Deliver goods", ids: ["717"], demos: 124, episodes: 62 },
+  { name: "Convey merchandise", ids: ["719"], demos: 88, episodes: 44 },
+  { name: "Tighten the bottle cap", ids: ["722"], demos: 8952, episodes: 1492 },
+  { name: "Scan security check", ids: ["725"], demos: 9520, episodes: 952 },
+  { name: "Lift dumbbells", ids: ["726"], demos: 6840, episodes: 1140 },
+  { name: "Fetch water", ids: ["727"], demos: 114, episodes: 19 },
+  { name: "Strike the gong", ids: ["729"], demos: 1557, episodes: 519 },
+  { name: "Clap hands", ids: ["730"], demos: 2310, episodes: 770 },
+  { name: "Wave goodbye", ids: ["731"], demos: 1350, episodes: 675 },
+  { name: "Roll the dough", ids: ["732"], demos: 4840, episodes: 1210 },
+  { name: "Tie the curtain sash", ids: ["734"], demos: 211, episodes: 211 },
+  { name: "Roll away stains with a lint roller", ids: ["735"], demos: 1024, episodes: 128 },
+  { name: "Peel the skin", ids: ["737"], demos: 428, episodes: 214 },
+  { name: "Pack the fruits", ids: ["741"], demos: 1902, episodes: 317 },
+  { name: "Pack fruits", ids: ["744"], demos: 502, episodes: 251 },
+  { name: "Scan for security check", ids: ["748"], demos: 936, episodes: 104 },
+  { name: "Place the feed box", ids: ["749"], demos: 315, episodes: 105 },
+  { name: "Slice the noodles", ids: ["751"], demos: 5660, episodes: 1132 },
+  { name: "Knead dough", ids: ["753"], demos: 936, episodes: 312 },
+  { name: "Carry books", ids: ["761"], demos: 1305, episodes: 261 },
+  { name: "Paint the wall", ids: ["762"], demos: 3402, episodes: 486 },
+  { name: "Move house", ids: ["764"], demos: 5515, episodes: 1103 },
+  { name: "Adjust product placement", ids: ["765"], demos: 2986, episodes: 1493 },
+  { name: "Milk the cow", ids: ["773"], demos: 8970, episodes: 690 },
+  { name: "Insert the key and open the door", ids: ["774"], demos: 1344, episodes: 336 },
+  { name: "Stamp the seal", ids: ["779"], demos: 3003, episodes: 1001 },
+  { name: "Pass the water", ids: ["781"], demos: 1524, episodes: 762 },
+  { name: "Tidy the bar counter", ids: ["782"], demos: 981, episodes: 109 },
+  { name: "Spread the tablecloth", ids: ["783"], demos: 5525, episodes: 1105 },
+  { name: "Tie the rope", ids: ["786"], demos: 5142, episodes: 1714 },
+  { name: "Clear the dining table", ids: ["787"], demos: 3252, episodes: 271 },
+  { name: "Swipe toy cards", ids: ["790"], demos: 1028, episodes: 514 },
 ];
+
+const agiBotWorldRows = agiBotWorldTaskEntries.map(({ name, ids, demos }) => ({
+  task: name,
+  dataLinks: {
+    HuggingFace: ids.map((id) => hfDatasetTree(agiBotWorldRepo, `observations/${id}`))
+  },
+  observations: ["RGB-D", "Proprio", "Language"],
+  actions: ["EEF Pose", "Joint"],
+  demos,
+  envs: "",
+  license: "CC BY-NC-SA 4.0"
+}));
 
 const openGalaxeaRepo = "OpenGalaxea/Galaxea-Open-World-Dataset";
 const openGalaxeaTaskArchives = [
@@ -454,12 +723,675 @@ const realSourceWorldRows = realSourceWorldTasks.map((task) => ({
   license: "CC BY-NC-SA 4.0"
 }));
 
+const makeHfFolderRow = ({ repo, path, task = path, observations, actions, demos = "TBD", envs = "TBD", license = "TBD" }) => ({
+  task,
+  dataLinks: {
+    "HF folder": hfDatasetTree(repo, path)
+  },
+  observations,
+  actions,
+  demos,
+  envs,
+  license
+});
+
+const makeHfBlobRow = ({ repo, path, task, label = "Download", observations, actions, demos = "TBD", envs = "TBD", license = "TBD" }) => ({
+  task,
+  dataLinks: {
+    [label]: hfDatasetBlob(repo, path)
+  },
+  observations,
+  actions,
+  demos,
+  envs,
+  license
+});
+
+const makeDropboxRow = ({ task, href, label = "Dropbox", observations, actions, demos = "TBD", envs = "TBD", license = "TBD" }) =>
+  makeLandingRow({
+    task,
+    href,
+    label,
+    observations,
+    actions,
+    demos,
+    envs,
+    license
+  });
+
+const ph2dRepo = "RogerQi/PH2D";
+const ph2dRows = [
+  "grasping session folders",
+  "picking session folders",
+  "pouring session folders",
+  "validation session folders",
+  "sim_test and metadata"
+].map((task) =>
+  makeLandingRow({
+    task,
+    href: hfDatasetBase(ph2dRepo),
+    label: "HuggingFace",
+    observations: ["RGB", "Proprio", "Language"],
+    actions: ["Robot Actions"],
+    envs: "Humanoid",
+    license: "MIT"
+  })
+);
+
+const decoRepo = "BAAI-Humanoid/DECO-50";
+const decoTaskGroups = [
+  ["task1", "12 subtask folders"],
+  ["task2", "3 subtask folders"],
+  ["task3", "8 subtask folders"],
+  ["task4", "6 subtask folders"]
+];
+const decoRows = decoTaskGroups.map(([path, envs]) =>
+  makeHfFolderRow({
+    repo: decoRepo,
+    path,
+    task: `${path} / data-* folders`,
+    observations: ["RGB", "Proprio"],
+    actions: ["Robot Actions"],
+    envs,
+    license: "Apache-2.0"
+  })
+);
+
+const dexoraRepo = "Dexora/Dexora_Real-World_Dataset";
+const dexoraTopLevelFolders = [
+  ["airbot_articulation", "articulation tasks"],
+  ["airbot_assemble", "assembly tasks"],
+  ["airbot_dexterous", "dexterous tasks"],
+  ["airbot_pick_and_place", "pick-and-place tasks"],
+  ["dexora", "200 visible task folders"]
+];
+const dexoraRows = dexoraTopLevelFolders.map(([path, envs]) =>
+  makeHfFolderRow({
+    repo: dexoraRepo,
+    path,
+    task: path,
+    observations: ["RGB", "Proprio", "Language"],
+    actions: ["Robot Actions"],
+    envs,
+    license: "MIT"
+  })
+);
+
+const agiBotWorld2026Repo = "agibot-world/AgiBotWorld2026";
+const agiBotWorld2026Folders = [
+  ["ImitationLearning/CommercialSpaces", "Imitation learning / commercial spaces"],
+  ["ImitationLearning/Home", "Imitation learning / home"],
+  ["RichInteraction/CommercialSpaces", "Rich interaction / commercial spaces"],
+  ["RichInteraction/Home", "Rich interaction / home"],
+  ["simulation/scoop_popcorn_to_bucket", "simulation / scoop_popcorn_to_bucket"],
+  ["simulation/take_bagged_food_to_cart", "simulation / take_bagged_food_to_cart"],
+  ["simulation/take_cup_to_cart", "simulation / take_cup_to_cart"],
+  ["simulation/take_drink_to_cart", "simulation / take_drink_to_cart"],
+  ["simulation/take_laundry_detergent_to_cart", "simulation / take_laundry_detergent_to_cart"],
+  ["simulation/tidy_up_food_in_freezer", "simulation / tidy_up_food_in_freezer"]
+];
+const agiBotWorld2026Rows = [
+  ...agiBotWorld2026Folders.map(([path, task]) =>
+    makeHfFolderRow({
+      repo: agiBotWorld2026Repo,
+      path,
+      task,
+      observations: ["RGB-D", "Proprio", "Language"],
+      actions: ["Robot Actions"],
+      envs: "AgiBot World 2026",
+      license: "CC BY-NC-SA 4.0"
+    })
+  ),
+  makeHfBlobRow({
+    repo: agiBotWorld2026Repo,
+    path: "split_episodes_tool.zip",
+    task: "split_episodes_tool",
+    label: "zip",
+    observations: ["N/A"],
+    actions: ["N/A"],
+    envs: "tooling",
+    license: "CC BY-NC-SA 4.0"
+  })
+];
+
+const unitreeUnifolmCollection = "https://huggingface.co/collections/unitreerobotics/unifolm-wbt-dataset";
+const unitreeUnifolmRepos = [
+  "unitreerobotics/G1_WBT_Inspire_Collect_Clothes_MainCamOnly",
+  "unitreerobotics/G1_WBT_Inspire_Pickup_Pillow_MainCamOnly",
+  "unitreerobotics/G1_WBT_Inspire_Put_Clothes_into_Washing_Machine_MainCamOnly",
+  "unitreerobotics/G1_WBT_Brainco_Collect_Plates_Into_Dishwasher",
+  "unitreerobotics/G1_WBT_Brainco_Pickup_Pillow",
+  "unitreerobotics/G1_WBT_Inspire_Put_Clothes_into_Washing_Machine",
+  "unitreerobotics/G1_WBT_Brainco_Make_The_Bed",
+  "unitreerobotics/G1_WBT_Inspire_Put_Clothes_Into_Basket",
+  "unitreerobotics/G1_WBT_Dex1_Put_Clothes_into_Washing_Machine",
+  "unitreerobotics/G1_WBT_Inspire_Put_Drinks_Into_Fridge",
+  "unitreerobotics/G1_WBT_Inspire_Put_Vegetables_Into_Basket",
+  "unitreerobotics/G1_WBT_Brainco_Pick_Up_Medicine",
+  "unitreerobotics/G1_WBT_Inspire_Pick_Up_Drinks",
+  "unitreerobotics/G1_WBT_Inspire_Clean_The_Living_Room"
+];
+const unitreeUnifolmRows = unitreeUnifolmRepos.map((repo) =>
+  makeLandingRow({
+    task: repo.split("/").at(-1).replaceAll("_", " "),
+    href: hfDatasetBase(repo),
+    label: "HuggingFace",
+    observations: ["Video", "Parquet", "Proprio", "Language"],
+    actions: ["Robot Actions"],
+    envs: "Unitree G1 WBT",
+    license: "Apache-2.0"
+  })
+);
+
+const aistBimanualRoot = "https://www.dropbox.com/scl/fo/zumqdjhk47uk2k8kcefmu/AEeieZQJ0wGr_D5J7ar0nqg?dl=0&rlkey=bhkxfigxkt8fmbxb88qnq1og7";
+const aistBimanualDataRoot = "https://www.dropbox.com/scl/fo/zumqdjhk47uk2k8kcefmu/AGWTD7LBzclJkg3Wpo9LAxU/data?rlkey=bhkxfigxkt8fmbxb88qnq1og7&dl=0";
+const aistBimanualHdf5Zips = [
+  "brush_screws_into_dustpan_human_brush_left_hold.zip",
+  "brush_screws_into_dustpan_left_brush_human_hold.zip",
+  "close_cardboard_box.zip",
+  "close_toolbox.zip",
+  "find_hole_and_insert_into_gear.zip",
+  "find_insert_large_gear_shaft.zip",
+  "find_insert_small_gear_shaft.zip",
+  "fit_large_gear_shaft.zip",
+  "fit_small_gear_shaft.zip",
+  "fold_bath_towel.zip",
+  "fold_big_towel.zip",
+  "fold_blue_towel.zip",
+  "fold_green_towel.zip",
+  "fold_light_blue_towel.zip",
+  "fold_orange_towel.zip",
+  "fold_towel_assist.zip"
+];
+const aistBimanualRows = [
+  ...aistBimanualHdf5Zips.map((zipName) =>
+    makeDropboxRow({
+      task: `hdf5 / ${zipName.replace(".zip", "")}`,
+      href: `https://www.dropbox.com/scl/fo/zumqdjhk47uk2k8kcefmu/AELiAf4iasSkcGyryGI8nDE/data/hdf5/${zipName}?rlkey=bhkxfigxkt8fmbxb88qnq1og7&dl=0`,
+      label: "zip",
+      observations: ["RGB", "Proprio", "Language"],
+      actions: ["Robot Actions"],
+      demos: "TBD",
+      envs: "task zip",
+      license: "TBD"
+    })
+  )
+];
+
+const hapTileRepo = "HapTile2026/HapTile";
+const hapTileTaskZips = [
+  "fold_Tshirt.zip",
+  "insert_peg.zip",
+  "move_cable.zip",
+  "move_can.zip",
+  "move_disposable_cup.zip",
+  "move_mobile_box.zip",
+  "move_plush_toy.zip",
+  "move_rubiks_cube.zip",
+  "move_spoon.zip",
+  "move_toy_car.zip",
+  "move_water_bottle.zip",
+  "press_Coffee_machine.zip",
+  "put_Apple.zip",
+  "put_Banana.zip",
+  "put_Orange.zip",
+  "put_baseball.zip",
+  "put_fork.zip",
+  "put_golf_ball.zip",
+  "put_lego.zip",
+  "put_spatula.zip",
+  "put_sponge.zip",
+  "put_spoon.zip",
+  "put_spray_bottle.zip",
+  "put_stack_glass_cups.zip",
+  "put_strawberry.zip",
+  "remove_cloth.zip",
+  "remove_laundry_pod.zip",
+  "remove_screwdriver.zip",
+  "remove_sticky_note.zip",
+  "remove_sugar_bag.zip",
+  "remove_tissue.zip",
+  "stack_bowls.zip",
+  "stack_disposable_cup.zip",
+  "stack_glass_cups.zip",
+  "turn_can.zip",
+  "turn_cleanser_bottle.zip",
+  "turn_water_bottle.zip",
+  "wipe_whiteboard.zip"
+];
+const hapTileRows = hapTileTaskZips.map((zipName) =>
+  makeHfBlobRow({
+    repo: hapTileRepo,
+    path: `Data/${zipName}`,
+    task: zipName.replace(".zip", ""),
+    label: "zip",
+    observations: ["RGB", "Proprio", "Language", "Haptic"],
+    actions: ["Robot Actions"],
+    envs: "HapTile task zip",
+    license: "CC BY 4.0"
+  })
+);
+
+const omniVitacRepo = "tars-robotics/OmniVitac";
+const omniVitacFolders = [
+  "Adjustment_zip_new",
+  "Assembly_zip_new",
+  "Cutting_zip_new",
+  "Grasping_zip_new",
+  "Peeling_zip_new",
+  "Wiping_zip_new"
+];
+const omniVitacRows = omniVitacFolders.map((path) =>
+  makeHfFolderRow({
+    repo: omniVitacRepo,
+    path,
+    task: path.replace("_zip_new", ""),
+    observations: ["RGB-D", "Proprio", "Language", "Tactile"],
+    actions: ["TBD"],
+    envs: "OmniVitac task family",
+    license: "CC BY-NC 4.0"
+  })
+);
+
+const mimeTaskEntries = [
+  { task: "Pour", folder: "https://www.dropbox.com/sh/wmyek0jhrpm0hmh/AADypxdDq9CbeD4VRKulTbG1a?dl=0", demos: 290 },
+  { task: "Stir", folder: "https://www.dropbox.com/sh/kfxdbxy1dsju79i/AAD_0YyCm17oradIgtoTEidja?dl=0", demos: 508 },
+  { task: "Pass", folder: "https://www.dropbox.com/sh/q33ko971usb028x/AACZJ25JmluVCeDU7ZrnMRqNa?dl=0", demos: 485 },
+  { task: "Stack", folder: "https://www.dropbox.com/sh/dofxnu3ncum39hs/AAD2GKHwT7OtA4rtYxCnViNKa?dl=0", demos: 514 },
+  { task: "Place objects in box", folder: "https://www.dropbox.com/sh/z3o7ad8jt7ji8h1/AAC4qTLuAyYq5EXccBUuuzt6a?dl=0", demos: 367 },
+  { task: "Open Bottles", folder: "https://www.dropbox.com/sh/grgj9f8zyw4irfh/AAA2BKWxRpXgyy8R96bRRU1ua?dl=0", demos: 473 },
+  { task: "Push", folder: "https://www.dropbox.com/sh/hb2rxqnjpcx2591/AADU0alwAPCxRY0qfNS_O0Cza?dl=0", demos: 355 },
+  { task: "Rotate", folder: "https://www.dropbox.com/sh/uj7v0axgceddgw7/AAC4GB-uPSgtrPsJpAfNYjJta?dl=0", demos: 419 },
+  { task: "Wipe", folder: "https://www.dropbox.com/sh/1sj84icjhrvxwf4/AADOg_NUFI_oU6lR3E0mZhkQa?dl=0", demos: 292 },
+  { task: "Press Buttons", folder: "https://www.dropbox.com/sh/99jyhxvvs1cwqt4/AAB4zokOUUA2x2QIEGrZUawNa?dl=0", demos: 315 },
+  { task: "Close Book", folder: "https://www.dropbox.com/sh/m9emo93c0nwl23k/AACb912BIksbG1PWHO0T8GMYa?dl=0", demos: 317 },
+  { task: "Picking (single hand)", folder: "https://www.dropbox.com/sh/61s1x4f6yrjj2fp/AABBHku0_4EGyXH3__vAyijTa?dl=0", demos: 655 },
+  { task: "Picking (both hands)", folder: "https://www.dropbox.com/sh/hrwbreflwsy3x2b/AACDSbpiCRUIwfNWjI4lyydya?dl=0", demos: 249 },
+  { task: "Poke", folder: "https://www.dropbox.com/sh/i1yacr9dzuxzmy3/AACG-uJ6OYLwvwC0RngIMI5ja?dl=0", demos: 542 },
+  { task: "Pull (two hands)", folder: "https://www.dropbox.com/sh/wqqrf0fjgpxseld/AADln-EXkyVCCRU_XM75qlfSa?dl=0", demos: 465 },
+  { task: "Push (two hands)", folder: "https://www.dropbox.com/sh/jsrxsxm9em42uj2/AACgj6_NIjxJC1dKgK35TsJSa?dl=0", demos: 394 },
+  { task: "Toy Car Trajectories", folder: "https://www.dropbox.com/sh/qph8y8kwsu470vx/AACBW2NQ1WAcj227GWm1wYfoa?dl=0", demos: 418 },
+  { task: "Roll", folder: "https://www.dropbox.com/sh/ui2rcfdu3jbb4a4/AAAlwwPFXWd-MggI62uEwCwna?dl=0", demos: 426 },
+  { task: "Drop Objects", folder: "https://www.dropbox.com/sh/6ysn4cbq5uuxcij/AAAAjU_yA79odQMGgYtVWJA6a?dl=0", demos: 465 },
+  { task: "Pull (single hand)", folder: "https://www.dropbox.com/sh/x60fptqni9cvqx8/AAB71YePoQfovylmMzZILWSxa?dl=0", demos: 410 }
+];
+
+const mimeRows = mimeTaskEntries.map(({ task, folder, demos }, index) => ({
+    task,
+    dataLinks: {
+      "Dropbox folder": folder,
+    },
+    observations: ["RGB-D", "Proprio"],
+    actions: ["Joint", "Parallel gripper"],
+    demos,
+    envs: 1,
+    license: "TBD"
+  }));
+
+const requestedRobotDataSections = [
+  {
+    id: "daml",
+    project: "DAML",
+    summary: "Domain-adaptive meta-learning robot imitation dataset. The public link is a single ZIP archive, so it is indexed as one dataset row.",
+    projectLinks: {
+      Project: "https://sites.google.com/view/daml",
+      Download: "https://rail.eecs.berkeley.edu/datasets/mil_data.zip",
+      Paper: "https://arxiv.org/abs/1802.01557"
+    },
+    citation: `@article{yu2018one,
+  title={One-shot imitation from observing humans via domain-adaptive meta-learning},
+  author={Yu, Tianhe and Finn, Chelsea and Xie, Annie and Dasari, Sudeep and Zhang, Tianhao and Abbeel, Pieter and Levine, Sergey},
+  journal={arXiv preprint arXiv:1802.01557},
+  year={2018}
+}`,
+    defaultOpen: false,
+    rows: [
+      makeLandingRow({
+        task: "DAML one-shot imitation tasks",
+        href: "https://rail.eecs.berkeley.edu/datasets/mil_data.zip",
+        label: "zip",
+        observations: ["RGB", "Proprio"],
+        actions: ["Robot Actions"],
+        demos: 2900,
+        envs: "2 embodiments / 3 tasks"
+      })
+    ]
+  },
+  {
+    id: "mime",
+    project: "MIME",
+    summary: "Multiple Interactions Made Easy dataset. The dataset page is the stable entry point rather than a task-level download tree.",
+    projectLinks: {
+      Dataset: "https://sites.google.com/view/mimedataset/dataset",
+      Paper: "https://proceedings.mlr.press/v87/sharma18a.html",
+    },
+    citation: `@inproceedings{sharma2018multiple,
+  title={Multiple interactions made easy (mime): Large scale demonstrations data for imitation},
+  author={Sharma, Pratyusha and Mohan, Lekha and Pinto, Lerrel and Gupta, Abhinav},
+  booktitle={Conference on robot learning},
+  pages={906--915},
+  year={2018},
+  organization={PMLR}
+}`,
+    defaultOpen: false,
+    rows: mimeRows
+  },
+  {
+    id: "mt-opt",
+    project: "MT-Opt",
+    summary: "Google multi-task real robot dataset exposed through TensorFlow Datasets rather than task-named archives.",
+    projectLinks: {
+      RLDS: "https://www.tensorflow.org/datasets/catalog/mt_opt",
+      Paper: "https://arxiv.org/abs/2104.08212"
+    },
+    citation: `@inproceedings{kalashnikov2021mt,
+  title={Mt-opt: Continuous multi-task robotic reinforcement learning at scale},
+  author={Kalashnikov, Dmitry and Irpan, Alex and Pastor, Peter and Ibarz, Julian and Herzog, Alexander and Jang, Eric and Quillen, Deirdre and Holly, Ethan and Kalakrishnan, Mrinal and Vanhoucke, Vincent and others},
+  booktitle={Conference on Robot Learning},
+  year={2021}
+}`,
+    defaultOpen: false,
+    rows: [
+      makeLandingRow({
+        task: "MT-Opt",
+        href: "https://www.tensorflow.org/datasets/catalog/mt_opt",
+        label: "RLDS",
+        observations: ["RGB", "Proprio"],
+        actions: ["Robot Actions"],
+        demos: 800000,
+        envs: "12 tasks"
+      })
+    ]
+  },
+  {
+    id: "rh20t",
+    project: "RH20T",
+    summary: "Multimodal real robot dataset with a project download page rather than visible task-level archives.",
+    projectLinks: {
+      Project: "https://rh20t.github.io/",
+      Download: "https://rh20t.github.io/#download",
+      Paper: "https://arxiv.org/abs/2307.00595"
+    },
+    citation: `@article{fang2023rh20t,
+  title={Rh20t: A comprehensive robotic dataset for learning diverse skills in one-shot},
+  author={Fang, Hao-Shu and Fang, Hongjie and Tang, Zhenyu and Liu, Jirong and Wang, Chenxi and Wang, Junbo and Zhu, Haoyi and Lu, Cewu},
+  journal={arXiv preprint arXiv:2307.00595},
+  year={2023}
+}`,
+    defaultOpen: false,
+    rows: [
+      makeLandingRow({
+        task: "RH20T",
+        href: "https://rh20t.github.io/#download",
+        label: "zip",
+        observations: ["RGB-D", "Proprio", "Language", "Force", "Audio"],
+        actions: ["Robot Actions"],
+        demos: 110000,
+        envs: "4 embodiments / 147 tasks"
+      })
+    ]
+  },
+  {
+    id: "fmb",
+    project: "FMB dataset",
+    summary: "Functional Manipulation Benchmark dataset. The RAIL page is the stable dataset entry point.",
+    projectLinks: {
+      Project: "https://functional-manipulation-benchmark.github.io/",
+      Dataset: "https://rail.eecs.berkeley.edu/datasets/fmb/",
+      Paper: "https://doi.org/10.1177/02783649241299777"
+    },
+    citation: `@article{luo2025fmb,
+  title={Fmb: a functional manipulation benchmark for generalizable robotic learning},
+  author={Luo, Jianlan and Xu, Charles and Liu, Fangchen and Tan, Liam and Lin, Zipeng and Wu, Jeffrey and Abbeel, Pieter and Levine, Sergey},
+  journal={The International Journal of Robotics Research},
+  volume={44},
+  number={4},
+  pages={592--606},
+  year={2025},
+  publisher={Sage Publications Sage UK: London, England}
+}`,
+    defaultOpen: false,
+    rows: [
+      makeLandingRow({
+        task: "FMB benchmark data",
+        href: "https://rail.eecs.berkeley.edu/datasets/fmb/",
+        label: "Dataset",
+        observations: ["RGB-D", "Proprio", "Force", "Torque"],
+        actions: ["Robot Actions"],
+        demos: 22600,
+        envs: "2 tasks"
+      })
+    ]
+  },
+  {
+    id: "reassemble",
+    project: "REASSEMBLE",
+    summary: "Contact-rich robotic assembly and disassembly dataset from TU Wien Research Data.",
+    projectLinks: {
+      Dataset: "https://researchdata.tuwien.ac.at/records/0ewrv-8cb44",
+      Paper: "https://arxiv.org/abs/2502.05086"
+    },
+    citation: `@article{sliwowski2025reassemble,
+  title={Reassemble: A multimodal dataset for contact-rich robotic assembly and disassembly},
+  author={Sliwowski, Daniel and Jadav, Shail and Stanovcic, Sergej and Orbik, Jedrzej and Heidersberger, Johannes and Lee, Dongheui},
+  journal={arXiv preprint arXiv:2502.05086},
+  year={2025}
+}`,
+    defaultOpen: false,
+    rows: [
+      makeLandingRow({
+        task: "REASSEMBLE contact-rich tasks",
+        href: "https://researchdata.tuwien.ac.at/records/0ewrv-8cb44",
+        label: "Dataset",
+        observations: ["RGB", "Proprio", "Audio", "Force", "Torque"],
+        actions: ["Robot Actions"],
+        demos: 4600,
+        envs: "121 tasks"
+      })
+    ]
+  },
+  {
+    id: "ph2d",
+    project: "PH2D",
+    summary: "Humanoid Policy to Human Policy dataset. Rows are grouped by the semantic session families visible in the Hugging Face repository.",
+    projectLinks: {
+      HuggingFace: hfDatasetBase(ph2dRepo),
+      Paper: "https://arxiv.org/abs/2503.13441"
+    },
+    citation: `@article{qiu2025humanoid,
+  title={Humanoid policy human policy},
+  author={Qiu, Ri-Zhao and Yang, Shiqi and Cheng, Xuxin and Chawla, Chaitanya and Li, Jialong and He, Tairan and Yan, Ge and Yoon, David J and Hoque, Ryan and Paulsen, Lars and others},
+  journal={arXiv preprint arXiv:2503.13441},
+  year={2025}
+}`,
+    defaultOpen: false,
+    rows: ph2dRows
+  },
+  {
+    id: "aist-bimanual",
+    project: "AIST-Bimanual",
+    summary: "AIST bimanual manipulation dataset distributed through Dropbox. Rows include the public format folders plus task-named HDF5 ZIP files visible from the first shared-folder page.",
+    projectLinks: {
+      Project: "https://aistairc.github.io/aist_bimanip_site/",
+      Dropbox: aistBimanualRoot,
+      Data: aistBimanualDataRoot
+    },
+    citation: `@misc{aist2025bimanip,
+  author={Tomohiro Motoda and Masaki Murooka and Ryoichi Nakajo and Muhammad A. Muttaqien and Koshi Makihara and Hanbit Oh and Keisuke Shirai and Floris Erich and Ryo Hanai and Yukiyasu Domae},
+  title={AIST-Bimanual Manipulation},
+  year={2025}
+}`,
+    defaultOpen: false,
+    rows: aistBimanualRows
+  },
+  {
+    id: "deco-50",
+    project: "DECO-50",
+    summary: "DECO-50 real-world bimanual dexterous dataset. Rows follow the task folders exposed by Hugging Face.",
+    projectLinks: {
+      HuggingFace: hfDatasetBase(decoRepo),
+      Paper: "https://arxiv.org/abs/2602.05513"
+    },
+    citation: `@article{li2026deco,
+  title={DECO: Decoupled Multimodal Diffusion Transformer for Bimanual Dexterous Manipulation with a Plugin Tactile Adapter},
+  author={Li, Xukun and Sun, Yu and Zhang, Lei and Huang, Bosheng and Peng, Yibo and Meng, Yuan and Jiang, Haojun and Xie, Shaoxuan and Yao, Guocai and Knoll, Alois and others},
+  journal={arXiv preprint arXiv:2602.05513},
+  year={2026}
+}`,
+    defaultOpen: false,
+    rows: decoRows
+  },
+  {
+    id: "dexora",
+    project: "Dexora",
+    summary: "Dexora real-world bimanual dexterity dataset. Rows follow the top-level task-family folders, including the 200-task dexora folder.",
+    projectLinks: {
+      HuggingFace: hfDatasetBase(dexoraRepo),
+      Project: "https://dexoravla.github.io/",
+      GitHub: "https://github.com/ZZongzheng0918/Dexora",
+      Paper: "https://arxiv.org/abs/2605.18722"
+    },
+    citation: `@article{zhang2026dexora,
+  title={Dexora: Open-source VLA for High-DoF Bimanual Dexterity},
+  author={Zhang, Zongzheng and Pang, Jingrui and Yang, Zhuo and Li, Kun and Liao, Minwen and Zhang, Saining and Chi, Guoxuan and Guo, Jinbang and Gao, Huan-ang and Shi, Modi and others},
+  journal={arXiv preprint arXiv:2605.18722},
+  year={2026}
+}`,
+    defaultOpen: false,
+    rows: dexoraRows
+  },
+  {
+    id: "agibot-world-2026",
+    project: "AgiBot World 2026",
+    summary: "AgiBot World 2026 dataset. Rows follow the visible imitation-learning, rich-interaction, and simulation folders.",
+    projectLinks: {
+      HuggingFace: hfDatasetBase(agiBotWorld2026Repo)
+    },
+    citation: `@misc{agibotworld2026,
+  title={AgiBot World 2026},
+  author={AgiBot World Team},
+  howpublished={\\url{https://huggingface.co/datasets/agibot-world/AgiBotWorld2026}},
+  year={2026}
+}`,
+    defaultOpen: false,
+    rows: agiBotWorld2026Rows
+  },
+  {
+    id: "unitree-unifolm-wbt",
+    project: "Unitree UnifoLM-WBT",
+    summary: "Unitree UnifoLM-WBT collection. Rows are indexed by the 14 Hugging Face subdatasets in the collection.",
+    projectLinks: {
+      Collection: unitreeUnifolmCollection
+    },
+    citation: `@misc{unitree2026unifolm,
+  title={UnifoLM-WBT-Dataset},
+  author={{Unitree Robotics}},
+  year={2026},
+  howpublished={\\url{https://huggingface.co/collections/unitreerobotics/unifolm-wbt-dataset}}
+}`,
+    defaultOpen: false,
+    rows: unitreeUnifolmRows
+  },
+  {
+    id: "rovid-x",
+    project: "RoVid-X",
+    summary: "RoVid-X embodied video dataset. The Hugging Face repository exposes numbered tar shards rather than semantic task folders.",
+    projectLinks: {
+      HuggingFace: hfDatasetBase("DAGroup-PKU/RoVid-X"),
+      Paper: "https://arxiv.org/abs/2601.15282"
+    },
+    citation: `@article{deng2026rethinking,
+  title={Rethinking Video Generation Model for the Embodied World},
+  author={Deng, Yufan and Pan, Zilin and Zhang, Hongyu and Li, Xiaojie and Hu, Ruoqing and Ding, Yufei and Zou, Yiming and Zeng, Yan and Zhou, Daquan},
+  journal={arXiv preprint arXiv:2601.15282},
+  year={2026}
+}`,
+    defaultOpen: false,
+    rows: [
+      makeLandingRow({
+        task: "RoVid-X numbered tar shards",
+        href: hfDatasetBase("DAGroup-PKU/RoVid-X"),
+        label: "HuggingFace",
+        observations: ["RGB-D", "Optical Flow"],
+        actions: ["TBD"],
+        demos: 4000000,
+        envs: "1300+ tasks",
+        license: "CC BY 4.0"
+      })
+    ]
+  },
+  {
+    id: "lingbot-depth",
+    project: "LingBot-Depth Dataset",
+    summary: "Masked depth modeling dataset. Rows are grouped by the large archive families visible in the Hugging Face repository.",
+    projectLinks: {
+      HuggingFace: hfDatasetBase("robbyant/mdm_depth"),
+      Paper: "https://arxiv.org/abs/2601.17895"
+    },
+    citation: `@article{tan2026masked,
+  title={Masked Depth Modeling for Spatial Perception},
+  author={Tan, Bin and Sun, Changjiang and Qin, Xiage and Adai, Hanat and Fu, Zelin and Zhou, Tianxiang and Zhang, Han and Xu, Yinghao and Zhu, Xing and Shen, Yujun and others},
+  journal={arXiv preprint arXiv:2601.17895},
+  year={2026}
+}`,
+    defaultOpen: false,
+    rows: [
+      makeLandingRow({
+        task: "RobbyReal / RobbySim / RobbyVla archives",
+        href: hfDatasetBase("robbyant/mdm_depth"),
+        label: "HuggingFace",
+        observations: ["RGB-D"],
+        actions: ["N/A"],
+        demos: 581000,
+        envs: "2 embodiments",
+        license: "Apache-2.0"
+      })
+    ]
+  },
+  {
+    id: "haptile",
+    project: "HapTile",
+    summary: "Haptic-informed vision-tactile-language-action dataset. Rows index the task-named ZIP files under the Data folder.",
+    projectLinks: {
+      HuggingFace: hfDatasetBase(hapTileRepo),
+      Paper: "https://arxiv.org/abs/2606.04825"
+    },
+    citation: `@article{alian2026haptile,
+  title={HapTile: A Haptic-Informed Vision-Tactile-Language-Action Dataset for Contact-Rich Imitation Learning},
+  author={Alian, Amirhosein and Zhao, Yongqiang and Gu, Shiyi and Zhang, Xuyang and Chen, Zhuo and Mower, Christopher E and Bou-Ammar, Haitham and Luo, Shan},
+  journal={arXiv preprint arXiv:2606.04825},
+  year={2026}
+}`,
+    defaultOpen: false,
+    rows: hapTileRows
+  },
+  {
+    id: "omnivitac",
+    project: "OmniVitac",
+    summary: "Visuo-tactile manipulation dataset. Rows follow the six top-level task-family folders visible on Hugging Face.",
+    projectLinks: {
+      HuggingFace: hfDatasetBase(omniVitacRepo),
+      Paper: "https://arxiv.org/abs/2603.19201"
+    },
+    citation: `@article{zheng2026omnivta,
+  title={Omnivta: Visuo-tactile world modeling for contact-rich robotic manipulation},
+  author={Zheng, Yuhang and Gu, Songen and Li, Weize and Zheng, Yupeng and Zang, Yujie and Tian, Shuai and Li, Xiang and Hao, Ce and Gao, Chen and Liu, Si and others},
+  journal={arXiv preprint arXiv:2603.19201},
+  year={2026}
+}`,
+    defaultOpen: false,
+    rows: omniVitacRows
+  }
+];
+
 const additionalRobotDataSections = [
+  ...requestedRobotDataSections,
   {
     id: "robomind",
     project: "RoboMIND",
     summary: "Robot manipulation dataset from X-Humanoid. Rows are grouped by benchmark and embodiment because task archives are multipart tar.gz files.",
     projectLinks: {
+      Project: "https://x-humanoid-robomind.github.io/",
       HuggingFace: hfDatasetBase(roboMindRepo),
       Paper: "https://arxiv.org/abs/2412.13877"
     },
@@ -475,8 +1407,9 @@ const additionalRobotDataSections = [
   {
     id: "agibot-world-beta",
     project: "AgiBot World Beta",
-    summary: "AgiBot World beta release with WebDataset observation shards, parameter shards, proprio stats, and task metadata.",
+    summary: "AgiBot World beta release with per-task observation shards, parameter shards, and proprio stats.",
     projectLinks: {
+      Project: "https://agibot-world.com/",
       HuggingFace: hfDatasetBase(agiBotWorldRepo),
       GitHub: "https://github.com/OpenDriveLab/AgiBot-World"
     },
@@ -509,9 +1442,10 @@ const additionalRobotDataSections = [
         task: "ActionNet tar shards",
         href: hfDatasetBase("FourierIntelligence/ActionNet"),
         label: "HuggingFace",
-        observations: ["Robot Observations"],
+        observations: ["RGB-D", "Proprio", "Language"],
         actions: ["Robot Actions"],
-        envs: "ActionNet",
+        demos: 30000,
+        envs: "3 embodiments",
         license: "CC BY-NC-SA 4.0"
       })
     ]
@@ -538,7 +1472,8 @@ const additionalRobotDataSections = [
     project: "RealSource World",
     summary: "RealSource real-world robot dataset. Rows are generated from top-level task directories.",
     projectLinks: {
-      HuggingFace: hfDatasetBase(realSourceWorldRepo)
+      HuggingFace: hfDatasetBase(realSourceWorldRepo),
+      Guide: "https://develop.realman-robotics.com/datatraining/guide/dataacquisition/"
     },
     citation: `@misc{realsourceworld,
   title={RealSource World: A Large-Scale Real-World Dual-Arm Manipulation Dataset},
@@ -554,6 +1489,7 @@ const additionalRobotDataSections = [
     project: "RoboCOIN",
     summary: "RoboCOIN data manager entry point. No stable task-level download tree was exposed from the provided link.",
     projectLinks: {
+      Project: "https://flagopen.github.io/RoboCOIN/",
       Website: "https://flagopen.github.io/RoboCOIN-DataManager/",
       Paper: "https://arxiv.org/abs/2511.17441"
     },
@@ -569,9 +1505,10 @@ const additionalRobotDataSections = [
         task: "RoboCOIN DataManager",
         href: "https://flagopen.github.io/RoboCOIN-DataManager/",
         label: "Website",
-        observations: ["TBD"],
-        actions: ["TBD"],
-        envs: "RoboCOIN"
+        observations: ["RGB-D", "Proprio", "Language"],
+        actions: ["Robot Actions"],
+        demos: 180000,
+        envs: "15 embodiments / 421 tasks"
       })
     ]
   },
@@ -622,9 +1559,10 @@ const additionalRobotDataSections = [
         task: "RoboMIND 2.0 collection",
         href: "https://modelscope.cn/collections/X-Humanoid/RoboMIND20",
         label: "ModelScope",
-        observations: ["TBD"],
-        actions: ["TBD"],
-        envs: "RoboMIND 2.0"
+        observations: ["RGB-D", "Proprio", "Language", "Force", "Torque", "Failure Labels"],
+        actions: ["Robot Actions"],
+        demos: 310000,
+        envs: "6 embodiments / 739 tasks"
       })
     ]
   },
@@ -664,6 +1602,7 @@ const additionalRobotDataSections = [
     summary: "OpenLoong Baihu-VTouch dataset entry point. No stable task-level download tree was exposed from the provided link.",
     projectLinks: {
       Website: "https://www.openloong.org.cn/cn/datasets/baihu-vtouch",
+      AtomGit: "https://ai.atomgit.com/openloong/visuo-tactile",
       Paper: "https://arxiv.org/abs/2604.20444"
     },
     citation: `@article{hua2026vtouch++,
@@ -678,35 +1617,60 @@ const additionalRobotDataSections = [
         task: "Baihu-VTouch dataset",
         href: "https://www.openloong.org.cn/cn/datasets/baihu-vtouch",
         label: "Website",
-        observations: ["TBD"],
-        actions: ["TBD"],
-        envs: "Baihu-VTouch"
+        observations: ["RGB-D", "Proprio", "Language"],
+        actions: ["Robot Actions"],
+        demos: "TBD",
+        envs: "3 embodiments / 380+ tasks"
       })
     ]
   },
   {
     id: "let-dataset",
     project: "Let-Dataset",
-    summary: "Leju Robot ModelScope organization entry point. Add task-level rows later when a specific dataset repository is provided.",
+    summary: "Leju LET full-size humanoid robot dataset family, split into the Base, Dex, and Body subdatasets requested by the source naming.",
     projectLinks: {
       ModelScope: "https://modelscope.cn/organization/lejurobot",
-      HuggingFace: "https://huggingface.co/datasets/LejuRobotics/LET_Base_Dataset"
+      "LET-Base HF": "https://huggingface.co/datasets/LejuRobotics/LET-Base-Dataset",
+      "LET-Dex HF": "https://huggingface.co/datasets/LejuRobotics/LET-Dex-Dataset",
+      "LET-Body ModelScope": "https://modelscope.cn/datasets/lejurobot/LET-Body-Dataset"
     },
     citation: `@misc{LET2025,
   title={LET:Full-Size Humanoid Robot Real-World Dataset},
   author={LejuRobotics},
   year={2025},
-  howpublished={\\url{https://huggingface.co/datasets/LejuRobotics/LET_Base_Dataset}}
+  howpublished={\\url{https://huggingface.co/datasets/LejuRobotics/LET-Base-Dataset}}
 }`,
     defaultOpen: false,
     rows: [
       makeLandingRow({
-        task: "Leju Robot dataset organization",
-        href: "https://modelscope.cn/organization/lejurobot",
-        label: "ModelScope",
-        observations: ["TBD"],
+        task: "LET-Base-Dataset",
+        href: "https://huggingface.co/datasets/LejuRobotics/LET-Base-Dataset",
+        label: "HuggingFace",
+        observations: ["RGB-D", "Proprio", "Language", "IMU"],
         actions: ["TBD"],
-        envs: "Leju Robot"
+        demos: 92600,
+        envs: "55 tasks",
+        license: "CC BY-NC-SA 4.0"
+      }),
+      makeLandingRow({
+        task: "LET-Dex-Dataset",
+        href: "https://huggingface.co/datasets/LejuRobotics/LET-Dex-Dataset",
+        label: "HuggingFace",
+        observations: ["RGB-D", "Proprio", "Language", "Tactile", "Force"],
+        actions: ["TBD"],
+        demos: 3000,
+        envs: "14 tasks",
+        license: "CC BY-NC-SA 4.0"
+      }),
+      makeLandingRow({
+        task: "LET-Body-Dataset",
+        href: "https://modelscope.cn/datasets/lejurobot/LET-Body-Dataset",
+        label: "ModelScope",
+        observations: ["RGB-D", "Proprio", "Language", "Whole-body State"],
+        actions: ["TBD"],
+        demos: "TBD",
+        envs: "20+ tasks",
+        license: "CC BY-NC-SA 4.0"
       })
     ]
   }
@@ -918,7 +1882,7 @@ const makeInternDataA1Task = ({ category, embodiment, task }) => {
       "tar.gz": `${hfA1BlobBase}/${path}`
     },
     observations: ["RGB", "Proprio", "Language"],
-    actions: ["End Effector Pose", "Gripper"],
+    actions: ["EEF Pose", "Gripper"],
     demos: "TBD",
     envs: "TBD",
     license: "CC BY-NC-SA 4.0"
@@ -1307,6 +2271,1867 @@ const dexGraspNetClassicRows = [
   }
 ];
 
+const robotSectionYears = {
+  daml: 2018,
+  mime: 2018,
+  "mt-opt": 2021,
+  "open-x-embodiment": 2023,
+  rh20t: 2023,
+  robomind: 2024,
+  "agibot-world-beta": 2024,
+  actionnet: 2025,
+  "aist-bimanual": 2025,
+  fmb: 2025,
+  "humanoid-everyday": 2025,
+  "let-dataset": 2025,
+  "open-galaxea": 2025,
+  ph2d: 2025,
+  reassemble: 2025,
+  "realsource-world": 2025,
+  robocoin: 2025,
+  "robomind-2": 2025,
+  "agibot-world-2026": 2026,
+  "baihu-vtouch": 2026,
+  "deco-50": 2026,
+  dexora: 2026,
+  haptile: 2026,
+  "lingbot-depth": 2026,
+  molmoact2: 2026,
+  omnivitac: 2026,
+  "rovid-x": 2026,
+  "unitree-unifolm-wbt": 2026
+};
+
+const robotActionOverrides = {
+  daml: ["EEF Pose", "Parallel gripper"],
+  mime: ["Joint", "Parallel gripper"],
+  "mt-opt": ["EEF Pose", "Parallel gripper"],
+  rh20t: ["EEF Pose", "Joint", "Parallel gripper"],
+  fmb: ["EEF Pose", "Joint", "Parallel gripper"],
+  reassemble: ["EEF Pose", "Joint", "Parallel gripper"],
+  ph2d: ["Joint", "Dexterous hand joint"],
+  "aist-bimanual": ["Joint", "Parallel gripper"],
+  robomind: ["EEF Pose", "Joint", "Parallel gripper", "Dexterous hand joint"],
+  "agibot-world-beta": ["EEF Pose", "Joint"],
+  actionnet: ["EEF Pose", "Joint", "Dexterous hand joint"],
+  "open-galaxea": ["EEF Pose", "Joint", "Parallel gripper"],
+  "realsource-world": ["EEF Pose", "Joint", "Parallel gripper"],
+  robocoin: ["EEF Pose", "Joint", "Dexterous hand joint"],
+  "humanoid-everyday": ["Joint", "Dexterous hand joint"],
+  "robomind-2": ["EEF Pose", "Joint", "Parallel gripper", "Dexterous hand joint"],
+  "let-dataset": ["Joint", "Parallel gripper", "Dexterous hand joint"],
+  "deco-50": ["Joint", "Dexterous hand joint"],
+  dexora: ["Joint", "Dexterous hand joint"],
+  molmoact2: ["EEF Pose", "Joint", "Parallel gripper"],
+  "agibot-world-2026": ["EEF Pose", "Joint", "Parallel gripper", "Dexterous hand joint"],
+  "unitree-unifolm-wbt": ["Joint", "Dexterous hand joint"],
+  "baihu-vtouch": ["EEF Pose", "Joint", "Parallel gripper", "Dexterous hand joint"],
+  "rovid-x": ["TBD"],
+  "lingbot-depth": ["N/A"],
+  haptile: ["EEF Pose", "Joint", "Parallel gripper"],
+  omnivitac: ["EEF Pose", "Parallel gripper"]
+};
+
+const robotEnvOverrides = {
+  daml: 1,
+  mime: 1,
+  "mt-opt": 1,
+  rh20t: 1,
+  fmb: 1,
+  reassemble: 1,
+  ph2d: 1,
+  "aist-bimanual": 1,
+  "deco-50": 1,
+  dexora: 1,
+  "agibot-world-2026": 1,
+  "unitree-unifolm-wbt": 1,
+  haptile: 1,
+  omnivitac: 1
+};
+
+const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+
+const normalizeRobotActions = (actions = []) => {
+  const tokens = new Set();
+  const normalizedText = actions.join(" ").toLowerCase();
+
+  if (normalizedText.includes("n/a")) return ["N/A"];
+  if (normalizedText.includes("tbd")) return ["TBD"];
+  if (normalizedText.includes("end effector") || normalizedText.includes("eef") || normalizedText.includes("6 dof") || normalizedText.includes("pose")) {
+    tokens.add("EEF Pose");
+  }
+  if (normalizedText.includes("joint") || normalizedText.includes("whole-body") || normalizedText.includes("bimanual") || normalizedText.includes("robot actions")) {
+    tokens.add("Joint");
+  }
+  if (normalizedText.includes("gripper")) {
+    tokens.add("Parallel gripper");
+  }
+  if (normalizedText.includes("dexterous") || normalizedText.includes("hand joint") || normalizedText.includes("hand state")) {
+    tokens.add("Dexterous hand joint");
+  }
+
+  return tokens.size ? Array.from(tokens) : actions;
+};
+
+const withRobotDataDisplayRules = (section) => ({
+  ...section,
+  rows: (section.rows || []).map((row) => ({
+    ...row,
+    actions: hasOwn(robotActionOverrides, section.id)
+      ? robotActionOverrides[section.id]
+      : normalizeRobotActions(row.actions),
+    envs: hasOwn(robotEnvOverrides, section.id) ? robotEnvOverrides[section.id] : ""
+  }))
+});
+
+const sortRobotSectionsByYear = (sections) =>
+  sections
+    .map(withRobotDataDisplayRules)
+    .sort((left, right) => {
+      const leftYear = robotSectionYears[left.id] || Number.MAX_SAFE_INTEGER;
+      const rightYear = robotSectionYears[right.id] || Number.MAX_SAFE_INTEGER;
+      return leftYear - rightYear || left.project.localeCompare(right.project);
+    });
+
+const umiCommunityUrl = "https://umi-data.github.io/#datasets";
+
+const makeUmiRow = ({ task, dataLinks = {}, observations, actions, demos = "TBD", envs = "TBD", license = "TBD" }) => ({
+  task,
+  dataLinks,
+  observations,
+  actions,
+  demos,
+  envs,
+  license
+});
+
+const umiDatasetSections = [
+  {
+    id: "umi",
+    project: "UMI",
+    summary: "2024 UMI-style dataset; arm type: Single / Bimanual; end effector: Gripper; listed tasks: 5.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://umi-gripper.github.io/"
+    },
+    citation: "@inproceedings{chi2024universal,\n    title={Universal Manipulation Interface: In-The-Wild Robot Teaching Without In-The-Wild Robots},\n    author={Chi, Cheng and Xu, Zhenjia and Pan, Chuer and Cousineau, Eric and Burchfiel, Benjamin and Feng, Siyuan and Tedrake, Russ and Song, Shuran},\n    booktitle={Proceedings of Robotics: Science and Systems (RSS)},\n    year={2024}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Bimanual Dish Washing",
+        dataLinks: {"Zarr":"https://real.stanford.edu/umi/data/dish_washing/bimanual_dish_washing.zarr.zip","MP4":"https://real.stanford.edu/umi/data/dish_washing/bimanual_dish_washing_mp4s.zip"},
+        observations: ["Image","Proprio","Bimanual"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 258,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Bimanual Cloth Folding",
+        dataLinks: {"Zarr":"https://real.stanford.edu/umi/data/bimanual_cloth_folding/bimanual_cloth_folding.zarr.zip","MP4":"https://real.stanford.edu/umi/data/bimanual_cloth_folding/bimanual_cloth_folding_mp4s.zip"},
+        observations: ["Image","Proprio","Bimanual"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 249,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Dynamic Tossing",
+        dataLinks: {"Zarr":"https://real.stanford.edu/umi/data/dynamic_tossing/dynamic_tossing.zarr.zip","MP4":"https://real.stanford.edu/umi/data/dynamic_tossing/dynamic_tossing_mp4s.zip"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 284,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Cup Arrangement in the Lab",
+        dataLinks: {"Zarr":"https://real.stanford.edu/umi/data/cup_arrangement/cup_in_the_lab.zarr.zip","MP4":"https://real.stanford.edu/umi/data/cup_arrangement/cup_in_lab_mp4s.zip"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 305,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Cup Arrangement in the Wild",
+        dataLinks: {"Zarr":"https://real.stanford.edu/umi/data/cup_in_the_wild/cup_in_the_wild.zarr.zip","MP4":"https://real.stanford.edu/umi/data/cup_in_the_wild/cup_in_the_wild_mp4s.zip"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 1447,
+        envs: 30,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "maniwav",
+    project: "ManiWAV",
+    summary: "2024 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 5.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://mani-wav.github.io/"
+    },
+    citation: "@article{liu2024maniwav,\n    title={ManiWAV: Learning Robot Manipulation from In-the-Wild Audio-Visual Data},\n    author={Liu, Zeyi and Chi, Cheng and Cousineau, Eric and Kuppuswamy, Naveen and Burchfiel, Benjamin and Song, Shuran},\n    journal={arXiv preprint arXiv:2406.19464},\n    year={2024}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Whiteboard Shape Wipe",
+        dataLinks: {"Zarr":"https://real.stanford.edu/maniwav/data/wipe/replay_buffer.zarr.zip"},
+        observations: ["Image","Proprio","Audio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 119,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Flip bagel",
+        dataLinks: {"Zarr":"https://real.stanford.edu/maniwav/data/flip/replay_buffer.zarr.zip"},
+        observations: ["Image","Proprio","Audio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 283,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pour dice",
+        dataLinks: {"Zarr":"https://real.stanford.edu/maniwav/data/pour/replay_buffer.zarr.zip"},
+        observations: ["Image","Proprio","Audio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 145,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Strap wires with velcro tape",
+        dataLinks: {"Zarr":"https://real.stanford.edu/maniwav/data/velcro_tape/replay_buffer.zarr.zip"},
+        observations: ["Image","Proprio","Audio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 193,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Flip bagel in the wild",
+        dataLinks: {"MP4":"https://real.stanford.edu/maniwav/data/bagel_in_wild/demos/","Zarr":"https://real.stanford.edu/maniwav/data/bagel_in_wild/replay_buffer.zarr.zip"},
+        observations: ["Image","Proprio","Audio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 274,
+        envs: 7,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "umi-on-legs",
+    project: "UMI on Legs",
+    summary: "2024 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 2.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://umi-on-legs.github.io/"
+    },
+    citation: "@inproceedings{ha2024umilegs,\n  title={{UMI} on Legs: Making Manipulation Policies Mobile with Manipulation-Centric Whole-body Controllers},\n  author={Huy Ha and Yihuai Gao and Zipeng Fu and Jie Tan and Shuran Song},\n  year={2024},\n  booktitle={Proceedings of the 2024 Conference on Robot Learning},\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Kettlebell Pushing",
+        dataLinks: {"MP4":"https://real.stanford.edu/umi-on-legs/pushing_2024_05_29_huy/","Zarr":"https://real.stanford.edu/umi-on-legs/pushing_2024_05_29_huy.zarr.zip"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 14,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Tennis Ball Basket Toss",
+        dataLinks: {"MP4":"https://real.stanford.edu/umi-on-legs/tossing/","Zarr":"https://real.stanford.edu/umi-on-legs/tossing.zarr.zip"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 500,
+        envs: 1,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "fast-umi",
+    project: "FastUMI",
+    summary: "2024 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 22.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://fastumi.com/"
+    },
+    citation: "@article{wu2024fast,\n    title={Fast-UMI: A Scalable and Hardware-Independent Universal Manipulation Interface},\n    author={Wu, Ziniu and Wang, Tianyu and Guan, Chuyue and Jia, Zhongjie and Liang, Shuai and Song, Haoming and Qu, Delin and Wang, Dong and Wang, Zhigang and Cao, Nieqing and others},\n    journal={arXiv preprint arXiv:2409.19499},\n    year={2024}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Open Container",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 251,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Fold Towel",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 243,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pick Bear",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 546,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Place Plate",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 499,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Rearrange Coke",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 500,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Sweep Trash",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 512,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Clean Table",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 100,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Unplug Charger",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 429,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pour Coke",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 398,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Cover Beef",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 517,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Hotdog in Ricecooker",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 100,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Hotdog in Roaster",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 500,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pick Lid",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 496,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Open Drawer",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 833,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Open Roaster",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 499,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pick Cup",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 895,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pick Pen",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 608,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Close Ricecooker",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 20,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Open Suitcase",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 20,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pick Bread",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 495,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Place Pot",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 300,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Open Rice Cooker",
+        dataLinks: {"HDF5":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 204,
+        envs: 1,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "data-scaling-laws",
+    project: "Data Scaling Laws",
+    summary: "2024 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 6.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://data-scaling-laws.github.io/"
+    },
+    citation: "@article{lin2024data,\n    title={Data Scaling Laws in Imitation Learning for Robotic Manipulation},\n    author={Lin, Fanqi and Hu, Yingdong and Sheng, Pingyue and Wen, Chuan and You,\n    Jiacheng and Gao, Yang},\n    journal={arXiv preprint arXiv:2410.18647},\n    year={2024}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Pour Water - Split 1",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/Fanqi-Lin/Processed-Task-Dataset/tree/main/pour_water","MP4":"https://huggingface.co/datasets/Fanqi-Lin/GoPro-Raw-Videos/tree/main/pour_water"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 3648,
+        envs: 32,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pour Water - Split 2",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/Fanqi-Lin/Processed-Task-Dataset/tree/main/pour_water_16_env_4_object","MP4":"https://huggingface.co/datasets/Fanqi-Lin/GoPro-Raw-Videos/tree/main/pour_water"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 6896,
+        envs: 16,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Mouse Arrangement - Split 1",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/Fanqi-Lin/Processed-Task-Dataset/tree/main/arrange_mouse","MP4":"https://huggingface.co/datasets/Fanqi-Lin/GoPro-Raw-Videos/tree/main/pick_place_mouse"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 3564,
+        envs: 32,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Mouse Arrangement - Split 2",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/Fanqi-Lin/Processed-Task-Dataset/tree/main/arrange_mouse_16_env_4_object","MP4":"https://huggingface.co/datasets/Fanqi-Lin/GoPro-Raw-Videos/tree/main/pick_place_mouse"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 6505,
+        envs: 16,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Fold Towels",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/Fanqi-Lin/Processed-Task-Dataset/tree/main/fold_towel","MP4":"https://huggingface.co/datasets/Fanqi-Lin/GoPro-Raw-Videos/tree/main/fold_towel"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 1752,
+        envs: 32,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Unplug Charger",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/Fanqi-Lin/Processed-Task-Dataset/tree/main/unplug_charger","MP4":"https://huggingface.co/datasets/Fanqi-Lin/GoPro-Raw-Videos/tree/main/unplug_charger"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 1733,
+        envs: 32,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "legato",
+    project: "LEGATO",
+    summary: "2024 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 6.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://ut-hcrl.github.io/LEGATO/"
+    },
+    citation: "@article{seo2024legato,\n    title={LEGATO: Cross-Embodiment Imitation Using a Grasping Tool},\n    author={Seo, Mingyo and Park, H. Andy and Yuan, Shenli and Zhu, Yuke and\n    and Sentis, Luis},\n    journal={IEEE Robotics and Automation Letters (RA-L)},\n    year={2025}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Closing The Lid (Sim)",
+        dataLinks: {"HDF5":"https://utexas.box.com/s/ya7n93ybh8t69u1daq78ddjszwylka92"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 150,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Cup Shelving (Sim)",
+        dataLinks: {"HDF5":"https://utexas.box.com/s/wmo0h0t8123t43vlzbysf9q2xywq2b7w"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 150,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Ladle Reorganization (Sim)",
+        dataLinks: {"HDF5":"https://utexas.box.com/s/t0nia0ee26otlrgl8zo8492jiqn6ymeg"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 150,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Closing The Lid (Real)",
+        dataLinks: {"HDF5":"https://utexas.box.com/s/my5qagwcfdjs2t6wk9fl7rlb35cgvh1z"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 150,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Cup Shelving (Real)",
+        dataLinks: {"HDF5":"https://utexas.box.com/s/bc6nd5xegqght0dsywdnts5k8k8py1jg"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 150,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Ladle Reorganization (Real)",
+        dataLinks: {"HDF5":"https://utexas.box.com/s/p971sf34sd8i5fwuwf47soojhp5788gb"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 150,
+        envs: 1,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "vitamin",
+    project: "ViTaMIn",
+    summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 8.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://chuanyune.github.io/ViTaMIn_page/"
+    },
+    citation: "@article{liu2025vitamin,\n  title={ViTaMIn: Learning Contact-Rich Tasks Through Robot-Free Visuo-Tactile Manipulation Interface},\n  author={Liu, Fangchen and Li, Chuanyu and Qin, Yihua and Shaw, Ankit and Xu, Jing and Abbeel, Pieter and Chen, Rui},\n  journal={arXiv preprint arXiv:2504.06156},\n  year={2025}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Orange Placement",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/chuanyune/ViTaMIn_dataset"},
+        observations: ["Image","Proprio","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 73,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Sponge Insertion",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/chuanyune/ViTaMIn_dataset"},
+        observations: ["Image","Proprio","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 138,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Test Tube Reorientation",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/chuanyune/ViTaMIn_dataset"},
+        observations: ["Image","Proprio","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 125,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Scissor Hanging",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/chuanyune/ViTaMIn_dataset"},
+        observations: ["Image","Proprio","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 137,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Articulated Object Manipulation",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/chuanyune/ViTaMIn_dataset"},
+        observations: ["Image","Proprio","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 83,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Dynamic Peg Insertion",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/chuanyune/ViTaMIn_dataset"},
+        observations: ["Image","Proprio","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 101,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Articulated Object Manipulation",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/chuanyune/ViTaMIn_dataset"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 83,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Dynamic Peg Insertion",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/chuanyune/ViTaMIn_dataset"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 101,
+        envs: 1,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "dexwild",
+    project: "DexWild",
+    summary: "2025 UMI-style dataset; arm type: Single; end effector: Dexterous Hand; listed tasks: 10.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://dexwild.github.io/"
+    },
+    citation: "@article{tao2025dexwild,\n      title={DexWild: Dexterous Human Interactions for In-the-Wild Robot Policies},\n      author={Tao, Tony and Srirama, Mohan Kumar and Liu, Jason Jingzhou and Shaw, Kenneth and Pathak, Deepak},\n      journal={Robotics: Science and Systems (RSS)},\n      year={2025}}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Florist (Human)",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/boardd/dexwild-dataset/tree/main/florist_data/human"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 1030,
+        envs: 15,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Florist (Robot)",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/boardd/dexwild-dataset/tree/main/florist_data/robot"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 248,
+        envs: 3,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Clothes Folding (Human)",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/boardd/dexwild-dataset/tree/main/clothes_folding_data/human"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 1123,
+        envs: 12,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Clothes Folding (Robot)",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/boardd/dexwild-dataset/tree/main/clothes_folding_data/robot"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 295,
+        envs: 3,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Spray",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/boardd/dexwild-dataset/tree/main/spray_data/human"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 2820,
+        envs: 30,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Spray (Robot)",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/boardd/dexwild-dataset/tree/main/spray_data/robot"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 388,
+        envs: 4,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Toy Cleanup",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/boardd/dexwild-dataset/tree/main/toy_data/human"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 2323,
+        envs: 30,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Toy Cleanup (Robot)",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/boardd/dexwild-dataset/tree/main/toy_data/robot"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 546,
+        envs: 5,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pouring",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/boardd/dexwild-dataset/tree/main/pour_data/human"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 621,
+        envs: 6,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pouring (Robot)",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/boardd/dexwild-dataset/tree/main/pour_data/robot"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 111,
+        envs: 1,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "dexumi",
+    project: "DexUMI",
+    summary: "2025 UMI-style dataset; arm type: Single; end effector: Dexterous Hand; listed tasks: 5.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://umi-data.github.io/"
+    },
+    citation: "@article{xu2025dexumi,\n  title={DexUMI: Using Human Hand as the Universal Manipulation Interface for Dexterous Manipulation},\n  author={Xu, Mengda and Zhang, Han and Hou, Yifan and Xu, Zhenjia and Fan, Linxi and Veloso, Manuela and Song, Shuran},\n  journal={arXiv preprint arXiv:2505.21864},\n  year={2025}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Inspire Hand: Cube Picking",
+        dataLinks: {"Zarr":"https://real.stanford.edu/dexumi/dataset/inspire/cube_picking.zip"},
+        observations: ["Image","Proprio","Force/Torque"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 309,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Inspire Hand: Egg Carton",
+        dataLinks: {"Zarr":"https://real.stanford.edu/dexumi/dataset/inspire/egg_carton.zip"},
+        observations: ["Image","Proprio","Force/Torque"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 175,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Inspire Hand: Tool Using",
+        dataLinks: {"Zarr":"https://real.stanford.edu/dexumi/dataset/inspire/tool_use.zip"},
+        observations: ["Image","Proprio","Force/Torque"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 404,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "XHand: Tool Using",
+        dataLinks: {"Zarr":"https://real.stanford.edu/dexumi/dataset/xhand/tool_use.zip"},
+        observations: ["Image","Proprio","Tactile"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 440,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "XHand: Kitchen",
+        dataLinks: {"Zarr":"https://real.stanford.edu/dexumi/dataset/xhand/kitchen.zip"},
+        observations: ["Image","Proprio","Tactile"],
+        actions: ["6 DoF EEF Pose","Dexterous Hand"],
+        demos: 464,
+        envs: 1,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "freetacman",
+    project: "FreeTacMan",
+    summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 50.",
+    projectLinks: {
+      Community: umiCommunityUrl
+    },
+    citation: "TBD",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "FreeTacMan dataset",
+        dataLinks: {},
+        observations: ["Image","Proprio","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 10000,
+        envs: "TBD",
+        license: "TBD"
+      }),
+    ]
+  },
+  {
+    id: "touch-in-the-wild",
+    project: "Touch in the Wild",
+    summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 20.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://binghao-huang.github.io/touch_in_the_wild/"
+    },
+    citation: "@article{zhu2025touch,\n  title={Touch in the Wild: Learning Fine-Grained Manipulation with a Portable Visuo-Tactile Gripper},\n  author={Zhu, Xinyue and Huang, Binghao and Li, Yunzhu},\n  journal={arXiv preprint arXiv:2507.15062},\n  year={2025}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Campus",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/in_the_wild_data/campus"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 38,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Chipotle",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/in_the_wild_data/chipotle"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 14,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Hardware Store",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/in_the_wild_data/hardware_store"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 164,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Kitchen",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/in_the_wild_data/kitchen"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 51,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Lawn",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/in_the_wild_data/lawn"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 24,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Library",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/in_the_wild_data/library"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 26,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Lounge",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/in_the_wild_data/lounge"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 40,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Makerspace",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/in_the_wild_data/makerspace"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 275,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Starbucks",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/in_the_wild_data/starbucks"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 50,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Fluid Transfer",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/four_tasks/fluid_transfer"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 244,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pencil Insertion",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/four_tasks/pencil_insertion"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 192,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Test Tube Collection",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/four_tasks/test_tube_collection"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 266,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Whiteboard Erasing",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/four_tasks/whiteboard_erasing"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 150,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Hex Key Insertion",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/indoor_data/hex_key_insertion"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 188,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Move Cup",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/indoor_data/moving_cup"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 107,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Move Tape",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/indoor_data/moving_tape"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 202,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Peg Insertion",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/indoor_data/peg_insertion"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 114,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Tossing",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/indoor_data/tossing"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 239,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Whiteboard Erasing (Indoor)",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/indoor_data/whiteboard_erasing"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 150,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Writing",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/binghaohuang-robot/touch_in_the_wild-dataset/tree/main/indoor_data/writing"},
+        observations: ["Image","Tactile","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 203,
+        envs: 1,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "exumi",
+    project: "exUMI",
+    summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 8.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://silicx.github.io/exUMI/"
+    },
+    citation: "@inproceedings{xu2025exumi,\n  title={exUMI: Extensible Robot Teaching System with Action-aware Task-agnostic Tactile Representation},\n  author={Xu, Yue and Wei, Litao and An, Pengyu and Zhang, Qingyu and Li, Yong-Lu},\n  booktitle={Conference on Robot Learning},\n  pages={2536--2554},\n  year={2025},\n  organization={PMLR}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Pick Cube",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/silicx/exUMI/blob/main/pick_cube.zarr.zip"},
+        observations: ["Image"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 208,
+        envs: 8,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pick Brocolli",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/silicx/exUMI/blob/main/pick_brocolli.zarr.zip"},
+        observations: ["Image","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 170,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pick Carrot",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/silicx/exUMI/blob/main/pick_carrot.zarr.zip"},
+        observations: ["Image","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 135,
+        envs: 2,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Stack Cube",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/silicx/exUMI/blob/main/stack_cube.zarr.zip"},
+        observations: ["Image","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 201,
+        envs: 2,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Insert Pen",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/silicx/exUMI/blob/main/insert_pen.zarr.zip"},
+        observations: ["Image","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 139,
+        envs: 2,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Open Bottle",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/silicx/exUMI/blob/main/open_bottle.zarr.zip"},
+        observations: ["Image","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 270,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Peg in Hole",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/silicx/exUMI/blob/main/peg_in_hole.zarr.zip"},
+        observations: ["Image","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 256,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Pull Drawer",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/silicx/exUMI/blob/main/pull_drawer.zarr.zip"},
+        observations: ["Image","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 281,
+        envs: 4,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "mv-umi",
+    project: "MV-UMI",
+    summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 4.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://mv-umi.github.io"
+    },
+    citation: "@article{rayyan2025mv,\n  title={MV-UMI: A Scalable Multi-View Interface for Cross-Embodiment Learning},\n  author={Rayyan, Omar and Abanes, John and Hafez, Mahmoud and Tzes, Anthony and Abu-Dakka, Fares},\n  journal={arXiv preprint arXiv:2509.18757},\n  year={2025}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Markers Placement (Raw View)",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/omarrayyann/mv-umi/blob/main/markers_placement_raw_data.zarr.zip"},
+        observations: ["Image"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 454,
+        envs: 7,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Markers Placement (Segmented View)",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/omarrayyann/mv-umi/blob/main/markers_placement_data.zarr.zip"},
+        observations: ["Image"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 454,
+        envs: 7,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Bottles Rack (Segmented View)",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/omarrayyann/mv-umi/blob/main/bottles_rack_data.zarr.zip"},
+        observations: ["Image"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 199,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Cans Shelf Placement (Segmented View)",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/omarrayyann/mv-umi/blob/main/cans_shelf_placement.zip"},
+        observations: ["Image"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 263,
+        envs: 1,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "manipforce",
+    project: "ManipForce",
+    summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 6.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://sites.google.com/view/manipforce/"
+    },
+    citation: "@article{lee2025manipforce,\n  title={ManipForce: Force-Guided Policy Learning with Frequency-Aware Representation for Contact-Rich Manipulation},\n  author={Lee, Geonhyup and Lee, Yeongjin and Kim, Kangmin and Lee, Seongju and Noh, Sangjun and Back, Seunghyeok and Lee, Kyoobin},\n  journal={arXiv preprint arXiv:2509.19047}, \n  year={2025}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Gear Assembly",
+        dataLinks: {"Zarr":"https://drive.google.com/file/d/1xp4oWpiwtiqlyPAFymck2vCtmIlwp5St/view?usp=drive_link"},
+        observations: ["Image","Wrist Force/Torque"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 101,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "LAN Plug Insertion",
+        dataLinks: {"Zarr":"https://drive.google.com/file/d/1guFaDLcHSC4KAR6ZKASFTgtFYFHVR2QY/view?usp=drive_link"},
+        observations: ["Image (x2)","Wrist Force/Torque"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 110,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Box Flipping",
+        dataLinks: {"Zarr":"https://drive.google.com/file/d/1dLG6C_eU83GqNPb0TPXuTdYtUZiytz3w/view?usp=drive_link"},
+        observations: ["Image (x2)","Wrist Force/Torque"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 69,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Open Lid",
+        dataLinks: {"Zarr":"https://drive.google.com/file/d/1XDYeveOeoE5NtdHup5z32rGHtKq1z2MJ/view?usp=drive_link"},
+        observations: ["Image (x2)","Wrist Force/Torque"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 102,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Battery Disassembly",
+        dataLinks: {"Zarr":"https://drive.google.com/file/d/12QJuR_yrsMIRdqHXRVpO3uqMnF3YuV5S/view?usp=drive_link"},
+        observations: ["Image (x2)","Wrist Force/Torque"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 108,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Battery Insertion",
+        dataLinks: {"Zarr":"https://drive.google.com/file/d/1tx1xLhELkUJOb3JEZBpc6xfUtBFhgpfE/view?usp=drive_link"},
+        observations: ["Image (x2)","Wrist Force/Torque"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 107,
+        envs: 1,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "fastumi-100k",
+    project: "FastUMI-100K",
+    summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 32.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://github.com/MrKeee/FastUMI-100K"
+    },
+    citation: "@article{liu2025fastumi100k,\n    title={FastUMI-100K: Advancing Data-driven Robotic Manipulation with a Large-scale UMI-style Dataset},\n    author={Liu, Kehui and Jia, Zhongjie and Li, Yang and Zhaxizhuoma and Chen, Pengan and Liu, Song and Liu, Xin and Zhang, Pingrui and Song, Haoming and Ye, Xinyi and others},\n    journal={arXiv preprint arXiv:2510.08022},\n    year={2025}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Prepare Tableware",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/single_arm/Prepare_tableware"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 3368,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Store Shoes in Shoe Cabinet",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/single_arm/Store_Shoes_in_Shoe_Cabinet"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 3343,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Get Plate and Spoon from Dish Rack",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/single_arm/get_plate_and_spoon_from_dish_rack"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 3611,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Heat Food in Microwave",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/single_arm/heat_food_in_microwave"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 3156,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Heat Food in Toaster Oven",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/single_arm/heat_food_in_toaster_oven"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 4036,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Iron Clothes",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/single_arm/iron_clothes"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 2541,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Make Sandwich",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/single_arm/make_sandwich"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 3104,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Open Toilet Lid",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/single_arm/open_toilet_lid"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 2869,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Pour Water into Cup",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/single_arm/pour_water_into_cup"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 4206,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Put Shoes into Storage Box",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/single_arm/put_shoes_into_storage_box"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 4384,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Take Items out of Drawer",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/single_arm/take_items_out_of_drawer"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 4137,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Wash Clothes",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/single_arm/wash_clothes"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 3244,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Add Rice to Rice Cooker",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Add_Rice_to_Rice_Cooker"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 3748,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Arrange Toothbrush and Toothpaste",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Arrange_Toothbrush_and_Toothpaste"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 3952,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Clean Desktop",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Clean_Desktop"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 2147,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Dispose of Desktop Debris",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Dispose_of_Desktop_Debris"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 2864,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Fold the Jeans",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Fold_the_Jeans"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 3004,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Fold the Suit",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Fold_the_Suit"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 2926,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Fold the T-shirt",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Fold_the_T-shirt"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 3136,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Open Double Door Cabinet",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Open_Double_Door_Cabinet"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 2569,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Open Double Door Shoe Cabinet",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Open_Double_Door_Shoe_Cabinet"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 1809,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Pack Skincare Products",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Pack_Skincare_Products"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 2539,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Place Pot on Induction Cooktop",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Place_Pot_on_Induction_Cooktop"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 3323,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Place Shoes and Close Shoe Cabinet",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Place_Shoes_and_Close_Shoe_Cabinet"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 2035,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Pour Water into Teacup",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Pour_Water_into_Teacup"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 4244,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Put Books into Schoolbag",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Put_Books_into_Schoolbag"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 1265,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Put Clothes into Laundry Hamper",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Put_Clothes_into_Laundry_Hamper"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 2974,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Put Food into Electric Oven",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Put_Food_into_Electric_Oven"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 1740,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Put Food into Microwave",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Put_Food_into_Microwave"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 2161,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Take Bottle and Close Double Doors",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Take_Bottle_and_Close_Double_Doors"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 2161,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Take Bottle and Place on Coaster",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Take_Bottle_and_Place_on_Coaster"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 2227,
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+      makeUmiRow({
+        task: "Unplug the Power Strip",
+        dataLinks: {"LeRobot":"https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI_100k_lerobot/tree/main/dual_arm/Unplug_the_Power_Strip"},
+        observations: ["Image","Proprio"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: "TBD",
+        envs: 1,
+        license: "Apache-2.0"
+      }),
+    ]
+  },
+  {
+    id: "vitamin-b",
+    project: "ViTaMIn-B",
+    summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 4.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://chuanyune.github.io/ViTaMIn-B_page/"
+    },
+    citation: "@article{li2025vitamin,\ntitle={ViTaMIn-B: A Reliable and Efficient Visuo-Tactile Bimanual Manipulation Interface},\nauthor={Li, Chuanyu and Liu, Chaoyi and Wang, Daotan and Zhang, Shuyu and Li, Lusong and Zeng, Zecui and Liu, Fangchen and Xu, Jing and Chen, Rui},\njournal={arXiv preprint arXiv:2511.05858},\nyear={2025}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Weight Placement",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/chuanyune/ViTaMIn-B_data_and_ckpt/tree/main"},
+        observations: ["Image","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 123,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Bean Scooping",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/chuanyune/ViTaMIn-B_data_and_ckpt/tree/main"},
+        observations: ["Image","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 345,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Cube Storage",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/chuanyune/ViTaMIn-B_data_and_ckpt/tree/main"},
+        observations: ["Image","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 195,
+        envs: 1,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Beaker Wiping",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/chuanyune/ViTaMIn-B_data_and_ckpt/tree/main"},
+        observations: ["Image","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 181,
+        envs: 1,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "humi",
+    project: "HuMI",
+    summary: "2026 UMI-style dataset; arm type: Bimanual; end effector: Gripper; listed tasks: 5.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://humanoid-manipulation-interface.github.io/"
+    },
+    citation: "@article{nai2026humanoid,\n  title={Humanoid Manipulation Interface: Humanoid Whole-Body Manipulation from Robot-Free Demonstrations},\n  author={Nai, Ruiqian and Zheng, Boyuan and Zhao, Junming and Zhu, Haodong and Dai, Sicong and Chen, Zunhao and Hu, Yihang and Hu, Yingdong and Zhang, Tong and Wen, Chuan and others},\n  journal={arXiv preprint arXiv:2602.06643},\n  year={2026}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Marriage Proposal",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/Richard-Nai/HuMI-Zarrs/tree/main/proposal","Raw Data":"https://huggingface.co/datasets/Richard-Nai/HuMI-Raw-Data/tree/main/proposal","LeRobot":"https://huggingface.co/datasets/Richard-Nai/HuMI-Proposal"},
+        observations: ["Image","Proprio","Bimanual"],
+        actions: ["6 DoF Poses","Parallel Gripper","Bimanual","Pelvis","Feet"],
+        demos: 103,
+        envs: 1,
+        license: "CC BY 4.0"
+      }),
+      makeUmiRow({
+        task: "Walk & Clean Table",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/Richard-Nai/HuMI-Zarrs/tree/main/walk-clean-table","Raw Data":"https://huggingface.co/datasets/Richard-Nai/HuMI-Raw-Data/tree/main/walk-clean-table","LeRobot":"https://huggingface.co/datasets/Richard-Nai/HuMI-Walk-Clean-Table"},
+        observations: ["Image","Proprio","Bimanual"],
+        actions: ["6 DoF Poses","Parallel Gripper","Bimanual","Pelvis","Feet"],
+        demos: 105,
+        envs: 1,
+        license: "CC BY 4.0"
+      }),
+      makeUmiRow({
+        task: "Unsheathe Sword",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/Richard-Nai/HuMI-Zarrs/tree/main/unsheathe","Raw Data":"https://huggingface.co/datasets/Richard-Nai/HuMI-Raw-Data/tree/main/unsheathe-sword","LeRobot":"https://huggingface.co/datasets/Richard-Nai/HuMI-Unsheathe"},
+        observations: ["Image","Proprio","Bimanual"],
+        actions: ["6 DoF Poses","Parallel Gripper","Bimanual","Pelvis","Feet"],
+        demos: 105,
+        envs: 1,
+        license: "CC BY 4.0"
+      }),
+      makeUmiRow({
+        task: "Dynamic Toss",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/Richard-Nai/HuMI-Zarrs/tree/main/toss","Raw Data":"https://huggingface.co/datasets/Richard-Nai/HuMI-Raw-Data/tree/main/toss","LeRobot":"https://huggingface.co/datasets/Richard-Nai/HuMI-Toss"},
+        observations: ["Image","Proprio","Bimanual"],
+        actions: ["6 DoF Poses","Parallel Gripper","Bimanual","Pelvis","Feet"],
+        demos: 104,
+        envs: 1,
+        license: "CC BY 4.0"
+      }),
+      makeUmiRow({
+        task: "Squat & Pick Ground",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/Richard-Nai/HuMI-Zarrs/tree/main/squat-pick-ground","Raw Data":"https://huggingface.co/datasets/Richard-Nai/HuMI-Raw-Data/tree/main/squat-pick-ground","LeRobot":"https://huggingface.co/datasets/Richard-Nai/HuMI-Squat-Pick-Ground"},
+        observations: ["Image","Proprio","Bimanual"],
+        actions: ["6 DoF Poses","Parallel Gripper","Bimanual","Pelvis","Feet"],
+        demos: 410,
+        envs: 7,
+        license: "CC BY 4.0"
+      }),
+    ]
+  },
+  {
+    id: "genrobot",
+    project: "GenRobot",
+    summary: "2026 UMI-style dataset; arm type: Bimanual; end effector: Gripper; listed tasks: Diverse.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://www.genrobot.ai/"
+    },
+    citation: "TBD",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Diverse",
+        dataLinks: {"HuggingFace":"https://huggingface.co/datasets/genrobot2025/10Kh-RealOmin-OpenData"},
+        observations: ["Image","Proprio","Bimanual","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 789772,
+        envs: "Many",
+        license: "CC BY-SA 4.0"
+      }),
+    ]
+  },
+  {
+    id: "umi-3d",
+    project: "UMI-3D",
+    summary: "2026 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 3.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://umi-3d.github.io/"
+    },
+    citation: "@misc{wang2026umi3dextendinguniversalmanipulation,\n  title={UMI-3D: Extending Universal Manipulation Interface from Vision-Limited to 3D Spatial Perception},\n  author={Ziming Wang},\n  year={2026},\n  eprint={2604.14089},\n  archivePrefix={arXiv},\n  primaryClass={cs.RO},\n  url={https://arxiv.org/abs/2604.14089}\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Cup-to-Saucer Placement",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/ZIMBOT/umi-3d-dataset-cup","Rosbag":"https://pan.baidu.com/s/1ukL6oDFspRRjbqr6Vdy5VQ?pwd=kyg6"},
+        observations: ["Image","Proprio","Point Cloud"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 3500,
+        envs: 4,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Curtain Pulling",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/ZIMBOT/umi-3d-dataset-curtain","Rosbag":"https://pan.baidu.com/s/1-ZTBTXOFqplpWlRUnBSAIQ?pwd=4m3j"},
+        observations: ["Image","Proprio","Point Cloud"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 769,
+        envs: 3,
+        license: "MIT"
+      }),
+      makeUmiRow({
+        task: "Door Opening and Cup Placement",
+        dataLinks: {"Zarr":"https://huggingface.co/datasets/ZIMBOT/umi-3d-dataset-door-cup","Rosbag":"https://pan.baidu.com/s/1QVurpNRc9u0ERTpR_iixhg?pwd=k5nb"},
+        observations: ["Image","Proprio","Point Cloud"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper"],
+        demos: 340,
+        envs: 1,
+        license: "MIT"
+      }),
+    ]
+  },
+  {
+    id: "tamen",
+    project: "TAMEn",
+    summary: "2026 UMI-style dataset; arm type: Bimanual; end effector: Gripper; listed tasks: 4.",
+    projectLinks: {
+      Community: umiCommunityUrl,
+      Project: "https://opendrivelab.com/TAMEn"
+    },
+    citation: "@misc{wu2026tamentactileawaremanipulationengine,\n      title={TAMEn: Tactile-Aware Manipulation Engine for Closed-Loop Data Collection in Contact-Rich Tasks},\n      author={Longyan Wu and Jieji Ren and Chenghang Jiang and Junxi Zhou and Shijia Peng and Ran Huang and Guoying Gu and Li Chen and Hongyang Li},\n      year={2026},\n      eprint={2604.07335},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2604.07335},\n}",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Cable Mounting",
+        dataLinks: {"MP4":"https://huggingface.co/datasets/OpenDriveLab-org/TAMEn/tree/main/Cable_Mounting"},
+        observations: ["Image","Proprio","Bimanual","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 271,
+        envs: 1,
+        license: "CC BY-NC-SA 4.0"
+      }),
+      makeUmiRow({
+        task: "Binder Clip Removal",
+        dataLinks: {"MP4":"https://huggingface.co/datasets/OpenDriveLab-org/TAMEn/tree/main/Binder_Clip_Removal"},
+        observations: ["Image","Proprio","Bimanual","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 159,
+        envs: 1,
+        license: "CC BY-NC-SA 4.0"
+      }),
+      makeUmiRow({
+        task: "Dish Washing",
+        dataLinks: {"MP4":"https://huggingface.co/datasets/OpenDriveLab-org/TAMEn/tree/main/Dish_Washing"},
+        observations: ["Image","Proprio","Bimanual","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 148,
+        envs: 1,
+        license: "CC BY-NC-SA 4.0"
+      }),
+      makeUmiRow({
+        task: "Herbal Transfer",
+        dataLinks: {"MP4":"https://huggingface.co/datasets/OpenDriveLab-org/TAMEn/tree/main/Herbal_Transfer"},
+        observations: ["Image","Proprio","Bimanual","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: 146,
+        envs: 1,
+        license: "CC BY-NC-SA 4.0"
+      }),
+    ]
+  },
+  {
+    id: "daimon-infinity",
+    project: "Daimon-Infinity",
+    summary: "2026 UMI-style dataset; arm type: Bimanual; end effector: Gripper; listed tasks: TBD.",
+    projectLinks: {
+      Community: umiCommunityUrl
+    },
+    citation: "TBD",
+    defaultOpen: false,
+    rows: [
+      makeUmiRow({
+        task: "Daimon-Infinity dataset",
+        dataLinks: {},
+        observations: ["Image","Proprio","Bimanual","Tactile"],
+        actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
+        demos: "TBD",
+        envs: "TBD",
+        license: "TBD"
+      }),
+    ]
+  },
+];
+
+const umiSectionYears = {
+  umi: 2024,
+  maniwav: 2024,
+  "umi-on-legs": 2024,
+  "fast-umi": 2024,
+  "data-scaling-laws": 2024,
+  legato: 2024,
+  vitamin: 2025,
+  dexwild: 2025,
+  dexumi: 2025,
+  freetacman: 2025,
+  "touch-in-the-wild": 2025,
+  exumi: 2025,
+  "mv-umi": 2025,
+  manipforce: 2025,
+  "fastumi-100k": 2025,
+  "vitamin-b": 2025,
+  humi: 2026,
+  genrobot: 2026,
+  "umi-3d": 2026,
+  tamen: 2026,
+  "daimon-infinity": 2026
+};
+
+const sortUmiSectionsByYear = (sections) =>
+  [...sections].sort((left, right) => {
+    const leftYear = umiSectionYears[left.id] || Number.MAX_SAFE_INTEGER;
+    const rightYear = umiSectionYears[right.id] || Number.MAX_SAFE_INTEGER;
+    return leftYear - rightYear || left.project.localeCompare(right.project);
+  });
+
 const datasetGroups = [
   {
     id: "robot-data",
@@ -1314,7 +4139,7 @@ const datasetGroups = [
     source: "robot",
     summary: "Real robot demonstrations and robot-platform datasets.",
     defaultOpen: true,
-    sections: [
+    sections: sortRobotSectionsByYear([
       {
         id: "open-x-embodiment",
         project: "Open X-Embodiment",
@@ -1334,25 +4159,15 @@ const datasetGroups = [
         rows: openXEmbodimentRows
       },
       ...additionalRobotDataSections
-    ]
+    ])
   },
   {
     id: "umi-data",
     project: "UMI Data",
     source: "umi",
-    summary: "Universal Manipulation Interface data and related real-world manipulation collections.",
+    summary: "Universal Manipulation Interface and UMI-style real-world manipulation datasets from the UMI community registry.",
     defaultOpen: false,
-    rows: [
-      {
-        task: "UMI Manipulation",
-        dataLinks: {},
-        observations: ["RGB", "Proprio", "Human Demonstration"],
-        actions: ["End Effector Pose", "Gripper"],
-        demos: "TBD",
-        envs: "TBD",
-        license: "TBD"
-      }
-    ]
+    sections: sortUmiSectionsByYear(umiDatasetSections)
   },
   {
     id: "simulation-data",
@@ -1605,6 +4420,43 @@ const entryYears = {
   molmoact2: 2026,
   "baihu-vtouch": 2026,
   "let-dataset": 2025,
+  daml: 2018,
+  mime: 2018,
+  "mt-opt": 2021,
+  rh20t: 2023,
+  fmb: 2025,
+  reassemble: 2025,
+  ph2d: 2025,
+  "aist-bimanual": 2025,
+  "deco-50": 2026,
+  dexora: 2026,
+  "agibot-world-2026": 2026,
+  "unitree-unifolm-wbt": 2026,
+  "rovid-x": 2026,
+  "lingbot-depth": 2026,
+  haptile: 2026,
+  omnivitac: 2026,
+  umi: 2024,
+  maniwav: 2024,
+  "umi-on-legs": 2024,
+  "fast-umi": 2024,
+  "data-scaling-laws": 2024,
+  legato: 2024,
+  vitamin: 2025,
+  dexwild: 2025,
+  dexumi: 2025,
+  freetacman: 2025,
+  "touch-in-the-wild": 2025,
+  exumi: 2025,
+  "mv-umi": 2025,
+  manipforce: 2025,
+  "fastumi-100k": 2025,
+  "vitamin-b": 2025,
+  humi: 2026,
+  genrobot: 2026,
+  "umi-3d": 2026,
+  tamen: 2026,
+  "daimon-infinity": 2026,
   "interndata-a1": 2026,
   "interndata-m1": 2025,
   "molmobot-data": 2026,
@@ -1650,7 +4502,9 @@ const tagList = (items) => `
 `;
 
 const linkList = (links) => {
-  const entries = Object.entries(links);
+  const entries = Object.entries(links).flatMap(([label, href]) =>
+    Array.isArray(href) ? href.map((singleHref) => [label, singleHref]) : [[label, href]]
+  );
   if (!entries.length) return '<span class="muted">Coming soon</span>';
   return `
     <div class="link-list">
