@@ -1848,6 +1848,734 @@ const dexGraspNetClassicRows = [
   }
 ];
 
+const egoDatasetRecords = [
+  { id: "egohands", name: "EgoHands", year: 2015, observations: ["Ego Video", "Hand Segmentation Masks"], summary: "First-person videos of two-person tabletop interactions with pixel-level hand masks for detecting and segmenting hands in natural activities.", paper: "https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Bambach_Lending_A_Hand_ICCV_2015_paper.pdf", dataLinks: { Dataset: "https://www.kaggle.com/api/v1/datasets/download/himaniishah/egohands?datasetVersionNumber=1" } },
+  { id: "krishnacam", name: "KrishnaCam", year: 2016, observations: ["Ego Video", "GPS", "Body Orientation", "Accelerometer"], summary: "A long-term Google Glass record of one person's daily life, pairing 7.6 million frames with location and inertial context.", project: "https://krsingh.cs.ucdavis.edu/krishna_files/papers/krishnacam/krishnacam.html", paper: "https://krsingh.cs.ucdavis.edu/krishna_files/papers/krishnacam/krishnacam_files/kcam_wacv16.pdf", dataLinks: { Videos: "https://drive.google.com/drive/folders/1q81yrQenY1dMul3ixJUbOrf9FPOTgMGW?usp=sharing" } },
+  { id: "fpha", name: "FPHA", year: 2017, observations: ["Ego RGB-D Video", "3D Hand Pose", "Object Pose", "Action Labels"], summary: "First-person hand-action recordings of daily object interactions with 3D hand joints and pose annotations for selected manipulated objects.", project: "https://guiggh.github.io/publications/first-person-hands/", paper: "https://arxiv.org/abs/1704.02463", dataLinks: { "Access form": "https://docs.google.com/forms/d/e/1FAIpQLScoksYrmthDbJeAV0_ysXJDmfvZmzMMsX0_Uhkb6H6DHYGBtg/viewform" } },
+  { id: "thu-read", name: "THU-READ", year: 2017, observations: ["Ego RGB-D Video", "Action Labels", "Hand Regions"], summary: "Egocentric RGB-D recordings covering 40 daily hand-action classes performed by eight subjects, with clip-level annotations and hand-region cues.", project: "https://ivg.au.tsinghua.edu.cn/dataset/THU_READ.php", paper: "https://ivg.au.tsinghua.edu.cn/samples_THU_READ/Action%20Recognition%20in%20RGB-D%20Egocentric%20Videos.pdf", dataLinks: { Dataset: "https://pan.baidu.com/s/1eR1EX9o" } },
+  { id: "charades-ego", name: "Charades-Ego", year: 2018, observations: ["Ego + Exo Video", "Action Labels"], summary: "Paired first- and third-person videos of scripted indoor household activities, aligned with the Charades action vocabulary.", project: "https://prior.allenai.org/projects/charades-ego", paper: "https://arxiv.org/abs/1804.09626", dataLinks: { "Video archive": "https://ai2-public-datasets.s3-us-west-2.amazonaws.com/charades/CharadesEgo_v1_480.tar" } },
+  { id: "egtea-gaze-plus", name: "EGTEA Gaze+", year: 2018, observations: ["Ego Video", "Gaze", "Action Labels"], summary: "First-person cooking recordings with gaze and action annotations for studying attention, hand-object activity, and food preparation.", project: "https://cbs.ic.gatech.edu/fpv/", paper: "https://www.ecva.net/papers/eccv_2018/papers_ECCV/papers/Yin_Li_In_the_Eye_ECCV_2018_paper.pdf", dataLinks: { "Dataset access": "https://cbs.ic.gatech.edu/fpv/" } },
+  { id: "epic-kitchens-v1", name: "EPIC-KITCHENS v1", year: 2018, observations: ["Ego Video", "Audio", "Action Narrations"], summary: "Unscripted daily kitchen activity captured with head-mounted cameras and densely narrated into verb and noun action segments.", project: "https://epic-kitchens.github.io/2019.html", paper: "https://arxiv.org/abs/1804.02748", dataLinks: { "Data repository": "https://data.bris.ac.uk/data/dataset/3h91syskeag572hl6tvuovwv4d", Annotations: "https://github.com/epic-kitchens/annotations" }, license: "CC BY-NC 4.0" },
+  { id: "epic-kitchens-100", name: "EPIC-KITCHENS-100", year: 2020, observations: ["Ego Video", "Audio", "Action Narrations"], summary: "The 100-hour extension of EPIC-KITCHENS, capturing unscripted activities across 45 kitchens with action and narration annotations.", project: "https://epic-kitchens.github.io/2020-100.html", paper: "https://arxiv.org/abs/2006.13256", dataLinks: { "Download tool and annotations": "https://github.com/epic-kitchens/epic-kitchens-100-annotations" } },
+  { id: "ego4d", name: "Ego4D", year: 2021, observations: ["Ego Video", "Audio", "Gaze", "3D/Spatial Metadata", "Task Annotations"], summary: "A large-scale collection of everyday first-person activity spanning many locations, participants, scenarios, and benchmark annotations.", project: "https://ego4d-data.org/", paper: "https://arxiv.org/abs/2110.07058", dataLinks: { "Access request form": "https://ego4d.dev/request/ego4d" } },
+  { id: "h2o", name: "H2O", year: 2021, observations: ["Ego + Exo RGB-D Video", "3D Hand Pose", "6D Object Pose", "Action Labels"], summary: "Synchronized multi-view RGB-D recordings of two-handed object interactions with 3D poses for both hands and manipulated objects.", project: "https://taeinkwon.com/projects/h2o/", paper: "https://arxiv.org/abs/2104.11181", dataLinks: { "Dataset download": "https://taeinkwon.com/projects/h2o/" } },
+  { id: "assembly101", name: "Assembly101", year: 2022, observations: ["Ego + Exo Video", "Action Labels", "3D Hand Pose"], summary: "Multi-view recordings of people assembling and disassembling 101 take-apart toy vehicles, including procedural mistakes and fine-grained actions.", project: "https://assembly-101.github.io/", paper: "https://arxiv.org/abs/2203.14712", dataLinks: { "Dataset access": "https://assembly-101.github.io/" } },
+  { id: "hoi4d", name: "HOI4D", year: 2022, observations: ["Ego RGB-D Video", "3D Hand Pose", "Object Pose", "Action and Interaction Labels"], summary: "Egocentric RGB-D sequences for 4D hand-object interaction understanding, with spatial and semantic annotations across everyday objects.", project: "https://hoi4d.github.io/", paper: "https://arxiv.org/abs/2203.01577", dataLinks: { "Dataset access": "https://hoi4d.github.io/" } },
+  { id: "arctic", name: "ARCTIC", year: 2023, observations: ["Ego + Exo Video", "3D Hand Meshes", "Object Meshes", "Contact"], summary: "Multi-view bimanual manipulation of articulated objects with interacting hand and object meshes, camera calibration, and contact information.", project: "https://arctic.is.tue.mpg.de/", paper: "https://arxiv.org/abs/2204.13662", dataLinks: { "Code/Data access": "https://arctic.is.tue.mpg.de/" } },
+  { id: "assemblyhands", name: "AssemblyHands", year: 2023, observations: ["Ego + Exo Video", "3D Hand Pose"], summary: "Large-scale 3D hand-pose annotations for synchronized assembly recordings with severe occlusion and realistic hand-object interaction.", project: "https://assemblyhands.github.io/", paper: "https://arxiv.org/abs/2304.12301", dataLinks: { "Dataset access": "https://assemblyhands.github.io/" } },
+  { id: "ego-exo4d", name: "Ego-Exo4D", year: 2023, observations: ["Ego + Exo Video", "Audio", "Gaze", "Pose", "Skill Annotations"], summary: "Synchronized first- and third-person recordings of skilled human activities with multimodal signals and benchmark annotations.", project: "https://ego-exo4d-data.org/", paper: "https://arxiv.org/abs/2311.18259", dataLinks: { "Access request form": "https://ego4d.dev/request/ego-exo4d" } },
+  { id: "enigma-51", name: "ENIGMA-51", year: 2023, observations: ["Ego Video", "Action Labels", "Object Interactions", "Text Procedures"], summary: "Industrial egocentric videos of electrical-board repair, accompanied by action annotations, textual procedures, and related 3D assets.", project: "https://fpv-iplab.github.io/ENIGMA-51/", paper: "https://arxiv.org/abs/2309.14809", dataLinks: { "Videos and annotations": "https://fpv-iplab.github.io/ENIGMA-51/" } },
+  { id: "holoassist", name: "HoloAssist", year: 2023, observations: ["Ego RGB-D Video", "Audio", "Gaze", "Hand and Head Pose", "Conversation Labels"], summary: "Mixed-reality recordings of instructor-performer collaboration, synchronizing video, depth, gaze, pose, audio, actions, and dialogue.", project: "https://holoassist.github.io/", paper: "https://arxiv.org/abs/2309.17024", dataLinks: { "Toolkit and downloader": "https://github.com/Ember-HoloAssist/holoassist-release" } },
+  { id: "egoexo-fitness", name: "EgoExo-Fitness", year: 2024, observations: ["Ego + Exo Video", "Action and Quality Labels"], summary: "Synchronized first- and third-person fitness recordings for temporal action understanding and exercise-quality assessment.", paper: "https://arxiv.org/abs/2406.08877", dataLinks: { "Code and data": "https://github.com/iSEE-Laboratory/EgoExo-Fitness" } },
+  { id: "egoexolearn", name: "EgoExoLearn", year: 2024, observations: ["Ego + Exo Video", "Gaze", "Action Annotations"], summary: "A large collection of asynchronous egocentric activity and exocentric demonstrations for learning procedural tasks across viewpoints.", paper: "https://arxiv.org/abs/2403.16182", dataLinks: { "Code and data": "https://github.com/OpenGVLab/EgoExoLearn" } },
+  { id: "egomimic", name: "EgoMimic", year: 2024, observations: ["Ego Video", "Hand Pose", "Robot Trajectories"], summary: "Project Aria human demonstrations paired with bimanual robot data for learning manipulation policies from human and robot experience.", project: "https://egomimic.github.io/", paper: "https://arxiv.org/abs/2410.24221", dataLinks: { "Hugging Face dataset": "https://huggingface.co/datasets/gatech/EgoMimic" } },
+  { id: "egosurgery", name: "EgoSurgery", year: 2024, observations: ["Ego Video", "Gaze", "Phase, Hand and Tool Labels"], summary: "First-person open-surgery recordings with surgical phase, hand, tool, and gaze annotations for workflow and interaction understanding.", paper: "https://arxiv.org/abs/2405.19644", dataLinks: { "Access instructions": "https://github.com/Fujiry0/EgoSurgery" }, license: "CC BY-NC-SA 4.0" },
+  { id: "hot3d", name: "HOT3D", year: 2024, observations: ["Ego RGB-D Video", "3D Hand Pose", "6D Object Pose", "Camera Calibration"], summary: "Project Aria and Quest recordings of hand-object interaction with calibrated cameras, 3D hands, object meshes, and object poses.", project: "https://facebookresearch.github.io/hot3d/", paper: "https://arxiv.org/abs/2406.09598", dataLinks: { "Toolkit and downloader": "https://github.com/facebookresearch/hot3d", "BOP clips": "https://huggingface.co/datasets/bop-benchmark/hot3d" } },
+  { id: "industreal", name: "IndustReal", year: 2024, observations: ["Ego Video", "Action and Error Labels"], summary: "Egocentric recordings of industrial-like procedures, including normal executions and mistakes for procedural activity understanding.", project: "https://github.com/TimSchoonbeek/IndustReal", paper: "https://arxiv.org/abs/2310.17323", dataLinks: { "4TU data repository": "https://data.4tu.nl/datasets/b008dd74-020d-4ea4-a8ba-7bb60769d224/2" }, license: "Apache-2.0" },
+  { id: "nymeria", name: "Nymeria", year: 2024, observations: ["Ego Video", "Audio", "Gaze", "Full-Body Motion", "Text"], summary: "Large-scale Project Aria recordings of daily activities with multimodal egocentric sensing, full-body motion, and language descriptions.", project: "https://www.projectaria.com/datasets/nymeria/", paper: "https://arxiv.org/abs/2406.09905", dataLinks: { "Data explorer": "https://explorer.projectaria.com/nymeria", "Hugging Face dataset": "https://huggingface.co/datasets/projectaria/Nymeria" }, license: "CC BY-NC 4.0" },
+  { id: "egodex", name: "EgoDex", year: 2025, observations: ["Ego Video", "Depth", "3D Hand Pose", "Camera Pose", "Task Labels"], summary: "Apple Vision Pro recordings of dexterous tabletop manipulation, packaged as video and synchronized spatial metadata for robot learning.", paper: "https://arxiv.org/abs/2505.11709", dataLinks: { "Download manifest": "https://github.com/apple/ml-egodex", "Test archive": "https://ml-site.cdn-apple.com/datasets/egodex/test.zip" }, license: "CC BY-NC-ND 4.0" },
+  { id: "egolife", name: "EgoLife", year: 2025, observations: ["Ego + Exo Video", "Audio", "Gaze", "Text and QA Annotations"], summary: "Long-duration daily-life recordings and annotations for multimodal personal-assistant, memory, and video-question-answering research.", project: "https://egolife-ai.github.io/", paper: "https://arxiv.org/abs/2503.03803", dataLinks: { "Hugging Face dataset": "https://huggingface.co/datasets/lmms-lab/EgoLife" }, license: "MIT" },
+  { id: "egome", name: "EgoMe", year: 2025, observations: ["Ego + Exo Video", "Gaze", "Motion Sensors", "Action Labels"], summary: "Paired exocentric demonstrations and egocentric imitations of the same activities, with wearable sensor signals for learning by observation.", paper: "https://arxiv.org/abs/2501.19061", dataLinks: { "Hugging Face access": "https://huggingface.co/datasets/HeqianQiu/EgoMe" } },
+  { id: "hd-epic", name: "HD-EPIC", year: 2025, observations: ["Ego Video", "Audio", "Gaze", "3D Grounding", "Dense Labels"], summary: "High-density kitchen recordings with fine-grained actions, object tracks, 3D grounding, narrations, and question-answer annotations.", project: "https://hd-epic.github.io/site/", paper: "https://arxiv.org/abs/2502.04144", dataLinks: { "Data repository": "https://data.bris.ac.uk/data/dataset/3cqb5b81wk2dc2379fx1mrxh47" } },
+  { id: "indego", name: "IndEgo", year: 2025, observations: ["Ego + Exo Video", "Gaze", "Motion", "Industrial Metadata"], summary: "Multimodal egocentric and exocentric recordings of industrial work, combining gaze and motion signals with task context.", project: "https://indego-dataset.github.io/", paper: "https://arxiv.org/abs/2511.19684", dataLinks: { "Hugging Face dataset": "https://huggingface.co/datasets/FraunhoferIPK/IndEgo" } },
+  { id: "openego", name: "OpenEgo", year: 2025, observations: ["Ego Video", "3D Hand Pose", "Camera Pose", "Action Primitives"], summary: "Large-scale egocentric dexterous-manipulation data normalized around hand pose, camera geometry, and reusable action primitives.", project: "https://www.openegocentric.com/", paper: "https://arxiv.org/abs/2509.05513", dataLinks: { "Box dataset": "https://utdallas.box.com/s/1fzj9gr331atfumk5on3bifzpp2idnjr", Toolkit: "https://github.com/physicalinc/openego" } },
+  { id: "taste-rob", name: "TASTE-Rob", year: 2025, observations: ["Ego Hand-Object Video", "Task and Motion Labels"], summary: "A task-oriented corpus of egocentric hand-object interactions built for controllable video generation and robot-oriented representation learning.", paper: "https://arxiv.org/abs/2503.11423", dataLinks: { "Code and data": "https://github.com/GAP-LAB-CUHK-SZ/TASTE-Rob" } },
+  { id: "childlens", name: "ChildLens", year: 2026, observations: ["Child-Worn Ego Video", "Behavioral Annotations"], summary: "Child-perspective first-person recordings collected for developmental and behavioral research in natural environments.", paper: "https://pmc.ncbi.nlm.nih.gov/articles/PMC13076423/", dataLinks: { "Research data repository": "https://doi.org/10.17617/4.fe" } },
+  { id: "ego-1k", name: "Ego-1K", year: 2026, observations: ["Synchronized Ego Multi-View Video", "Camera Calibration", "3D/4D Scene Data"], summary: "Synchronized 16-camera egocentric multi-view data designed for reconstructing and generating dynamic 3D and 4D human activity.", paper: "https://arxiv.org/abs/2603.13741", dataLinks: { "Hugging Face dataset": "https://huggingface.co/datasets/facebook/ego-1k" } },
+  { id: "egolive", name: "EgoLive", year: 2026, observations: ["Ego Video", "3D Hand and Camera Motion", "Task Labels"], summary: "Large-scale first-person recordings of people completing real tasks, introduced for learning reusable representations and policies from human activity.", paper: "https://arxiv.org/abs/2604.23570", dataLinks: { "JD Cloud dataset portal": "https://robotdata-market.jdcloud.com/console/market" } },
+  { id: "egomagic", name: "EgoMAGIC", year: 2026, observations: ["Ego Video", "Audio", "Medical Action and Object Labels"], summary: "In-the-wild first-person medical task videos with action and object annotations for evaluating egocentric medical understanding.", paper: "https://arxiv.org/abs/2604.22036", dataLinks: { "Zenodo dataset": "https://zenodo.org/records/19239155" } },
+  { id: "egoverse", name: "EgoVerse", year: 2026, observations: ["Ego Video", "Camera and Body Motion", "Action Semantics"], summary: "Egocentric motion and semantic activity data for learning representations relevant to embodied agents and robot interaction.", paper: "https://arxiv.org/abs/2604.07607", dataLinks: { "Code and data": "https://github.com/GaTech-RL2/EgoVerse" } },
+  { id: "xperience-10m", name: "Xperience-10M", year: 2026, observations: ["Ego Video", "Embodied Trajectories", "Spatial Metadata"], summary: "A large embodied-experience collection intended for training models on diverse first-person interaction and robot-relevant behavior.", paper: "https://ropedia.com/blog/20260316_xperience_10m.html", dataLinks: { "Hugging Face dataset": "https://huggingface.co/datasets/ropedia-ai/xperience-10m" } }
+];
+
+const egoResource = (task, dataLinks, options = {}) => ({ task, dataLinks, ...options });
+const egoMimicRepo = "gatech/EgoMimic";
+const hot3dRepo = "bop-benchmark/hot3d";
+const nymeriaRepo = "projectaria/Nymeria";
+const egoLifeRepo = "lmms-lab/EgoLife";
+const egoMeRepo = "HeqianQiu/EgoMe";
+const indEgoRepo = "FraunhoferIPK/IndEgo";
+const ego1kRepo = "facebook/ego-1k";
+const xperience10mRepo = "ropedia-ai/xperience-10m";
+
+const egoDatasetResourceSpecs = {
+  egohands: [
+    egoResource("EgoHands dataset archive", { ZIP: "https://www.kaggle.com/api/v1/datasets/download/himaniishah/egohands?datasetVersionNumber=1" })
+  ],
+  krishnacam: [
+    egoResource("Videos", { "Google Drive folder": "https://drive.google.com/drive/folders/1q81yrQenY1dMul3ixJUbOrf9FPOTgMGW?usp=sharing" })
+  ],
+  fpha: [
+    egoResource("Dataset access — application required", {
+      "Access form": "https://docs.google.com/forms/d/e/1FAIpQLScoksYrmthDbJeAV0_ysXJDmfvZmzMMsX0_Uhkb6H6DHYGBtg/viewform"
+    }, {
+      availability: "Access application required"
+    })
+  ],
+  "thu-read": [
+    egoResource("Depth", { BaiduYun: "https://pan.baidu.com/s/1eR1EX9o" }),
+    egoResource("RGBD1", { BaiduYun: "https://pan.baidu.com/s/1boT5vmn" }),
+    egoResource("RGBD2", { BaiduYun: "https://pan.baidu.com/s/1nvdu0Dr" }),
+    egoResource("Annotations", { "Google Drive": "https://drive.google.com/file/d/1G0oQsJRZ-wBt9o2RW75jDmmRgvUFMwG0/view?usp=drive_open", BaiduYun: "https://pan.baidu.com/s/1kWPp6rP" }),
+    egoResource("Train/Test Splits", { TXT: "https://ivg.au.tsinghua.edu.cn/dataset/samples_THU_READ/Train-Test-Splits.txt" })
+  ],
+  "charades-ego": [
+    egoResource("CharadesEgo_v1_480.tar", { "TAR archive": "https://ai2-public-datasets.s3-us-west-2.amazonaws.com/charades/CharadesEgo_v1_480.tar" })
+  ],
+  "egtea-gaze-plus": [
+    egoResource("Video clips", { TAR: "https://www.dropbox.com/s/udynz2u62wpdva6/video_clips.tar?dl=0" }),
+    egoResource("Gaze data", { ZIP: "https://www.dropbox.com/s/2aryvztw044w9ih/gaze_data.zip?dl=0" }),
+    egoResource("Action annotations", { ZIP: "https://www.dropbox.com/s/ksro6eqa6v59859/action_annotation.zip?dl=0" }),
+    egoResource("Hand masks", { ZIP: "https://www.dropbox.com/s/ysi2jv8qr9xvzli/hand14k.zip?dl=0" }),
+    egoResource("Raw video download manifest", { TXT: "https://www.dropbox.com/s/uwwj6wb1j4rsm02/video_links.txt?dl=0" }),
+    egoResource("Dataset README", { Markdown: "https://www.dropbox.com/s/i0qdxz484ufai5m/readme.md?dl=0" }),
+    egoResource("Recipe definitions", { PDF: "https://www.dropbox.com/s/w260trfnhdfcooh/Recipes.pdf?dl=0" })
+  ],
+  "epic-kitchens-v1": [
+    egoResource("Videos + frames", { "Data repository": "https://data.bris.ac.uk/data/dataset/3h91syskeag572hl6tvuovwv4d" }),
+    egoResource("Action narrations + temporal annotations", { Annotations: "https://github.com/epic-kitchens/annotations" })
+  ],
+  "epic-kitchens-100": [
+    egoResource("Videos, RGB frames, optical flow, and metadata", {
+      "Complete ZIP": "https://data.bris.ac.uk/datasets/tar/2g1n6qdydwa9u22shpxqzp0t8m.zip",
+      "Data repository": "https://data.bris.ac.uk/data/dataset/2g1n6qdydwa9u22shpxqzp0t8m",
+      "Academic Torrent": "https://academictorrents.com/details/cc2d9afabcbbe33686d2ecd9844b534e3a899f4b"
+    }),
+    egoResource("Official dataset downloader", {
+      Python: "https://raw.githubusercontent.com/epic-kitchens/epic-kitchens-download-scripts/master/epic_downloader.py",
+      Shell: "https://raw.githubusercontent.com/epic-kitchens/epic-kitchens-download-scripts/master/download_full_epic.sh"
+    }),
+    egoResource("Action recognition / train", { CSV: "https://raw.githubusercontent.com/epic-kitchens/epic-kitchens-100-annotations/master/EPIC_100_train.csv" }),
+    egoResource("Action recognition / validation", { CSV: "https://raw.githubusercontent.com/epic-kitchens/epic-kitchens-100-annotations/master/EPIC_100_validation.csv" }),
+    egoResource("Action recognition / test timestamps", { CSV: "https://raw.githubusercontent.com/epic-kitchens/epic-kitchens-100-annotations/master/EPIC_100_test_timestamps.csv" }),
+    egoResource("Noun and verb classes", {
+      "Noun CSV": "https://raw.githubusercontent.com/epic-kitchens/epic-kitchens-100-annotations/master/EPIC_100_noun_classes.csv",
+      "Verb CSV": "https://raw.githubusercontent.com/epic-kitchens/epic-kitchens-100-annotations/master/EPIC_100_verb_classes.csv"
+    }),
+    egoResource("Video metadata", { CSV: "https://raw.githubusercontent.com/epic-kitchens/epic-kitchens-100-annotations/master/EPIC_100_video_info.csv" }),
+    egoResource("Unsupervised domain adaptation annotations", { "GitHub folder": "https://github.com/epic-kitchens/epic-kitchens-100-annotations/tree/master/UDA_annotations" }),
+    egoResource("Multi-instance retrieval annotations", { "GitHub folder": "https://github.com/epic-kitchens/epic-kitchens-100-annotations/tree/master/retrieval_annotations" }),
+    egoResource("Automatic masks and hand-object detections", {
+      "Complete ZIP": "https://data.bris.ac.uk/datasets/tar/3l8eci2oqgst92n14w2yqi5ytu.zip",
+      "Data repository": "https://data.bris.ac.uk/data/dataset/3l8eci2oqgst92n14w2yqi5ytu"
+    })
+  ],
+  ego4d: [
+    egoResource("Dataset access — license approval required", {
+      "Access request form": "https://ego4d.dev/request/ego4d"
+    }, {
+      availability: "License agreement and approval required; AWS credentials are issued after approval"
+    })
+  ],
+  h2o: [
+    egoResource("Dataset access — registration required", {
+      "Registration / download server": "https://h2odataset.ethz.ch/"
+    }, {
+      availability: "Account registration and terms acceptance required"
+    })
+  ],
+  assembly101: [
+    egoResource("Recordings", { "HF folder": hfDatasetTree("cvml-nus/assembly101", "recordings") }),
+    egoResource("Annotations", { "HF folder": hfDatasetTree("cvml-nus/assembly101", "annotations") }),
+    egoResource("Poses at 60 fps", { "HF folder": hfDatasetTree("cvml-nus/assembly101", "poses@60fps"), ZIP: hfDatasetBlob("cvml-nus/assembly101", "AssemblyPoses.zip") }),
+    egoResource("TSM features", { "HF folder": hfDatasetTree("cvml-nus/assembly101", "TSM_features") }),
+    egoResource("DINOv2 features", { "HF folder": hfDatasetTree("cvml-nus/assembly101", "DINOv2_features") }),
+    egoResource("Skill labels", { ZIP: hfDatasetBlob("cvml-nus/assembly101", "skill_labels.zip") })
+  ],
+  hoi4d: [
+    egoResource("RGB videos", { OneDrive: "https://1drv.ms/u/c/12e5c3dbeffd0594/EZQF_e_bw-UggBIvAQAAAAAB4AcDOxj_uuh7alRaR9b7MQ?e=GyBNaD" }),
+    egoResource("Depth videos", { OneDrive: "https://1drv.ms/f/c/12e5c3dbeffd0594/EpQF_e_bw-UggBIpAQAAAAABswaE_tZsrSwsEoBbFh7F2w?e=K797bs" }),
+    egoResource("CAD models", { OneDrive: "https://1drv.ms/u/c/12e5c3dbeffd0594/EZQF_e_bw-UggBIsAQAAAAAB5gBbXuK7eDzXQmzDS5W09g?e=DdkFTE" }),
+    egoResource("Annotations", { OneDrive: "https://1drv.ms/u/c/12e5c3dbeffd0594/EZQF_e_bw-UggBIuAQAAAAABELgpzxDxCz58Qov76-wpvw?e=qhyY0h" }),
+    egoResource("Camera parameters", { OneDrive: "https://1drv.ms/u/c/12e5c3dbeffd0594/EZQF_e_bw-UggBIqAQAAAAABZBWQ3p5gxd-tu_3rOeSo_A?e=GjWeg8" }),
+    egoResource("Hand poses", { OneDrive: "https://1drv.ms/u/c/12e5c3dbeffd0594/EZQF_e_bw-UggBIrAQAAAAABHyHqDhs5CpJAkWTAQoGWxQ?e=ALFMCD" }),
+    egoResource("Action segmentation test set", { OneDrive: "https://1drv.ms/f/c/12e5c3dbeffd0594/EpQF_e_bw-UggBIcAQAAAAABw2LzsilH0w3nTtEH3emGlA?e=dKDhCl" }),
+    egoResource("Semantic segmentation test set", { OneDrive: "https://1drv.ms/f/c/12e5c3dbeffd0594/EpQF_e_bw-UggBIjAQAAAAAB562IRa4P_xu7YZgSSU_vrA?e=tnIX8V" }),
+    egoResource("Dataset mirror", { BaiduYun: "https://pan.baidu.com/s/1ZeX8SzU-gnJ-wpO9ZukulQ?pwd=7gfs" })
+  ],
+  arctic: [
+    egoResource("Dataset access — login required", {
+      "Login / download": "https://arctic.is.tue.mpg.de/download.php"
+    }, {
+      availability: "Registered account login required"
+    })
+  ],
+  assemblyhands: [
+    egoResource("Egocentric images", { "Google Drive folder": "https://drive.google.com/drive/folders/1slji-2LSOBo7eCYNqK6O-qpbvS7D2yXm?usp=sharing" }),
+    egoResource("Exocentric videos", { "Google Drive folder": "https://drive.google.com/drive/folders/1e_TIb2et_bBoa15DoBFjDT3pV-Ivqqzl?usp=sharing" }),
+    egoResource("Annotations", { "Google Drive folder": "https://drive.google.com/drive/folders/1mPif4HbxfDbmAu7_prsVxqknL7nbJulI?usp=sharing" })
+  ],
+  "ego-exo4d": [
+    egoResource("Dataset access — license approval required", {
+      "Access request form": "https://ego4d.dev/request/ego-exo4d"
+    }, {
+      availability: "License agreement and approval required; AWS credentials are issued after approval"
+    })
+  ],
+  "enigma-51": [
+    egoResource("Videos", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51-videos.zip" }),
+    egoResource("Frames", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_frames.zip" }),
+    egoResource("Annotations", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_annotations_master.zip" }),
+    egoResource("Textual Procedures", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_procedures.zip" }),
+    egoResource("3D models", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51%203D%20Models.zip" }),
+    egoResource("Features / CLIP ViT-L", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_CLIP_exported_features_ViT-L.zip" }),
+    egoResource("Features / DINOv2 ViT-g", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_DINOV2_exported_features_ViTg.zip" }),
+    egoResource("Hands keypoints / MMPose", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_MMPOSE_hands_keypoints.zip" }),
+    egoResource("Segmentation masks / SAM-HQ", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_SAMHQ_annotations.zip" })
+  ],
+  holoassist: [
+    egoResource("Pitch-shifted videos", { TAR: "https://hl2data.z5.web.core.windows.net/holoassist-data-release/video_pitch_shifted.tar" }),
+    egoResource("Compressed videos / width 256", { TAR: "https://hl2data.z5.web.core.windows.net/holoassist-data-release/video_compress.tar" }),
+    egoResource("Ahat depth", { TAR: "https://hl2data.z5.web.core.windows.net/holoassist-data-release/ahat_depth.tar" }),
+    egoResource("Eye gaze", { TAR: "https://hl2data.z5.web.core.windows.net/holoassist-data-release/eyes.tar" }),
+    egoResource("Hand pose", { TAR: "https://hl2data.z5.web.core.windows.net/holoassist-data-release/hands.tar" }),
+    egoResource("Head pose", { TAR: "https://hl2data.z5.web.core.windows.net/holoassist-data-release/head.tar" }),
+    egoResource("IMU", { TAR: "https://hl2data.z5.web.core.windows.net/holoassist-data-release/imu.tar" }),
+    egoResource("Labels", { JSON: "https://hl2data.z5.web.core.windows.net/holoassist-data-release/data-annotation-trainval-v1_1.json" }),
+    egoResource("Camera calibration", { TAR: "https://hl2data.z5.web.core.windows.net/holoassist-data-release/cam_info.tar" }),
+    egoResource("Train / validation / test splits", { ZIP: "https://holoassist.github.io/label_files/data-splits-v1_2.zip" }),
+    egoResource("Alternative dataset mirror", { "ETH data access": "https://www.research-collection.ethz.ch/entities/researchdata/14421c7d-1fd4-4a02-9bd4-567796d68ed6" })
+  ],
+  "egoexo-fitness": [
+    egoResource("Open frames", { "HF folder": "https://huggingface.co/datasets/Lymann/EgoExo-Fitness/tree/main/frames_open" }),
+    egoResource("Open features", { "HF folder": "https://huggingface.co/datasets/Lymann/EgoExo-Fitness/tree/main/features_open" }),
+    egoResource("Raw annotations", { "HF folder": "https://huggingface.co/datasets/Lymann/EgoExo-Fitness/tree/main/raw_annotations" }),
+    egoResource("Raw videos", { "HF dataset": "https://huggingface.co/datasets/Lymann/EgoExo-Fitness-Raw_videos" })
+  ],
+  egoexolearn: [
+    egoResource("Videos / 320p", { "Google Drive file": "https://drive.google.com/file/d/13L0VsE-qYgeqVVdBW_Yb3qKSAD9ucNfs/view?usp=drive_link" }),
+    egoResource("Gaze", { "Google Drive file": "https://drive.google.com/file/d/1W3blKBEe_h_aUcaJdw4ohROLp-apfE39/view?usp=sharing" }),
+    egoResource("CLIP features / 5 fps", { "Google Drive file": "https://drive.google.com/file/d/1caIMMCtnws3arFYit0nq4yhBaNdCBOF5/view?usp=drive_link" }),
+    egoResource("I3D RGB features", { "Google Drive file": "https://drive.google.com/file/d/1YH0tJLy4YL0_VOW56rQSf-LDIhHkxJhl/view?usp=drive_link" }),
+    egoResource("CLIP features / gaze crops", { "Google Drive file": "https://drive.google.com/file/d/1A6hmIBWctXKOTwllV8XcJSopHHMXQNLW/view?usp=drive_link" }),
+    egoResource("I3D RGB features / gaze crops", { "Google Drive file": "https://drive.google.com/file/d/1-MCjVrPC25yXgxb5eu6Sgx8HDMQb0ZMa/view?usp=drive_link" }),
+    egoResource("Full-resolution videos", { "HF dataset": "https://huggingface.co/datasets/hyf015/EgoExoLearn/tree/main" }),
+    egoResource("Dataset mirror", { BaiduYun: "https://pan.baidu.com/s/1fLz5bQn4bMLHU5GiEUxsjg?pwd=tm1g" })
+  ],
+  egomimic: [
+    ...["bowlplace", "groceries", "smallclothfold"].flatMap((task) =>
+      ["human", "robot"].map((source) =>
+        egoResource(`${task} / ${source}`, { HDF5: hfDatasetBlob(egoMimicRepo, `${task}_${source}.hdf5`) }, { envs: `${task} / ${source}` })
+      )
+    )
+  ],
+  egosurgery: [
+    egoResource("Dataset access — application required", {
+      "Access form": "https://forms.gle/T7Kdqozz9C2kFBZs5",
+      "Access instructions": "https://github.com/Fujiry0/EgoSurgery"
+    }, {
+      availability: "Access request required"
+    })
+  ],
+  hot3d: [
+    egoResource("Train / Aria", { "HF folder": hfDatasetTree(hot3dRepo, "train_aria") }),
+    egoResource("Train / Quest 3", { "HF folder": hfDatasetTree(hot3dRepo, "train_quest3") }),
+    egoResource("Test / Aria", { "HF folder": hfDatasetTree(hot3dRepo, "test_aria") }),
+    egoResource("Test / Quest 3", { "HF folder": hfDatasetTree(hot3dRepo, "test_quest3") }),
+    egoResource("Test / Aria / BOP format", { "HF folder": hfDatasetTree(hot3dRepo, "test_aria_bop_format") }),
+    egoResource("Test / Quest 3 / BOP format", { "HF folder": hfDatasetTree(hot3dRepo, "test_quest3_bop_format") }),
+    egoResource("Object models", { "HF folder": hfDatasetTree(hot3dRepo, "object_models"), ZIP: hfDatasetBlob(hot3dRepo, "hot3d_models.zip") }),
+    egoResource("Object references / Aria / dynamic", { "HF folder": hfDatasetTree(hot3dRepo, "object_ref_aria_dynamic") }),
+    egoResource("Object references / Aria / static", { "HF folder": hfDatasetTree(hot3dRepo, "object_ref_aria_static") }),
+    egoResource("Object references / Quest 3 / dynamic", { "HF folder": hfDatasetTree(hot3dRepo, "object_ref_quest3_dynamic") }),
+    egoResource("Object references / Quest 3 / static", { "HF folder": hfDatasetTree(hot3dRepo, "object_ref_quest3_static") }),
+    egoResource("Base metadata", { ZIP: hfDatasetBlob(hot3dRepo, "hot3d_base.zip"), "Clip definitions": hfDatasetBlob(hot3dRepo, "clip_definitions.json"), "Split definitions": hfDatasetBlob(hot3dRepo, "clip_splits.json") }),
+    egoResource("Photorealistic train renderings", { ZIP: hfDatasetBlob(hot3dRepo, "hot3d_train_pbr.zip") })
+  ],
+  industreal: [
+    egoResource("Action recognition labels", { ZIP: "https://data.4tu.nl/file/b008dd74-020d-4ea4-a8ba-7bb60769d224/778d7d5f-6631-4cb6-9451-f88c574c7991" }),
+    egoResource("RGB videos", { ZIP: "https://data.4tu.nl/file/b008dd74-020d-4ea4-a8ba-7bb60769d224/cf21602e-4424-42a4-b05d-9897957082ad" }),
+    egoResource("Part geometries", { ZIP: "https://data.4tu.nl/file/b008dd74-020d-4ea4-a8ba-7bb60769d224/4b6641cf-0034-4875-8ebb-73e35e4a5b91" }),
+    ...[
+      ["Train / part 1", "f58a5f18-9a71-4443-8a48-e59530df9ee8"],
+      ["Train / part 2", "5aae5141-cece-41db-9681-47acd5300705"],
+      ["Train / part 3", "4e2ed830-a1fe-40fa-9c5a-2aeae3964616"],
+      ["Train / part 4", "3ff5409e-165f-4354-9fa4-a4fde639a7a6"],
+      ["Validation / part 1", "bb336949-248c-4ae6-82ef-107dbe61d10f"],
+      ["Validation / part 2", "e899de9f-313a-482b-a6b5-e2de4f38412e"],
+      ["Test / part 1", "ec7a4f94-7c1d-497d-b75a-4e694b7a9f7e"],
+      ["Test / part 2", "d07789b6-83b1-429d-be0c-95edba210757"],
+      ["Test / part 3", "31f88cb6-a2e7-44df-ac51-5aaa0a148fc3"]
+    ].map(([label, fileId]) => egoResource(label, { ZIP: `https://data.4tu.nl/file/b008dd74-020d-4ea4-a8ba-7bb60769d224/${fileId}` }))
+  ],
+  nymeria: [
+    egoResource("Recordings + multimodal trajectories", { "Download script": hfDatasetBlob(nymeriaRepo, "download.py"), "Data explorer": "https://explorer.projectaria.com/nymeria" }),
+    egoResource("Dataset metadata", { JSON: hfDatasetBlob(nymeriaRepo, "data/dataset_metadata.json") }),
+    egoResource("Participant metadata", { CSV: hfDatasetBlob(nymeriaRepo, "data/participants_metadata.csv") })
+  ],
+  egodex: [
+    ...[1, 2, 3, 4, 5].map((part) => egoResource(`Full dataset / part ${part}`, { ZIP: `https://ml-site.cdn-apple.com/datasets/egodex/part${part}.zip` })),
+    egoResource("Test split", { ZIP: "https://ml-site.cdn-apple.com/datasets/egodex/test.zip" }),
+    egoResource("Additional data", { ZIP: "https://ml-site.cdn-apple.com/datasets/egodex/extra.zip" })
+  ],
+  egolife: [
+    ...["A1_JAKE", "A2_ALICE", "A3_TASHA", "A4_LUCIA", "A5_KATRINA", "A6_SHURE"].map((participant) =>
+      egoResource(`Raw recordings / ${participant}`, { "HF folder": hfDatasetTree(egoLifeRepo, participant) }, { envs: participant })
+    ),
+    egoResource("EgoIT / captions", { JSON: hfDatasetBlob(egoLifeRepo, "EgoIT/EgoLife_Caption.json") }),
+    egoResource("EgoIT / question answering", { JSON: hfDatasetBlob(egoLifeRepo, "EgoIT/EgoLife_QA.json") }),
+    egoResource("EgoLifeCap / dense captions", { "HF folder": hfDatasetTree(egoLifeRepo, "EgoLifeCap/DenseCaption") }),
+    egoResource("EgoLifeCap / transcripts", { "HF folder": hfDatasetTree(egoLifeRepo, "EgoLifeCap/Transcript") }),
+    egoResource("EgoLifeQA", { "HF folder": hfDatasetTree(egoLifeRepo, "EgoLifeQA") })
+  ],
+  egome: [
+    egoResource("Annotations", { ZIP: hfDatasetBlob(egoMeRepo, "Annotation.zip") }),
+    egoResource("Gaze + IMU", { ZIP: hfDatasetBlob(egoMeRepo, "Gaze_IMU.zip") }),
+    ...["Video.z01", "Video.z02", "Video.z03", "Video.z04", "Video.zip"].map((file) =>
+      egoResource(`Videos / ${file}`, { "Archive part": hfDatasetBlob(egoMeRepo, file) })
+    )
+  ],
+  "hd-epic": [
+    egoResource("Videos, VRS, digital twin, SLAM, gaze, audio, and hand masks", {
+      "Data repository": "https://data.bris.ac.uk/data/dataset/3cqb5b81wk2dc2379fx1mrxh47",
+      "OneDrive without VRS": "https://uob-my.sharepoint.com/:f:/g/personal/wq23021_bristol_ac_uk/IgA0PLwURLmfQZOl_J256iZtAY_uzFr0gTXVMWCWY4MSGd0?e=6C6wNa"
+    }),
+    egoResource("Dataset downloader", { Python: "https://raw.githubusercontent.com/hd-epic/hd-epic-downloader/main/hd-epic-downloader.py" }),
+    egoResource("Narrations and action segments", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/narrations-and-action-segments" }),
+    egoResource("Audio annotations", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/audio-annotations" }),
+    egoResource("High-level recipe annotations", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/high-level" }),
+    egoResource("Scene and object movements", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/scene-and-object-movements" }),
+    egoResource("Eye-gaze priming", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/eye-gaze-priming" }),
+    egoResource("VQA benchmark", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/vqa-benchmark" }),
+    egoResource("Frame-wise calibration, camera pose, and gaze", { OneDrive: "https://uob-my.sharepoint.com/:f:/g/personal/jc17360_bristol_ac_uk/IgCCGb5qDbiOR7cmj1R9OyUWAXQFYL7FP_d0eMzB4ENPVQk?e=5ONiE8" })
+  ],
+  indego: [
+    ...[
+      ["Data collection metadata", "00_Data_Collection"],
+      ["Assembly", "1_Assembly"],
+      ["Disassembly", "1_Disassembly"],
+      ["Inspection + repair", "2_Inspection_Repair"],
+      ["Logistics + organization", "3_Logistics_Organization"],
+      ["Woodworking", "4_Woodworking"],
+      ["Miscellaneous", "5_Miscellaneous"],
+      ["Tools + objects in context", "6_Tools_Objects_in_Context"],
+      ["Tools + objects demonstrations", "7_Tools_Objects_demo"],
+      ["Singular actions", "8_Singular_Actions"],
+      ["Visual place recognition", "9_VPR"],
+      ["Mistake detection", "Mistake_Detection"],
+      ["Visual question answering", "VQA"]
+    ].map(([label, path]) => egoResource(label, { "HF folder": hfDatasetTree(indEgoRepo, path) }, { envs: label }))
+  ],
+  openego: [
+    egoResource("OpenEgo dataset", { "Box dataset": "https://utdallas.box.com/s/1fzj9gr331atfumk5on3bifzpp2idnjr" })
+  ],
+  "taste-rob": [
+    egoResource("Dataset access request", { Form: "https://docs.google.com/forms/d/e/1FAIpQLSdOlNnW3t_7TGC2FMDMcIb7jnhRjfynq6xLoz5rJk_i-fl5zQ/viewform?usp=sf_link" }),
+    egoResource("ModelScope release", { Dataset: "https://www.modelscope.cn/datasets/GAP-Lab/TASTE-Rob-Dataset" }),
+    egoResource("Download tool", { Python: "https://github.com/GAP-LAB-CUHK-SZ/TASTE-Rob/blob/main/download_tool_taste_rob.py" })
+  ],
+  childlens: [
+    egoResource("Child-worn recordings + annotations", { "Research data repository": "https://doi.org/10.17617/4.fe" })
+  ],
+  "ego-1k": [
+    egoResource("Train / Parquet metadata", { "HF data folder": hfDatasetTree(ego1kRepo, "data") }),
+    egoResource("Test / Parquet metadata", { "HF data folder": hfDatasetTree(ego1kRepo, "data") }),
+    egoResource("Train / video shards", { "HF folder": hfDatasetTree(ego1kRepo, "shards/train") }),
+    egoResource("Test / video shards", { "HF folder": hfDatasetTree(ego1kRepo, "shards/test") })
+  ],
+  egolive: [
+    egoResource("Dataset access — JD Cloud login required", { "JD Cloud portal": "https://robotdata-market.jdcloud.com/console/market" }, { availability: "JD Cloud account login required" })
+  ],
+  egomagic: [
+    egoResource("Dataset access — completed form required", {
+      "Request form (DOCX)": "https://zenodo.org/records/19239155/files/dataset_access_request_form.docx?download=1",
+      "File manifest": "https://zenodo.org/records/19239155/files/download-file-list.txt?download=1",
+      README: "https://zenodo.org/records/19239155/files/README.md?download=1"
+    }, {
+      availability: "Completed access request form required"
+    })
+  ],
+  egoverse: [
+    egoResource("Episode metadata", { Notebook: "https://github.com/GaTech-RL2/EgoVerse/blob/main/egomimic/scripts/tutorials/sql_tutorial.ipynb" }),
+    egoResource("Episode data", { "Download script": "https://github.com/GaTech-RL2/EgoVerse/blob/main/egomimic/scripts/data_download/sync_s3.py" })
+  ],
+  "xperience-10m": [
+    egoResource("UUID experience shards", { "HF repository tree": hfDatasetBase(xperience10mRepo) })
+  ]
+};
+
+const egoDatasetCitations = {
+  "egohands": String.raw`@InProceedings{Bambach_2015_ICCV,
+  author = {Bambach, Sven and Lee, Stefan and Crandall, David J. and Yu, Chen},
+  title = {Lending A Hand: Detecting Hands and Recognizing Activities in Complex Egocentric Interactions},
+  booktitle = {Proceedings of the IEEE International Conference on Computer Vision (ICCV)},
+  month = {December},
+  year = {2015}
+}`,
+  "krishnacam": String.raw`@inproceedings{krishna-wacv2016,
+  title = {KrishnaCam: Using a Longitudinal, Single-Person, Egocentric Dataset for Scene Understanding Tasks},
+  author = {Krishna Kumar Singh and Kayvon Fatahalian and Alexei A. Efros},
+  booktitle = {IEEE Winter Conference on Applications of Computer Vision (WACV)},
+  year = {2016}
+}`,
+  "fpha": String.raw`@misc{fpha2017,
+      title={First-Person Hand Action Benchmark with RGB-D Videos and 3D Hand Pose Annotations},
+      author={Guillermo Garcia-Hernando and Shanxin Yuan and Seungryul Baek and Tae-Kyun Kim},
+      year={2018},
+      eprint={1704.02463},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/1704.02463},
+}`,
+  "thu-read": String.raw`@inproceedings{Tang2017THUREAD,
+  author = {Yansong Tang and Yi Tian and Jiwen Lu and Jianjiang Feng and Jie Zhou},
+  title = {Action Recognition in RGB-D Egocentric Videos},
+  booktitle = {2017 IEEE International Conference on Image Processing (ICIP)},
+  pages = {3410--3414},
+  year = {2017},
+  doi = {10.1109/ICIP.2017.8296915}
+}`,
+  "charades-ego": String.raw`@misc{sigurdsson2018charadesego,
+      title={Charades-Ego: A Large-Scale Dataset of Paired Third and First Person Videos},
+      author={Gunnar A. Sigurdsson and Abhinav Gupta and Cordelia Schmid and Ali Farhadi and Karteek Alahari},
+      year={2018},
+      eprint={1804.09626},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/1804.09626},
+}`,
+  "egtea-gaze-plus": String.raw`@misc{li2020eye,
+  title = {In the Eye of the Beholder: Gaze and Actions in First Person Video},
+  author = {Yin Li and Miao Liu and James M. Rehg},
+  year = {2020},
+  eprint = {2006.00626},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.CV},
+  url = {https://arxiv.org/abs/2006.00626}
+}`,
+  "epic-kitchens-v1": String.raw`@misc{Damen2018EPICKITCHENS,
+      title={Scaling Egocentric Vision: The EPIC-KITCHENS Dataset},
+      author={Dima Damen and Hazel Doughty and Giovanni Maria Farinella and Sanja Fidler and Antonino Furnari and Evangelos Kazakos and Davide Moltisanti and Jonathan Munro and Toby Perrett and Will Price and Michael Wray},
+      year={2018},
+      eprint={1804.02748},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/1804.02748},
+}`,
+  "epic-kitchens-100": String.raw`@misc{damen2020rescaling,
+      title={Rescaling Egocentric Vision},
+      author={Dima Damen and Hazel Doughty and Giovanni Maria Farinella and Antonino Furnari and Evangelos Kazakos and Jian Ma and Davide Moltisanti and Jonathan Munro and Toby Perrett and Will Price and Michael Wray},
+      year={2021},
+      eprint={2006.13256},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      doi={https://doi.org/10.5523/bris.2g1n6qdydwa9u22shpxqzp0t8m},
+      url={https://arxiv.org/abs/2006.13256},
+}`,
+  "ego4d": String.raw`@misc{grauman2022ego4d,
+      title={Ego4D: Around the World in 3,000 Hours of Egocentric Video},
+      author={Kristen Grauman and Andrew Westbury and Eugene Byrne and Zachary Chavis and Antonino Furnari and Rohit Girdhar and Jackson Hamburger and Hao Jiang and Miao Liu and Xingyu Liu and Miguel Martin and Tushar Nagarajan and Ilija Radosavovic and Santhosh Kumar Ramakrishnan and Fiona Ryan and Jayant Sharma and Michael Wray and Mengmeng Xu and Eric Zhongcong Xu and Chen Zhao and Siddhant Bansal and Dhruv Batra and Vincent Cartillier and Sean Crane and Tien Do and Morrie Doulaty and Akshay Erapalli and Christoph Feichtenhofer and Adriano Fragomeni and Qichen Fu and Abrham Gebreselasie and Cristina Gonzalez and James Hillis and Xuhua Huang and Yifei Huang and Wenqi Jia and Weslie Khoo and Jachym Kolar and Satwik Kottur and Anurag Kumar and Federico Landini and Chao Li and Yanghao Li and Zhenqiang Li and Karttikeya Mangalam and Raghava Modhugu and Jonathan Munro and Tullie Murrell and Takumi Nishiyasu and Will Price and Paola Ruiz Puentes and Merey Ramazanova and Leda Sari and Kiran Somasundaram and Audrey Southerland and Yusuke Sugano and Ruijie Tao and Minh Vo and Yuchen Wang and Xindi Wu and Takuma Yagi and Ziwei Zhao and Yunyi Zhu and Pablo Arbelaez and David Crandall and Dima Damen and Giovanni Maria Farinella and Christian Fuegen and Bernard Ghanem and Vamsi Krishna Ithapu and C. V. Jawahar and Hanbyul Joo and Kris Kitani and Haizhou Li and Richard Newcombe and Aude Oliva and Hyun Soo Park and James M. Rehg and Yoichi Sato and Jianbo Shi and Mike Zheng Shou and Antonio Torralba and Lorenzo Torresani and Mingfei Yan and Jitendra Malik},
+      year={2022},
+      eprint={2110.07058},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2110.07058},
+}`,
+  "h2o": String.raw`@misc{kwon2021h2o,
+      title={H2O: Two Hands Manipulating Objects for First Person Interaction Recognition},
+      author={Taein Kwon and Bugra Tekin and Jan Stuhmer and Federica Bogo and Marc Pollefeys},
+      year={2021},
+      eprint={2104.11181},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2104.11181},
+}`,
+  "assembly101": String.raw`@misc{sener2022assembly101,
+      title={Assembly101: A Large-Scale Multi-View Video Dataset for Understanding Procedural Activities},
+      author={Fadime Sener and Dibyadip Chatterjee and Daniel Shelepov and Kun He and Dipika Singhania and Robert Wang and Angela Yao},
+      year={2022},
+      eprint={2203.14712},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2203.14712},
+}`,
+  "hoi4d": String.raw`@misc{liu2022hoi4d,
+      title={HOI4D: A 4D Egocentric Dataset for Category-Level Human-Object Interaction},
+      author={Yunze Liu and Yun Liu and Che Jiang and Kangbo Lyu and Weikang Wan and Hao Shen and Boqiang Liang and Zhoujie Fu and He Wang and Li Yi},
+      year={2024},
+      eprint={2203.01577},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2203.01577},
+}`,
+  "arctic": String.raw`@misc{fan2023arctic,
+      title={ARCTIC: A Dataset for Dexterous Bimanual Hand-Object Manipulation},
+      author={Zicong Fan and Omid Taheri and Dimitrios Tzionas and Muhammed Kocabas and Manuel Kaufmann and Michael J. Black and Otmar Hilliges},
+      year={2023},
+      eprint={2204.13662},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2204.13662},
+}`,
+  "assemblyhands": String.raw`@misc{ohkawa2023assemblyhands,
+      title={AssemblyHands: Towards Egocentric Activity Understanding via 3D Hand Pose Estimation},
+      author={Takehiko Ohkawa and Kun He and Fadime Sener and Tomas Hodan and Luan Tran and Cem Keskin},
+      year={2023},
+      eprint={2304.12301},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2304.12301},
+}`,
+  "ego-exo4d": String.raw`@misc{grauman2024egoexo4d,
+      title={Ego-Exo4D: Understanding Skilled Human Activity from First- and Third-Person Perspectives},
+      author={Kristen Grauman and Andrew Westbury and Lorenzo Torresani and Kris Kitani and Jitendra Malik and Triantafyllos Afouras and Kumar Ashutosh and Vijay Baiyya and Siddhant Bansal and Bikram Boote and Eugene Byrne and Zach Chavis and Joya Chen and Feng Cheng and Fu-Jen Chu and Sean Crane and Avijit Dasgupta and Jing Dong and Maria Escobar and Cristhian Forigua and Abrham Gebreselasie and Sanjay Haresh and Jing Huang and Md Mohaiminul Islam and Suyog Jain and Rawal Khirodkar and Devansh Kukreja and Kevin J Liang and Jia-Wei Liu and Sagnik Majumder and Yongsen Mao and Miguel Martin and Effrosyni Mavroudi and Tushar Nagarajan and Francesco Ragusa and Santhosh Kumar Ramakrishnan and Luigi Seminara and Arjun Somayazulu and Yale Song and Shan Su and Zihui Xue and Edward Zhang and Jinxu Zhang and Angela Castillo and Changan Chen and Xinzhu Fu and Ryosuke Furuta and Cristina Gonzalez and Prince Gupta and Jiabo Hu and Yifei Huang and Yiming Huang and Weslie Khoo and Anush Kumar and Robert Kuo and Sach Lakhavani and Miao Liu and Mi Luo and Zhengyi Luo and Brighid Meredith and Austin Miller and Oluwatumininu Oguntola and Xiaqing Pan and Penny Peng and Shraman Pramanick and Merey Ramazanova and Fiona Ryan and Wei Shan and Kiran Somasundaram and Chenan Song and Audrey Southerland and Masatoshi Tateno and Huiyu Wang and Yuchen Wang and Takuma Yagi and Mingfei Yan and Xitong Yang and Zecheng Yu and Shengxin Cindy Zha and Chen Zhao and Ziwei Zhao and Zhifan Zhu and Jeff Zhuo and Pablo Arbelaez and Gedas Bertasius and David Crandall and Dima Damen and Jakob Engel and Giovanni Maria Farinella and Antonino Furnari and Bernard Ghanem and Judy Hoffman and C. V. Jawahar and Richard Newcombe and Hyun Soo Park and James M. Rehg and Yoichi Sato and Manolis Savva and Jianbo Shi and Mike Zheng Shou and Michael Wray},
+      year={2024},
+      eprint={2311.18259},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2311.18259},
+}`,
+  "enigma-51": String.raw`@misc{enigma512023,
+      title={ENIGMA-51: Towards a Fine-Grained Understanding of Human-Object Interactions in Industrial Scenarios},
+      author={Francesco Ragusa and Rosario Leonardi and Michele Mazzamuto and Claudia Bonanno and Rosario Scavo and Antonino Furnari and Giovanni Maria Farinella},
+      year={2023},
+      eprint={2309.14809},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2309.14809},
+}`,
+  "holoassist": String.raw`@misc{wang2023holoassist,
+      title={HoloAssist: an Egocentric Human Interaction Dataset for Interactive AI Assistants in the Real World},
+      author={Xin Wang and Taein Kwon and Mahdi Rad and Bowen Pan and Ishani Chakraborty and Sean Andrist and Dan Bohus and Ashley Feniello and Bugra Tekin and Felipe Vieira Frujeri and Neel Joshi and Marc Pollefeys},
+      year={2023},
+      eprint={2309.17024},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2309.17024},
+}`,
+  "egoexo-fitness": String.raw`@misc{li2024egoexofitness,
+      title={EgoExo-Fitness: Towards Egocentric and Exocentric Full-Body Action Understanding},
+      author={Yuan-Ming Li and Wei-Jin Huang and An-Lan Wang and Ling-An Zeng and Jing-Ke Meng and Wei-Shi Zheng},
+      year={2024},
+      eprint={2406.08877},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2406.08877},
+}`,
+  "egoexolearn": String.raw`@misc{huang2024egoexolearn,
+      title={EgoExoLearn: A Dataset for Bridging Asynchronous Ego- and Exo-centric View of Procedural Activities in Real World},
+      author={Yifei Huang and Guo Chen and Jilan Xu and Mingfang Zhang and Lijin Yang and Baoqi Pei and Hongjie Zhang and Lu Dong and Yali Wang and Limin Wang and Yu Qiao},
+      year={2025},
+      eprint={2403.16182},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2403.16182},
+}`,
+  "egomimic": String.raw`@misc{egomimic2024,
+      title={EgoMimic: Scaling Imitation Learning via Egocentric Video},
+      author={Simar Kareer and Dhruv Patel and Ryan Punamiya and Pranay Mathur and Shuo Cheng and Chen Wang and Judy Hoffman and Danfei Xu},
+      year={2024},
+      eprint={2410.24221},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2410.24221},
+}`,
+  "egosurgery": String.raw`@misc{egosurgeryphasetoolhts2024,
+      title={EgoSurgery-Phase: A Dataset of Surgical Phase Recognition from Egocentric Open Surgery Videos},
+      author={Ryo Fujii and Masashi Hatano and Hideo Saito and Hiroki Kajita},
+      year={2024},
+      eprint={2405.19644},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2405.19644},
+}`,
+  "hot3d": String.raw`@misc{banerjee2024hot3d,
+      title={Introducing HOT3D: An Egocentric Dataset for 3D Hand and Object Tracking},
+      author={Prithviraj Banerjee and Sindi Shkodrani and Pierre Moulon and Shreyas Hampali and Fan Zhang and Jade Fountain and Edward Miller and Selen Basol and Richard Newcombe and Robert Wang and Jakob Julian Engel and Tomas Hodan},
+      year={2024},
+      eprint={2406.09598},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2406.09598},
+}`,
+  "industreal": String.raw`@misc{industreal2024,
+      title={IndustReal: A Dataset for Procedure Step Recognition Handling Execution Errors in Egocentric Videos in an Industrial-Like Setting},
+      author={Tim J. Schoonbeek and Tim Houben and Hans Onvlee and Peter H. N. de With and Fons van der Sommen},
+      year={2023},
+      eprint={2310.17323},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2310.17323},
+}`,
+  "nymeria": String.raw`@misc{ma2024nymeria,
+      title={Nymeria: A Massive Collection of Multimodal Egocentric Daily Motion in the Wild},
+      author={Lingni Ma and Yuting Ye and Fangzhou Hong and Vladimir Guzov and Yifeng Jiang and Rowan Postyeni and Luis Pesqueira and Alexander Gamino and Vijay Baiyya and Hyo Jin Kim and Kevin Bailey and David Soriano Fosas and C. Karen Liu and Ziwei Liu and Jakob Engel and Renzo De Nardi and Richard Newcombe},
+      year={2024},
+      eprint={2406.09905},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2406.09905},
+}`,
+  "egodex": String.raw`@misc{hoque2026egodex,
+      title={EgoDex: Learning Dexterous Manipulation from Large-Scale Egocentric Video},
+      author={Ryan Hoque and Peide Huang and David J. Yoon and Mouli Sivapurapu and Jian Zhang},
+      year={2026},
+      eprint={2505.11709},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2505.11709},
+}`,
+  "egolife": String.raw`@misc{egolife2025,
+      title={EgoLife: Towards Egocentric Life Assistant},
+      author={Jingkang Yang and Shuai Liu and Hongming Guo and Yuhao Dong and Xiamengwei Zhang and Sicheng Zhang and Pengyun Wang and Zitang Zhou and Binzhu Xie and Ziyue Wang and Bei Ouyang and Zhengyu Lin and Marco Cominelli and Zhongang Cai and Yuanhan Zhang and Peiyuan Zhang and Fangzhou Hong and Joerg Widmer and Francesco Gringoli and Lei Yang and Bo Li and Ziwei Liu},
+      year={2026},
+      eprint={2503.03803},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2503.03803},
+}`,
+  "egome": String.raw`@misc{qiu2025egome,
+      title={EgoMe: A New Dataset and Challenge for Following Me via Egocentric View in Real World},
+      author={Heqian Qiu and Zhaofeng Shi and Lanxiao Wang and Huiyu Xiong and Xiang Li and Hongliang Li},
+      year={2025},
+      eprint={2501.19061},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2501.19061},
+}`,
+  "hd-epic": String.raw`@misc{perrett2025hdepic,
+      title={HD-EPIC: A Highly-Detailed Egocentric Video Dataset},
+      author={Toby Perrett and Ahmad Darkhalil and Saptarshi Sinha and Omar Emara and Sam Pollard and Kranti Parida and Kaiting Liu and Prajwal Gatti and Siddhant Bansal and Kevin Flanagan and Jacob Chalk and Zhifan Zhu and Rhodri Guerrier and Fahd Abdelazim and Bin Zhu and Davide Moltisanti and Michael Wray and Hazel Doughty and Dima Damen},
+      year={2025},
+      eprint={2502.04144},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2502.04144},
+}`,
+  "indego": String.raw`@misc{chavan2025indegod,
+      title={IndEgo: A Dataset of Industrial Scenarios and Collaborative Work for Egocentric Assistants},
+      author={Vivek Chavan and Yasmina Imgrund and Tung Dao and Sanwantri Bai and Bosong Wang and Ze Lu and Oliver Heimann and Jörg Krüger},
+      year={2025},
+      eprint={2511.19684},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2511.19684},
+}`,
+  "openego": String.raw`@misc{jawaid2025openego,
+      title={OpenEgo: A Large-Scale Multimodal Egocentric Dataset for Dexterous Manipulation},
+      author={Ahad Jawaid and Yu Xiang},
+      year={2025},
+      eprint={2509.05513},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2509.05513},
+}`,
+  "taste-rob": String.raw`@misc{zhao2025tasterob,
+      title={TASTE-Rob: Advancing Video Generation of Task-Oriented Hand-Object Interaction for Generalizable Robotic Manipulation},
+      author={Hongxiang Zhao and Xingchen Liu and Mutian Xu and Yiming Hao and Weikai Chen and Xiaoguang Han},
+      year={2025},
+      eprint={2503.11423},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2503.11423},
+}`,
+  "childlens": String.raw`@article{childlens2026, title={ChildLens: An egocentric video dataset for activity analysis in children}, volume={58}, ISSN={1554-3528}, url={http://dx.doi.org/10.3758/s13428-026-02982-6}, DOI={10.3758/s13428-026-02982-6}, number={5}, journal={Behavior Research Methods}, publisher={Springer Science and Business Media LLC}, author={Suffo, Nele-Pauline and Martin, Pierre-Etienne and Suffo, Anas and Haun, Daniel and Bohn, Manuel}, year={2026}, month=Apr }`,
+  "ego-1k": String.raw`@misc{ego1k2026,
+      title={Ego-1K -- A Large-Scale Multiview Video Dataset for Egocentric Vision},
+      author={Jae Yong Lee and Daniel Scharstein and Akash Bapat and Hao Hu and Andrew Fu and Haoru Zhao and Paul Sammut and Xiang Li and Stephen Jeapes and Anik Gupta and Lior David and Saketh Madhuvarasu and Jay Girish Joshi and Jason Wither},
+      year={2026},
+      eprint={2603.13741},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2603.13741},
+}`,
+  "egolive": String.raw`@misc{li2026egolive,
+      title={EgoLive: A Large-Scale Egocentric Dataset from Real-World Human Tasks},
+      author={Yihang Li and Xuelong Wei and Jingzhou Luo and Yingjing Xiao and Yibo Bai and Guangyuan Zhou and Teng Zou and Chenguang Gui and Jiajun Wen and He Zhang and Kangliang Chen and Xing Pan and Shuaiyan Liu and Daming Wang and Tao An and Jiayi Li and Shibo Jin and Wanwan Zhang and Tianyu Wang and Boren Wei and Zhixuan Huang and Fangsheng Liu and Ruodai Li and Hui Zhang and Anson Li and Yicheng Gong and Peng Cao and Jiaming Liang and Liang Lin},
+      year={2026},
+      eprint={2604.23570},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2604.23570},
+}`,
+  "egomagic": String.raw`@misc{egomagic2026,
+      title={EgoMAGIC- An Egocentric Video Field Medicine Dataset for Training Perception Algorithms},
+      author={Brian VanVoorst and Nicholas Walczak and Christopher Gilleo and Charles Meissner and Fabio Felix and Iran Roman and Bea Steers and Claudio Silva and Yuhan Shen and Zijia Lu and Shih-Po Lee and Ehsan Elhamifar},
+      year={2026},
+      eprint={2604.22036},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2604.22036},
+}`,
+  "egoverse": String.raw`@misc{punamiya2026egoverse,
+      title={EgoVerse: An Egocentric Human Dataset for Robot Learning from Around the World},
+      author={Ryan Punamiya and Simar Kareer and Zeyi Liu and Josh Citron and Ri-Zhao Qiu and Xiongyi Cai and Alexey Gavryushin and Jiaqi Chen and Davide Liconti and Lawrence Y. Zhu and Patcharapong Aphiwetsa and Baoyu Li and Aniketh Cheluva and Pranav Kuppili and Yangcen Liu and Dhruv Patel and Aidan Gao and Hye-Young Chung and Ryan Co and Renee Zbizika and Jeff Liu and Xiaomeng Xu and Haoyu Xiong and Geng Chen and Sebastiano Oliani and Chenyu Yang and Xi Wang and James Fort and Richard Newcombe and Josh Gao and Jason Chong and Garrett Matsuda and Aseem Doriwala and Marc Pollefeys and Robert Katzschmann and Xiaolong Wang and Shuran Song and Judy Hoffman and Danfei Xu},
+      year={2026},
+      eprint={2604.07607},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2604.07607},
+}`,
+  "xperience-10m": String.raw`@misc{xperience10m2026,
+  title = {Xperience-10M | Ropedia Dataset Release},
+  year = {2026},
+  url = {https://ropedia.com/blog/20260316\_xperience\_10m.html},
+  note = {BibTeX generated from citation metadata; verify manually}
+}`
+};
+
+const egoDatasetAccessLinkLabels = {
+  fpha: "Access Form",
+  ego4d: "Access Form",
+  h2o: "Register / Download",
+  arctic: "Login / Download",
+  "ego-exo4d": "Access Form",
+  egosurgery: "Access Form",
+  egolive: "Login / Dataset Portal",
+  egomagic: "Request Form"
+};
+
+const makeEgoDatasetSection = ({
+  id,
+  name,
+  year,
+  observations,
+  summary,
+  paper,
+  project,
+  dataLinks,
+  license = "TBD"
+}) => {
+  const resourceSpecs = egoDatasetResourceSpecs[id] || [
+    egoResource(`${name} dataset`, dataLinks)
+  ];
+  const datasetUrl = resourceSpecs
+    .flatMap((resource) => Object.values(resource.dataLinks || {}))
+    .find(Boolean);
+  const datasetLinkLabel = egoDatasetAccessLinkLabels[id] || "Dataset";
+  const projectLinks = {
+    ...(datasetUrl ? { [datasetLinkLabel]: datasetUrl } : {}),
+    ...(project ? { Project: project } : {}),
+    ...(paper && paper !== project ? { Paper: paper } : {})
+  };
+
+  return {
+    id,
+    project: name,
+    year,
+    citation: egoDatasetCitations[id],
+    summary: `${summary} ${resourceSpecs.length > 1
+      ? `Indexed into ${resourceSpecs.length} rows using the official release's task, split, modality, or resource structure.`
+      : datasetUrl
+        ? "The official release exposes one stable archive, gated entry point, or non-semantic shard collection, so it remains one resource row."
+        : "The official source does not currently expose a downloadable resource, so its release status is recorded in one row."}`,
+    projectLinks,
+    defaultOpen: false,
+    rows: resourceSpecs.map((resource) => ({
+      task: resource.task,
+      dataLinks: resource.dataLinks,
+      observations: resource.observations || observations,
+      actions: resource.actions || ["TBD"],
+      demos: resource.demos || "TBD",
+      envs: resource.envs || name,
+      license: resource.license || license,
+      ...(resource.availability ? { availability: resource.availability } : {})
+    }))
+  };
+};
+
+const egoDataSections = egoDatasetRecords.map(makeEgoDatasetSection);
+
 const datasetGroups = [
   {
     id: "robot-data",
@@ -2634,17 +3362,7 @@ const datasetGroups = [
     source: "ego",
     summary: "Ego-centric human demonstration data for robot learning and observation modeling.",
     defaultOpen: false,
-    rows: [
-      {
-        task: "Ego-centric Demonstrations",
-        dataLinks: {},
-        observations: ["Ego RGB", "Hand Pose", "Language"],
-        actions: ["Human Action", "Object Interaction"],
-        demos: "TBD",
-        envs: "TBD",
-        license: "TBD"
-      }
-    ]
+    sections: egoDataSections
   },
   {
     id: "general-data",
@@ -2893,7 +3611,7 @@ const renderTaskGroups = () => {
         <p>${group.summary}</p>
         <div class="task-meta">
           <span class="pill ${group.source}">${formatSource(group.source)}</span>
-          <span class="pill">${rows.length} task rows</span>
+          <span class="pill">${rows.length} task ${rows.length === 1 ? "row" : "rows"}</span>
           <span class="pill">${formatNumber(demos)} demos</span>
         </div>
       </article>
@@ -2927,7 +3645,7 @@ const renderRows = () => {
             <span class="dataset-name">${group.project}</span>
             ${yearPill(group)}
             <span class="pill ${group.source}">${formatSource(group.source)}</span>
-            <span class="dataset-sub">${group.rows.length} task rows</span>
+            <span class="dataset-sub">${group.rows.length} task ${group.rows.length === 1 ? "row" : "rows"}</span>
           </button>
           <span class="group-summary">${group.summary}</span>
           ${projectLinkList(group.projectLinks)}
@@ -2960,7 +3678,7 @@ const renderRows = () => {
               <span class="chevron" aria-hidden="true">${isSectionOpen ? "v" : ">"}</span>
               <span class="dataset-name">${section.project}</span>
               ${yearPill(section)}
-              <span class="dataset-sub">${section.rows.length} task rows</span>
+              <span class="dataset-sub">${section.rows.length} task ${section.rows.length === 1 ? "row" : "rows"}</span>
             </button>
             <span class="group-summary">${section.summary}</span>
             ${projectLinkList(section.projectLinks)}
@@ -2986,7 +3704,7 @@ const renderRows = () => {
             <button class="subcategory-toggle" type="button" data-section-group="${sectionGroup.id}" aria-expanded="${isSectionGroupOpen}">
               <span class="chevron" aria-hidden="true">${isSectionGroupOpen ? "v" : ">"}</span>
               <span class="dataset-name">${sectionGroup.project}</span>
-              <span class="dataset-sub">${sectionGroup.rows.length} task rows</span>
+              <span class="dataset-sub">${sectionGroup.rows.length} task ${sectionGroup.rows.length === 1 ? "row" : "rows"}</span>
             </button>
             <span class="group-summary">${sectionGroup.summary}</span>
           </td>
