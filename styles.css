@@ -408,6 +408,7 @@ tbody tr:hover {
 }
 
 .group-toggle,
+.subcategory-toggle,
 .section-toggle {
   display: inline-flex;
   align-items: center;
@@ -422,6 +423,23 @@ tbody tr:hover {
   text-align: left;
 }
 
+.subcategory-row {
+  background: #f8fbf9;
+}
+
+.subcategory-row:hover {
+  background: #f1f7f4;
+}
+
+.subcategory-row td {
+  padding: 14px 18px 14px 32px;
+  border-bottom-color: #dfe9e5;
+}
+
+.subcategory-toggle .dataset-name {
+  font-weight: 780;
+}
+
 .section-row {
   background: #fbfcfb;
 }
@@ -433,6 +451,10 @@ tbody tr:hover {
 .section-row td {
   padding: 14px 18px 14px 42px;
   border-bottom-color: #e7eeeb;
+}
+
+.subgroup-section-row td {
+  padding-left: 62px;
 }
 
 .section-toggle .dataset-name {
@@ -482,6 +504,10 @@ tbody tr:hover {
 
 .section-task-row td:first-child {
   padding-left: 72px;
+}
+
+.subgroup-section-row + .section-task-row td:first-child {
+  padding-left: 92px;
 }
 
 .task-name {

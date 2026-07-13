@@ -73,6 +73,547 @@ const hfDatasetBase = (repo) => `https://huggingface.co/datasets/${repo}`;
 const hfDatasetTree = (repo, path = "") => `${hfDatasetBase(repo)}/tree/main${path ? `/${path}` : ""}`;
 const hfDatasetBlob = (repo, path) => `${hfDatasetBase(repo)}/blob/main/${path}`;
 
+const roboVerseRepo = "RoboVerseOrg/roboverse_data";
+const genManipRepo = "Axi404/GenManip-Dataset-OOC_Bench";
+const roboCerebraRepo = "qiukingballball/RoboCerebra";
+const roboTwin2Repo = "TianxingChen/RoboTwin2.0";
+const vlaBenchPrimitiveRepo = "VLABench/vlabench_primitive_ft_lerobot_video";
+const vlaBenchVlmEvalRepo = "VLABench/vlm_evaluation_v1.0";
+const colosseumRepo = "colosseum/colosseum-challenge";
+const liberoRepo = "yifengzhu-hf/LIBERO-datasets";
+const msHabRepos = {
+  TidyHouse: "arth-shukla/MS-HAB-TidyHouse",
+  PrepareGroceries: "arth-shukla/MS-HAB-PrepareGroceries",
+  SetTable: "arth-shukla/MS-HAB-SetTable"
+};
+const bicoordRepo = "GradiusTwinbee/BiCoord";
+const liberoSuiteFiles = [
+  {
+    suite: "LIBERO-Spatial",
+    directory: "libero_spatial",
+    files: `
+pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate_demo.hdf5
+pick_up_the_black_bowl_from_table_center_and_place_it_on_the_plate_demo.hdf5
+pick_up_the_black_bowl_in_the_top_drawer_of_the_wooden_cabinet_and_place_it_on_the_plate_demo.hdf5
+pick_up_the_black_bowl_next_to_the_cookie_box_and_place_it_on_the_plate_demo.hdf5
+pick_up_the_black_bowl_next_to_the_plate_and_place_it_on_the_plate_demo.hdf5
+pick_up_the_black_bowl_next_to_the_ramekin_and_place_it_on_the_plate_demo.hdf5
+pick_up_the_black_bowl_on_the_cookie_box_and_place_it_on_the_plate_demo.hdf5
+pick_up_the_black_bowl_on_the_ramekin_and_place_it_on_the_plate_demo.hdf5
+pick_up_the_black_bowl_on_the_stove_and_place_it_on_the_plate_demo.hdf5
+pick_up_the_black_bowl_on_the_wooden_cabinet_and_place_it_on_the_plate_demo.hdf5
+`.trim().split("\n")
+  },
+  {
+    suite: "LIBERO-Object",
+    directory: "libero_object",
+    files: `
+pick_up_the_alphabet_soup_and_place_it_in_the_basket_demo.hdf5
+pick_up_the_bbq_sauce_and_place_it_in_the_basket_demo.hdf5
+pick_up_the_butter_and_place_it_in_the_basket_demo.hdf5
+pick_up_the_chocolate_pudding_and_place_it_in_the_basket_demo.hdf5
+pick_up_the_cream_cheese_and_place_it_in_the_basket_demo.hdf5
+pick_up_the_ketchup_and_place_it_in_the_basket_demo.hdf5
+pick_up_the_milk_and_place_it_in_the_basket_demo.hdf5
+pick_up_the_orange_juice_and_place_it_in_the_basket_demo.hdf5
+pick_up_the_salad_dressing_and_place_it_in_the_basket_demo.hdf5
+pick_up_the_tomato_sauce_and_place_it_in_the_basket_demo.hdf5
+`.trim().split("\n")
+  },
+  {
+    suite: "LIBERO-Goal",
+    directory: "libero_goal",
+    files: `
+open_the_middle_drawer_of_the_cabinet_demo.hdf5
+open_the_top_drawer_and_put_the_bowl_inside_demo.hdf5
+push_the_plate_to_the_front_of_the_stove_demo.hdf5
+put_the_bowl_on_the_plate_demo.hdf5
+put_the_bowl_on_the_stove_demo.hdf5
+put_the_bowl_on_top_of_the_cabinet_demo.hdf5
+put_the_cream_cheese_in_the_bowl_demo.hdf5
+put_the_wine_bottle_on_the_rack_demo.hdf5
+put_the_wine_bottle_on_top_of_the_cabinet_demo.hdf5
+turn_on_the_stove_demo.hdf5
+`.trim().split("\n")
+  },
+  {
+    suite: "LIBERO-100 / LIBERO-90",
+    directory: "libero_90",
+    files: `
+KITCHEN_SCENE10_close_the_top_drawer_of_the_cabinet_and_put_the_black_bowl_on_top_of_it_demo.hdf5
+KITCHEN_SCENE10_close_the_top_drawer_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE10_put_the_black_bowl_in_the_top_drawer_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE10_put_the_butter_at_the_back_in_the_top_drawer_of_the_cabinet_and_close_it_demo.hdf5
+KITCHEN_SCENE10_put_the_butter_at_the_front_in_the_top_drawer_of_the_cabinet_and_close_it_demo.hdf5
+KITCHEN_SCENE10_put_the_chocolate_pudding_in_the_top_drawer_of_the_cabinet_and_close_it_demo.hdf5
+KITCHEN_SCENE1_open_the_bottom_drawer_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE1_open_the_top_drawer_of_the_cabinet_and_put_the_bowl_in_it_demo.hdf5
+KITCHEN_SCENE1_open_the_top_drawer_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE1_put_the_black_bowl_on_the_plate_demo.hdf5
+KITCHEN_SCENE1_put_the_black_bowl_on_top_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE2_open_the_top_drawer_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE2_put_the_black_bowl_at_the_back_on_the_plate_demo.hdf5
+KITCHEN_SCENE2_put_the_black_bowl_at_the_front_on_the_plate_demo.hdf5
+KITCHEN_SCENE2_put_the_middle_black_bowl_on_the_plate_demo.hdf5
+KITCHEN_SCENE2_put_the_middle_black_bowl_on_top_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE2_stack_the_black_bowl_at_the_front_on_the_black_bowl_in_the_middle_demo.hdf5
+KITCHEN_SCENE2_stack_the_middle_black_bowl_on_the_back_black_bowl_demo.hdf5
+KITCHEN_SCENE3_put_the_frying_pan_on_the_stove_demo.hdf5
+KITCHEN_SCENE3_put_the_moka_pot_on_the_stove_demo.hdf5
+KITCHEN_SCENE3_turn_on_the_stove_and_put_the_frying_pan_on_it_demo.hdf5
+KITCHEN_SCENE3_turn_on_the_stove_demo.hdf5
+KITCHEN_SCENE4_close_the_bottom_drawer_of_the_cabinet_and_open_the_top_drawer_demo.hdf5
+KITCHEN_SCENE4_close_the_bottom_drawer_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE4_put_the_black_bowl_on_top_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE4_put_the_wine_bottle_in_the_bottom_drawer_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE4_put_the_wine_bottle_on_the_wine_rack_demo.hdf5
+KITCHEN_SCENE5_close_the_top_drawer_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE5_put_the_black_bowl_in_the_top_drawer_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE5_put_the_black_bowl_on_the_plate_demo.hdf5
+KITCHEN_SCENE5_put_the_black_bowl_on_top_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE5_put_the_ketchup_in_the_top_drawer_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE6_close_the_microwave_demo.hdf5
+KITCHEN_SCENE6_put_the_yellow_and_white_mug_to_the_front_of_the_white_mug_demo.hdf5
+KITCHEN_SCENE7_open_the_microwave_demo.hdf5
+KITCHEN_SCENE7_put_the_white_bowl_on_the_plate_demo.hdf5
+KITCHEN_SCENE7_put_the_white_bowl_to_the_right_of_the_plate_demo.hdf5
+KITCHEN_SCENE8_put_the_right_moka_pot_on_the_stove_demo.hdf5
+KITCHEN_SCENE8_turn_off_the_stove_demo.hdf5
+KITCHEN_SCENE9_put_the_frying_pan_on_the_cabinet_shelf_demo.hdf5
+KITCHEN_SCENE9_put_the_frying_pan_on_top_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE9_put_the_frying_pan_under_the_cabinet_shelf_demo.hdf5
+KITCHEN_SCENE9_put_the_white_bowl_on_top_of_the_cabinet_demo.hdf5
+KITCHEN_SCENE9_turn_on_the_stove_and_put_the_frying_pan_on_it_demo.hdf5
+KITCHEN_SCENE9_turn_on_the_stove_demo.hdf5
+LIVING_ROOM_SCENE1_pick_up_the_alphabet_soup_and_put_it_in_the_basket_demo.hdf5
+LIVING_ROOM_SCENE1_pick_up_the_cream_cheese_box_and_put_it_in_the_basket_demo.hdf5
+LIVING_ROOM_SCENE1_pick_up_the_ketchup_and_put_it_in_the_basket_demo.hdf5
+LIVING_ROOM_SCENE1_pick_up_the_tomato_sauce_and_put_it_in_the_basket_demo.hdf5
+LIVING_ROOM_SCENE2_pick_up_the_alphabet_soup_and_put_it_in_the_basket_demo.hdf5
+LIVING_ROOM_SCENE2_pick_up_the_butter_and_put_it_in_the_basket_demo.hdf5
+LIVING_ROOM_SCENE2_pick_up_the_milk_and_put_it_in_the_basket_demo.hdf5
+LIVING_ROOM_SCENE2_pick_up_the_orange_juice_and_put_it_in_the_basket_demo.hdf5
+LIVING_ROOM_SCENE2_pick_up_the_tomato_sauce_and_put_it_in_the_basket_demo.hdf5
+LIVING_ROOM_SCENE3_pick_up_the_alphabet_soup_and_put_it_in_the_tray_demo.hdf5
+LIVING_ROOM_SCENE3_pick_up_the_butter_and_put_it_in_the_tray_demo.hdf5
+LIVING_ROOM_SCENE3_pick_up_the_cream_cheese_and_put_it_in_the_tray_demo.hdf5
+LIVING_ROOM_SCENE3_pick_up_the_ketchup_and_put_it_in_the_tray_demo.hdf5
+LIVING_ROOM_SCENE3_pick_up_the_tomato_sauce_and_put_it_in_the_tray_demo.hdf5
+LIVING_ROOM_SCENE4_pick_up_the_black_bowl_on_the_left_and_put_it_in_the_tray_demo.hdf5
+LIVING_ROOM_SCENE4_pick_up_the_chocolate_pudding_and_put_it_in_the_tray_demo.hdf5
+LIVING_ROOM_SCENE4_pick_up_the_salad_dressing_and_put_it_in_the_tray_demo.hdf5
+LIVING_ROOM_SCENE4_stack_the_left_bowl_on_the_right_bowl_and_place_them_in_the_tray_demo.hdf5
+LIVING_ROOM_SCENE4_stack_the_right_bowl_on_the_left_bowl_and_place_them_in_the_tray_demo.hdf5
+LIVING_ROOM_SCENE5_put_the_red_mug_on_the_left_plate_demo.hdf5
+LIVING_ROOM_SCENE5_put_the_red_mug_on_the_right_plate_demo.hdf5
+LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_demo.hdf5
+LIVING_ROOM_SCENE5_put_the_yellow_and_white_mug_on_the_right_plate_demo.hdf5
+LIVING_ROOM_SCENE6_put_the_chocolate_pudding_to_the_left_of_the_plate_demo.hdf5
+LIVING_ROOM_SCENE6_put_the_chocolate_pudding_to_the_right_of_the_plate_demo.hdf5
+LIVING_ROOM_SCENE6_put_the_red_mug_on_the_plate_demo.hdf5
+LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_demo.hdf5
+STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_front_compartment_of_the_caddy_demo.hdf5
+STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_left_compartment_of_the_caddy_demo.hdf5
+STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_right_compartment_of_the_caddy_demo.hdf5
+STUDY_SCENE1_pick_up_the_yellow_and_white_mug_and_place_it_to_the_right_of_the_caddy_demo.hdf5
+STUDY_SCENE2_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy_demo.hdf5
+STUDY_SCENE2_pick_up_the_book_and_place_it_in_the_front_compartment_of_the_caddy_demo.hdf5
+STUDY_SCENE2_pick_up_the_book_and_place_it_in_the_left_compartment_of_the_caddy_demo.hdf5
+STUDY_SCENE2_pick_up_the_book_and_place_it_in_the_right_compartment_of_the_caddy_demo.hdf5
+STUDY_SCENE3_pick_up_the_book_and_place_it_in_the_front_compartment_of_the_caddy_demo.hdf5
+STUDY_SCENE3_pick_up_the_book_and_place_it_in_the_left_compartment_of_the_caddy_demo.hdf5
+STUDY_SCENE3_pick_up_the_book_and_place_it_in_the_right_compartment_of_the_caddy_demo.hdf5
+STUDY_SCENE3_pick_up_the_red_mug_and_place_it_to_the_right_of_the_caddy_demo.hdf5
+STUDY_SCENE3_pick_up_the_white_mug_and_place_it_to_the_right_of_the_caddy_demo.hdf5
+STUDY_SCENE4_pick_up_the_book_in_the_middle_and_place_it_on_the_cabinet_shelf_demo.hdf5
+STUDY_SCENE4_pick_up_the_book_on_the_left_and_place_it_on_top_of_the_shelf_demo.hdf5
+STUDY_SCENE4_pick_up_the_book_on_the_right_and_place_it_on_the_cabinet_shelf_demo.hdf5
+STUDY_SCENE4_pick_up_the_book_on_the_right_and_place_it_under_the_cabinet_shelf_demo.hdf5
+`.trim().split("\n")
+  },
+  {
+    suite: "LIBERO-100 / LIBERO-10",
+    directory: "libero_10",
+    files: `
+KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it_demo.hdf5
+KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it_demo.hdf5
+KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it_demo.hdf5
+KITCHEN_SCENE8_put_both_moka_pots_on_the_stove_demo.hdf5
+LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket_demo.hdf5
+LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket_demo.hdf5
+LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket_demo.hdf5
+LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate_demo.hdf5
+LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate_demo.hdf5
+STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy_demo.hdf5
+`.trim().split("\n")
+  }
+];
+
+const makeLiberoTask = ({ suite, directory, file }) => ({
+  task: `${suite} / ${file.replace(/_demo\.hdf5$/, "")}`,
+  dataLinks: {
+    HDF5: hfDatasetBlob(liberoRepo, `${directory}/${file}`),
+    "HF suite": hfDatasetTree(liberoRepo, directory)
+  },
+  observations: ["Workspace RGB", "Wrist RGB", "Proprioception", "Language", "PDDL"],
+  actions: ["7D Robot Action"],
+  demos: "50 trajectories",
+  envs: `${suite} / robosuite manipulation task`,
+  license: "CC BY 4.0"
+});
+
+const liberoRows = liberoSuiteFiles.flatMap(({ suite, directory, files }) =>
+  files.map((file) => makeLiberoTask({ suite, directory, file }))
+);
+
+const maniSkillDemoRepo = "haosulab/ManiSkill_Demonstrations";
+const maniSkillDemoTasks = [
+  { env: "AnymalC-Reach-v1", episodes: "1,022 episodes", sources: "rl", controls: "pd_joint_delta_pos" },
+  { env: "DrawTriangle-v1", episodes: "1,000 episodes", sources: "motionplanning", controls: "pd_joint_pos" },
+  { env: "LiftPegUpright-v1", episodes: "2,008 episodes across 2 HDF5 variants", sources: "rl", controls: "pd_ee_delta_pose, pd_joint_delta_pos" },
+  { env: "PegInsertionSide-v1", episodes: "2,000 episodes across 2 HDF5 variants", sources: "motionplanning, rl", controls: "pd_joint_pos, pd_joint_delta_pos" },
+  { env: "PickCube-v1", episodes: "4,042 episodes across 5 HDF5 variants", sources: "motionplanning, rl, teleoperation", controls: "pd_joint_pos, pd_ee_delta_pos, pd_ee_delta_pose, pd_joint_delta_pos" },
+  { env: "PlugCharger-v1", episodes: "1,000 episodes", sources: "motionplanning", controls: "pd_joint_pos" },
+  { env: "PokeCube-v1", episodes: "2,300 episodes across 3 HDF5 variants", sources: "rl", controls: "pd_ee_delta_pos, pd_ee_delta_pose, pd_joint_delta_pos" },
+  { env: "PullCube-v1", episodes: "3,072 episodes across 3 HDF5 variants", sources: "rl", controls: "pd_ee_delta_pos, pd_ee_delta_pose, pd_joint_delta_pos" },
+  { env: "PullCubeTool-v1", episodes: "1,000 episodes", sources: "motionplanning", controls: "pd_joint_pos" },
+  { env: "PushCube-v1", episodes: "4,062 episodes across 4 HDF5 variants", sources: "motionplanning, rl", controls: "pd_joint_pos, pd_ee_delta_pos, pd_ee_delta_pose, pd_joint_delta_pos" },
+  { env: "PushT-v1", episodes: "2,606 episodes across 3 HDF5 variants", sources: "rl", controls: "pd_ee_delta_pos, pd_ee_delta_pose, pd_joint_delta_pos" },
+  { env: "RollBall-v1", episodes: "2,373 episodes across 3 HDF5 variants", sources: "rl", controls: "pd_ee_delta_pos, pd_ee_delta_pose, pd_joint_delta_pos" },
+  { env: "StackCube-v1", episodes: "3,829 episodes across 4 HDF5 variants", sources: "motionplanning, rl", controls: "pd_joint_pos, pd_ee_delta_pos, pd_ee_delta_pose, pd_joint_delta_pos" },
+  { env: "StackPyramid-v1", episodes: "1,000 episodes", sources: "motionplanning", controls: "pd_joint_pos" },
+  { env: "TwoRobotPickCube-v1", episodes: "983 episodes", sources: "rl", controls: "dual Panda pd_joint_delta_pos" },
+  { env: "TwoRobotStackCube-v1", episodes: "1,007 episodes", sources: "rl", controls: "dual Panda pd_joint_delta_pos" }
+];
+
+const makeManiSkillDemoTask = ({ env, episodes, sources, controls }) => ({
+  task: env,
+  dataLinks: {
+    ZIP: hfDatasetBlob(maniSkillDemoRepo, `demos/${env}.zip`),
+    "HF folder": hfDatasetTree(maniSkillDemoRepo, `demos/${env}`)
+  },
+  observations: ["HDF5 Trajectories", "JSON Metadata", "Env States", "Optional Observations", "Sample Videos"],
+  actions: ["Actions [T, A]", controls],
+  demos: episodes,
+  envs: `${env} / ${sources}`,
+  license: "Apache-2.0"
+});
+
+const maniSkillDemoRows = maniSkillDemoTasks.map(makeManiSkillDemoTask);
+
+const furnitureBenchDriveFolder = "https://drive.google.com/drive/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt?usp=sharing";
+const furnitureBenchRowsSpec = [
+  { furniture: "lamp", randomness: "low", demos: 150, avgLength: 594, hours: 4.9, fileId: "1kD9Fxj49Df4mgZPVkBa_b_L3dqzEQROF" },
+  { furniture: "lamp", randomness: "medium", driveRandomness: "med", demos: 150, avgLength: 598, hours: 5.0, fileId: "1awqLazZlNOqDhnOuElttOwDOol9oWY0C" },
+  { furniture: "lamp", randomness: "high", demos: 50, avgLength: 768, hours: 2.1, fileId: "1Ia0SHIACIoqwzVjhc_dgzEMsiKffIO6T" },
+  { furniture: "square_table", randomness: "low", demos: 150, avgLength: 1689, hours: 14.1, fileId: "1ogI5VkFcGeJsFje9_0AS_fFSwhJX6zQR" },
+  { furniture: "square_table", randomness: "medium", driveRandomness: "med", demos: 150, avgLength: 1660, hours: 13.8, fileId: "1T4QLiCaJQjzsLANUR8jPssGsVZFChMog" },
+  { furniture: "square_table", randomness: "high", demos: 50, avgLength: 1682, hours: 4.7, fileId: "1Wq1MVCUSXxi6wJk7CQW-3LMGdUGJdiAR" },
+  { furniture: "desk", randomness: "low", demos: 100, avgLength: 1531, hours: 8.5, fileId: "1aJEqENTUCvnHhoAlwd9rks38YzkgeecL" },
+  { furniture: "desk", randomness: "medium", driveRandomness: "med", demos: 100, avgLength: 1914, hours: 10.6, fileId: "1edLqFAxKRAPcnNgDkRBmw9AilN8zZSqs" },
+  { furniture: "desk", randomness: "high", demos: 50, avgLength: 1687, hours: 4.7, fileId: "1xOhzI96-BORgjyqF7rBdYRPc_-RxYr_Z" },
+  { furniture: "drawer", randomness: "low", demos: 250, avgLength: 571, hours: 7.9, fileId: "121seXYws04z3UowpUdT-7uxg-y0l4Qb2" },
+  { furniture: "drawer", randomness: "medium", driveRandomness: "med", demos: 250, avgLength: 520, hours: 7.2, fileId: "1nFdVpUERi90zNNthfOR2sdYCjrW7Rg_c" },
+  { furniture: "drawer", randomness: "high", demos: 50, avgLength: 781, hours: 2.2, fileId: "1QNqA48y9fFE4251xMmCMaUOdmNcnaZ8T" },
+  { furniture: "cabinet", randomness: "low", demos: 150, avgLength: 883, hours: 7.4, fileId: "1zjMLlRlXVZDGri1QUINV540DTG7-jAa-" },
+  { furniture: "cabinet", randomness: "medium", driveRandomness: "med", demos: 150, avgLength: 814, hours: 6.8, fileId: "1LRexjymeP0szZucTEt40ZL-2VoLYXKKo" },
+  { furniture: "cabinet", randomness: "high", demos: 50, avgLength: 1166, hours: 3.2, fileId: "1RHbo27phzXVJDjMXPI91QKPHWByCSQU4" },
+  { furniture: "round_table", randomness: "low", demos: 100, avgLength: 847, hours: 4.7, fileId: "1SjSg2tzQZ4fsN6z_xLT1vEOuTTzrQCun" },
+  { furniture: "round_table", randomness: "medium", driveRandomness: "med", demos: 100, avgLength: 867, hours: 4.8, fileId: "1gJ_HmhpgE4nJNBMmEKHHx7mKjYUQadRA" },
+  { furniture: "round_table", randomness: "high", demos: 50, avgLength: 1060, hours: 2.9, fileId: "1qS2lIiPdqq8pTJsPN2txU1lzQJ4seWCr" },
+  { furniture: "stool", randomness: "low", demos: 100, avgLength: 1231, hours: 6.8, fileId: "1Z1ewa62pkWehC4biodoDdPfWDJdCNPtb" },
+  { furniture: "stool", randomness: "medium", driveRandomness: "med", demos: 100, avgLength: 1419, hours: 7.9, fileId: "1IstEhReeRri2s2y7vJrcv1oQ3wUm4kqT" },
+  { furniture: "stool", randomness: "high", demos: 50, avgLength: 1273, hours: 3.5, fileId: "1QeEb4Ajz-qN820Y_DVuxU7UdvrZBv7hJ" },
+  { furniture: "chair", randomness: "low", demos: 100, avgLength: 1817, hours: 10.1, fileId: "1swulRnjB7rU1u-TuG6-WOrci9o8WZaEI" },
+  { furniture: "chair", randomness: "medium", driveRandomness: "med", demos: 100, avgLength: 2282, hours: 12.7, fileId: "1wXGloFr4aVJ3ChYz4qKD_zRheuivM9rc" },
+  { furniture: "chair", randomness: "high", demos: 50, avgLength: 2066, hours: 5.7, fileId: "1D8j1s4v9NL02V03PwEU6moOjn9v5qzFn" },
+  { furniture: "one_leg", randomness: "low", demos: 1000, avgLength: 374, hours: 20.8, fileId: "1E121w1Q9-SzFN3Bf6wC_NF-7kDA57RZf" },
+  { furniture: "one_leg", randomness: "medium", driveRandomness: "med", demos: 1000, avgLength: 429, hours: 23.8, fileId: "1zRqpz3WLztpOo7ULYC6Ik3rWyYtoo9ch" },
+  { furniture: "one_leg", randomness: "high", demos: 500, avgLength: 461, hours: 12.8, fileId: "19iLUPDAvrRzevVggfD09nK2ayZ3GrVfC" }
+];
+
+const makeFurnitureBenchTask = ({ furniture, randomness, driveRandomness, demos, avgLength, hours, fileId }) => ({
+  task: `${furniture} / ${randomness}`,
+  dataLinks: {
+    "tar.gz": `https://drive.google.com/file/d/${fileId}/view`,
+    "Drive folder": furnitureBenchDriveFolder,
+    Docs: "https://clvrai.github.io/furniture-bench/docs/tutorials/dataset.html"
+  },
+  observations: ["Wrist RGB", "Front RGB", "Robot State", "Rewards", "Skill Flags", "Metadata"],
+  actions: ["8-D Actions", "Delta End-Effector Pose", "Gripper"],
+  demos: `${demos} demos; avg ${avgLength} steps; ${hours} hrs`,
+  envs: `${furniture} / ${driveRandomness || randomness}_compressed / Franka Panda + FurnitureSim`,
+  license: "TBD"
+});
+
+const furnitureBenchRows = furnitureBenchRowsSpec.map(makeFurnitureBenchTask);
+
+const roboSetTeleopRowsSpec = [
+  ["Baking Prep", "Slide-Open Drawer", "Scene 1", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/baking_prep/baking_prep_slide_open_drawer_scene_1.tar.gz"],
+  ["Baking Prep", "Slide-Open Drawer", "Scene 4", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/baking_prep/baking_prep_slide_open_drawer_scene_4.tar.gz"],
+  ["Baking Prep", "Pick Butter", "Scene 1", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/baking_prep/baking_prep_pick_butter_scene_1.tar.gz"],
+  ["Baking Prep", "Pick Butter", "Scene 4", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/baking_prep/baking_prep_pick_butter_scene_4.tar.gz"],
+  ["Baking Prep", "Place Butter", "Scene 1", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/baking_prep/baking_prep_place_butter_scene_1.tar.gz"],
+  ["Baking Prep", "Place Butter", "Scene 4", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/baking_prep/baking_prep_place_butter_scene_4.tar.gz"],
+  ["Baking Prep", "Slide-Close Drawer", "Scene 1", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/baking_prep/baking_prep_slide_close_drawer_scene_1.tar.gz"],
+  ["Baking Prep", "Slide-Close Drawer", "Scene 4", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/baking_prep/baking_prep_slide_close_drawer_scene_4.tar.gz"],
+  ["Clean Kitchen", "Pick Lid", "Scene 3", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/clean_kitchen/clean_kitchen_pick_lid_scene_3.tar.gz"],
+  ["Clean Kitchen", "Cap Lid", "Scene 3", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/clean_kitchen/clean_kitchen_cap_lid_scene_3.tar.gz"],
+  ["Clean Kitchen", "Slide-Close Drawer", "Scene 3", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/clean_kitchen/clean_kitchen_slide_close_drawer_scene_3.tar.gz"],
+  ["Clean Kitchen", "Flap-Close Oven", "Scene 3", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/clean_kitchen/clean_kitchen_flap_close_oven_Scene_3.tar.gz"],
+  ["Clean Kitchen", "Pick Towel", "Scene 3", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/clean_kitchen/clean_kitchen_pick_towel_scene_3.tar.gz"],
+  ["Clean Kitchen", "Wipe Counter", "Scene 3", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/clean_kitchen/clean_kitchen_Wipe_Counter_Scene_3.tar.gz"],
+  ["Heat Soup", "Flap-Open Oven", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/heat_soup/heat_soup_flap_open_oven_Scene_2.tar.gz"],
+  ["Heat Soup", "Flap-Open Oven", "Scene 4", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/heat_soup/heat_soup_flap_open_oven_Scene_4.tar.gz"],
+  ["Heat Soup", "Pick Bowl", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/heat_soup/heat_soup_pick_bowl_scene_2.tar.gz"],
+  ["Heat Soup", "Pick Bowl", "Scene 4", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/heat_soup/heat_soup_pick_bowl_scene_4.tar.gz"],
+  ["Heat Soup", "Slide-In Bowl", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/heat_soup/heat_soup_slide_in_bowl_scene_2.tar.gz"],
+  ["Heat Soup", "Slide-In Bowl", "Scene 4", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/heat_soup/heat_soup_slide_in_bowl_scene_4.tar.gz"],
+  ["Heat Soup", "Flap-Close Oven", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/heat_soup/heat_soup_flap_close_oven_scene_2.tar.gz"],
+  ["Make Tea", "Uncap Lid", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/make_tea/make_tea_Uncap_Lid_Scene_2.tar.gz"],
+  ["Make Tea", "Place Lid", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/make_tea/make_tea_place_lid_scene_2.tar.gz"],
+  ["Make Tea", "Pick tea", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/make_tea/make_tea_pick_tea_scene_2.tar.gz"],
+  ["Make Tea", "Place Tea", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/make_tea/make_tea_place_tea_scene_2.tar.gz"],
+  ["Make Tea", "Pick Lid", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/make_tea/make_tea_pick_lid_scene_2.tar.gz"],
+  ["Make Tea", "Cap Lid", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/make_tea/make_tea_cap_lid_scene_2.tar.gz"],
+  ["Make Toast", "Plunge Toaster", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/make_toast/make_toast_plunge_toaster_scene_2.tar.gz"],
+  ["Make Toast", "Pick Toast", "Scene 1", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/make_toast/make_toast_pick_toast_scene_1.tar.gz"],
+  ["Make Toast", "Place Toast", "Scene 1", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/make_toast/make_toast_place_toast_s_Scene_1.tar.gz"],
+  ["Serve Soup", "Flap-Open Oven", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/serve_soup/serve_soup_flap_open_oven_Scene_2.tar.gz"],
+  ["Serve Soup", "Slide-Out Bowl", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/serve_soup/serve_soup_slide_out_sowl_scene_2.tar.gz"],
+  ["Serve Soup", "Place Bowl", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/serve_soup/serve_soup_place_bowl_scene_2.tar.gz"],
+  ["Serve Soup", "Flap-Close Oven", "Scene 2", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/serve_soup/serve_soup_flap_close_oven_Scene_2.tar.gz"],
+  ["Stow Bowl", "Slide-Open Drawer", "Scene 3", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/stow_bowl/stow_bowl_slide_open_drawer_scene_3.tar.gz"],
+  ["Stow Bowl", "Pick Bowl", "Scene 3", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/stow_bowl/stow_bowl_pick_bowl_scene_3.tar.gz"],
+  ["Stow Bowl", "Place Bowl", "Scene 3", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/stow_bowl/stow_bowl_place_bowl_scene_3.tar.gz"],
+  ["Stow Bowl", "Slide-Close Drawer", "Scene 3", "http://dl.fbaipublicfiles.com/RoboSet/TeleoperationSet/Activities/stow_bowl/stow_bowl_slide_close_drawer_scene_3.tar.gz"]
+];
+
+const makeRoboSetTeleopTask = ([activity, task, scene, downloadUrl]) => ({
+  task: `${activity} / ${task} / ${scene}`,
+  dataLinks: {
+    "tar.gz": downloadUrl,
+    "Teleoperation page": "https://robopen.github.io/roboset/teleoperation.html"
+  },
+  observations: ["4 Camera Views", "HDF5", "Language Instruction", "Scene Variations"],
+  actions: ["Teleoperation Robot Actions", "Oculus Quest 2 Control"],
+  demos: "250 demonstrations",
+  envs: `${activity} / ${scene} / real-world kitchen`,
+  license: "MIT"
+});
+
+const roboSetTeleopRows = roboSetTeleopRowsSpec.map(makeRoboSetTeleopTask);
+
+const msHabTasks = [
+  {
+    task: "TidyHouse",
+    repo: msHabRepos.TidyHouse,
+    subtasks: ["pick", "place"],
+    demos: "18K episodes",
+    transitions: "3.6M transitions",
+    size: "208.5 GB"
+  },
+  {
+    task: "PrepareGroceries",
+    repo: msHabRepos.PrepareGroceries,
+    subtasks: ["pick", "place"],
+    demos: "18K episodes",
+    transitions: "3.6M transitions",
+    size: "174.2 GB"
+  },
+  {
+    task: "SetTable",
+    repo: msHabRepos.SetTable,
+    subtasks: ["pick", "place", "open", "close"],
+    demos: "8K episodes",
+    transitions: "1.6M transitions",
+    size: "83.4 GB"
+  }
+];
+
+const makeMsHabTask = ({ task, repo, subtasks, demos, transitions, size }) => ({
+  task,
+  dataLinks: {
+    "HF dataset": hfDatasetBase(repo),
+    ...Object.fromEntries(subtasks.map((subtask) => [subtask, hfDatasetTree(repo, subtask)]))
+  },
+  observations: ["2x 128x128 RGB-D", "State", "Event Labels", "HDF5 Trajectories"],
+  actions: ["Fetch Whole-Body Control", "pd_joint_delta_pos"],
+  demos: `${demos} (${transitions}; ${size})`,
+  envs: `Fetch / ReplicaCAD 63 train + 21 val scenes / ${subtasks.join(", ")}`,
+  license: "MIT"
+});
+
+const msHabRows = msHabTasks.map(makeMsHabTask);
+
+const colosseumTasks = [
+  "basketball_in_hoop",
+  "close_box",
+  "close_laptop_lid",
+  "empty_dishwasher",
+  "get_ice_from_fridge",
+  "hockey",
+  "insert_onto_square_peg",
+  "meat_on_grill",
+  "move_hanger",
+  "open_drawer",
+  "place_wine_at_rack_location",
+  "put_money_in_safe",
+  "reach_and_drag",
+  "scoop_with_spatula",
+  "setup_chess",
+  "slide_block_to_target",
+  "stack_cups",
+  "straighten_rope",
+  "turn_oven_on",
+  "wipe_desk"
+];
+
+const makeColosseumTask = (task) => ({
+  task,
+  dataLinks: {
+    "tar.gz": hfDatasetBlob(colosseumRepo, `${task}.tar.gz`)
+  },
+  observations: ["RGB", "Depth", "4 Camera Views", "Low-Dim Obs", "RLBench"],
+  actions: ["RLBench Manipulation Actions"],
+  demos: "100 train demos + 25 test demos/variation",
+  envs: "RLBench task / Colosseum perturbations",
+  license: "MIT"
+});
+
+const colosseumRows = colosseumTasks.map(makeColosseumTask);
+
+const vlaBenchPrimitiveTasks = [
+  "add_condiment",
+  "insert_flower",
+  "select_book",
+  "select_chemistry_tube",
+  "select_drink",
+  "select_fruit",
+  "select_mahjong",
+  "select_painting",
+  "select_poker",
+  "select_toy"
+];
+
+const makeVlaBenchPrimitiveTask = (task) => ({
+  task: `primitive / ${task}`,
+  dataLinks: {
+    "HF config": `${hfDatasetBase(vlaBenchPrimitiveRepo)}/viewer/${task}/train`
+  },
+  observations: ["LeRobot v3", "RGB", "Video", "Language", "Simulation"],
+  actions: ["Franka Panda 7-DoF Manipulation"],
+  demos: "500 episodes",
+  envs: "Franka Panda / primitive fine-tuning task",
+  license: "MIT"
+});
+
+const vlaBenchPrimitiveRows = vlaBenchPrimitiveTasks.map(makeVlaBenchPrimitiveTask);
+
+const roboTwin2Tasks = [
+  { task: "adjust_bottle", embodiments: ["aloha-agilex", "arx-x5", "franka", "ur5"], demos: "2,200 trajectories" },
+  { task: "beat_block_hammer", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "blocks_ranking_rgb", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "blocks_ranking_size", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "click_alarmclock", embodiments: ["aloha-agilex", "arx-x5", "franka", "ur5"], demos: "2,200 trajectories" },
+  { task: "click_bell", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "dump_bin_bigbin", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "grab_roller", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "handover_block", embodiments: ["aloha-agilex", "arx-x5", "piper"], demos: "1,650 trajectories" },
+  { task: "handover_mic", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "hanging_mug", embodiments: ["aloha-agilex", "arx-x5", "franka", "ur5"], demos: "2,200 trajectories" },
+  { task: "lift_pot", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "move_can_pot", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "move_pillbottle_pad", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "move_playingcard_away", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "move_stapler_pad", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "open_laptop", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "open_microwave", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "pick_diverse_bottles", embodiments: ["aloha-agilex", "arx-x5", "piper", "ur5"], demos: "2,200 trajectories" },
+  { task: "pick_dual_bottles", embodiments: ["aloha-agilex", "arx-x5", "piper", "ur5"], demos: "2,200 trajectories" },
+  { task: "place_a2b_left", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "place_a2b_right", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "place_bread_basket", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "place_bread_skillet", embodiments: ["aloha-agilex", "arx-x5", "franka", "ur5"], demos: "2,200 trajectories" },
+  { task: "place_burger_fries", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "place_can_basket", embodiments: ["aloha-agilex", "arx-x5", "franka", "ur5"], demos: "2,200 trajectories" },
+  { task: "place_cans_plasticbox", embodiments: ["aloha-agilex", "arx-x5", "franka", "ur5"], demos: "2,200 trajectories" },
+  { task: "place_container_plate", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "place_dual_shoes", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "place_empty_cup", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "place_fan", embodiments: ["aloha-agilex", "arx-x5", "franka", "ur5"], demos: "2,200 trajectories" },
+  { task: "place_mouse_pad", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "place_object_basket", embodiments: ["aloha-agilex", "arx-x5", "franka", "ur5"], demos: "2,200 trajectories" },
+  { task: "place_object_scale", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "place_object_stand", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "place_phone_stand", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "place_shoe", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "press_stapler", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "put_bottles_dustbin", embodiments: ["aloha-agilex", "arx-x5", "piper"], demos: "1,650 trajectories" },
+  { task: "put_object_cabinet", embodiments: ["aloha-agilex", "arx-x5", "franka"], demos: "1,650 trajectories" },
+  { task: "rotate_qrcode", embodiments: ["aloha-agilex", "arx-x5", "franka", "ur5"], demos: "2,200 trajectories" },
+  { task: "scan_object", embodiments: ["aloha-agilex", "arx-x5", "franka", "ur5"], demos: "2,200 trajectories" },
+  { task: "shake_bottle", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "shake_bottle_horizontally", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "stack_blocks_three", embodiments: ["aloha-agilex", "arx-x5", "franka", "ur5"], demos: "2,200 trajectories" },
+  { task: "stack_blocks_two", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "stack_bowls_three", embodiments: ["aloha-agilex", "arx-x5", "franka", "ur5"], demos: "2,200 trajectories" },
+  { task: "stack_bowls_two", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "stamp_seal", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" },
+  { task: "turn_switch", embodiments: ["aloha-agilex", "arx-x5", "franka", "piper", "ur5"], demos: "2,750 trajectories" }
+];
+
+const makeRoboTwin2Task = ({ task, embodiments, demos }) => ({
+  task,
+  dataLinks: {
+    "HF task folder": hfDatasetTree(roboTwin2Repo, `dataset/${task}`)
+  },
+  observations: ["Simulation", "Domain Randomization", "RGB", "Language"],
+  actions: ["Bimanual Manipulation"],
+  demos: `${demos} (${embodiments.length} embodiments; 50 clean + 500 randomized each)`,
+  envs: embodiments.join(", "),
+  license: "MIT"
+});
+
+const roboTwin2Rows = roboTwin2Tasks.map(makeRoboTwin2Task);
+
+const bicoordTasks = [
+  "balance_roller",
+  "build_bridge",
+  "build_tower_with_blocks",
+  "clean_table",
+  "collect_pens",
+  "cook",
+  "divide_block_tower",
+  "exchange_mics",
+  "exchange_pots",
+  "extract_bottom_block_to_top",
+  "fetch_block_with_roller",
+  "handover_block_with_bowls",
+  "jigsaw",
+  "match_blocks_with_signs",
+  "place_plate_and_cup",
+  "put_objects_cabinet",
+  "stack_bowls",
+  "sweep_block"
+];
+
+const makeBicoordTask = (task) => ({
+  task,
+  dataLinks: {
+    "HF task folder": hfDatasetTree(bicoordRepo, task),
+    "Trajectories": hfDatasetTree(bicoordRepo, `${task}/demo_clean/_traj_data`)
+  },
+  observations: ["Trajectory Data", "Video", "Task Instructions", "Stage Labels", "Simulation"],
+  actions: ["End Pose", "Joint Action", "Dual Agile Manipulation"],
+  demos: "100 trajectories",
+  envs: "Dual Agile",
+  license: "MIT"
+});
+
+const bicoordRows = bicoordTasks.map(makeBicoordTask);
+
 const makeLandingRow = ({ task, href, label = "Download", observations = ["TBD"], actions = ["TBD"], demos = "TBD", envs = "TBD", license = "TBD" }) => ({
   task,
   dataLinks: {
@@ -1358,31 +1899,37 @@ const datasetGroups = [
     id: "simulation-data",
     project: "Simulation Data",
     source: "simulation",
-    summary: "Simulation datasets grouped by dataset collection.",
+    summary: "Simulation datasets grouped by pipeline subcategory and dataset collection.",
     defaultOpen: true,
-    sections: [
+    sectionGroups: [
       {
-        id: "interndata-a1",
-        project: "InternData-A1",
-        summary: "Simulation manipulation dataset from InternRobotics. This group indexes all visible sim task archives across articulation, basic, long-horizon, and pick-and-place task folders.",
-        projectLinks: {
-          HuggingFace: `${hfA1TreeBase}`,
-          "sim/articulation_tasks": `${hfA1TreeBase}/sim/articulation_tasks`,
-          "sim/basic_tasks": `${hfA1TreeBase}/sim/basic_tasks`,
-          "sim/long_horizon_tasks": `${hfA1TreeBase}/sim/long_horizon_tasks`,
-          "sim/pick_and_place_tasks": `${hfA1TreeBase}/sim/pick_and_place_tasks`,
-          Paper: "https://arxiv.org/abs/2511.16651"
-        },
-        citation: `@inproceedings{tian2026interndata,
+        id: "large-scale-simulation-data",
+        project: "Large-Scale Simulation Data",
+        summary: "Large-scale synthetic and simulator-generated datasets currently tracked in this table.",
+        defaultOpen: true,
+        sections: [
+          {
+            id: "interndata-a1",
+            project: "InternData-A1",
+            summary: "Simulation manipulation dataset from InternRobotics. This group indexes all visible sim task archives across articulation, basic, long-horizon, and pick-and-place task folders.",
+            projectLinks: {
+              HuggingFace: `${hfA1TreeBase}`,
+              "sim/articulation_tasks": `${hfA1TreeBase}/sim/articulation_tasks`,
+              "sim/basic_tasks": `${hfA1TreeBase}/sim/basic_tasks`,
+              "sim/long_horizon_tasks": `${hfA1TreeBase}/sim/long_horizon_tasks`,
+              "sim/pick_and_place_tasks": `${hfA1TreeBase}/sim/pick_and_place_tasks`,
+              Paper: "https://arxiv.org/abs/2511.16651"
+            },
+            citation: `@inproceedings{tian2026interndata,
   title={Interndata-a1: Pioneering high-fidelity synthetic data for pre-training generalist policy},
   author={Tian, Yang and Yang, Yuyin and Xie, Yiman and Cai, Zetao and Shi, Xu and Gao, Ning and Liu, Hangxu and Jiang, Xuekun and Qiu, Zherui and Yuan, Feng and others},
   booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
   pages={976--985},
   year={2026}
 }`,
-        defaultOpen: true,
-        rows: internDataA1Rows
-      },
+            defaultOpen: true,
+            rows: internDataA1Rows
+          },
       {
         id: "interndata-m1",
         project: "InternData-M1",
@@ -1537,6 +2084,548 @@ const datasetGroups = [
         defaultOpen: true,
         rows: dexGraspNetClassicRows
       }
+        ]
+      },
+      {
+        id: "simulation-benchmark",
+        project: "Benchmark",
+        summary: "Simulation benchmark entries and evaluation datasets.",
+        defaultOpen: true,
+        sections: [
+          {
+            id: "robocasa365",
+            project: "RoboCasa365",
+            summary: "Large-scale kitchen simulation benchmark for everyday manipulation tasks. LeRobot exposes benchmark/task shortcuts and one CloseFridge dataset entry rather than a full task-level dataset tree.",
+            projectLinks: {
+              Docs: "https://huggingface.co/docs/lerobot/main/robocasa",
+              Paper: "https://arxiv.org/abs/2406.02523",
+              Project: "https://robocasa.ai/",
+              GitHub: "https://github.com/robocasa/robocasa",
+              "Pretrained policy": "https://huggingface.co/lerobot/smolvla_robocasa",
+              "GR00T 1000 dataset": hfDatasetBase("huiwon/robocasa_mg_gr00t_1000")
+            },
+            citation: `@misc{nasiriany2024robocasalargescalesimulationeveryday,
+  title={RoboCasa: Large-Scale Simulation of Everyday Tasks for Generalist Robots},
+  author={Nasiriany, Soroush and Maddukuri, Abhiram and Zhang, Lance and Parikh, Adeet and Lo, Aaron and Joshi, Abhishek and Mandlekar, Ajay and Zhu, Yuke},
+  year={2024},
+  eprint={2406.02523},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2406.02523}
+}`,
+            defaultOpen: true,
+            rows: [
+              {
+                task: "RoboCasa365 benchmark and GR00T 1000 dataset",
+                dataLinks: {
+                  Docs: "https://huggingface.co/docs/lerobot/main/robocasa",
+                  "GR00T 1000 dataset": hfDatasetBase("huiwon/robocasa_mg_gr00t_1000"),
+                  "Pretrained policy": "https://huggingface.co/lerobot/smolvla_robocasa"
+                },
+                observations: ["RGB", "Proprioception", "Simulation", "Human Demonstrations"],
+                actions: ["12-DoF Mobile Manipulator Control"],
+                demos: "600+ hours",
+                envs: "365 tasks / 2,500 kitchens / 3,200+ objects",
+                license: "TBD"
+              }
+            ]
+          },
+          {
+            id: "geniesim-3",
+            project: "Genie Sim 3.0",
+            summary: "Large-scale Isaac Sim robotic manipulation dataset. The repository organizes data as dataset/task-name/robot-type with LeRobot parquet data, metadata, and videos, but does not expose a stable full task list on the provided page.",
+            projectLinks: {
+              ModelScope: "https://modelscope.cn/datasets/agibot_world/GenieSim3.0-Dataset",
+              "dataset/": "https://modelscope.cn/datasets/agibot_world/GenieSim3.0-Dataset/tree/master/dataset/",
+              Paper: "https://arxiv.org/abs/2601.02078",
+              Project: "https://agibot-world.com/genie-sim",
+              GitHub: "https://github.com/AgibotTech/genie_sim"
+            },
+            citation: `@misc{yin2026geniesim30,
+  title={Genie Sim 3.0 : A High-Fidelity Comprehensive Simulation Platform for Humanoid Robot},
+  author={Chenghao Yin and Da Huang and Di Yang and Jichao Wang and Nanshu Zhao and Chen Xu and Wenjun Sun and Linjie Hou and Zhijun Li and Junhui Wu and Zhaobo Liu and Zhen Xiao and Sheng Zhang and Lei Bao and Rui Feng and Zhenquan Pang and Jiayu Li and Qian Wang and Maoqing Yao},
+  year={2026},
+  eprint={2601.02078},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2601.02078}
+}`,
+            defaultOpen: true,
+            rows: [
+              {
+                task: "Genie Sim 3.0 dataset",
+                dataLinks: {
+                  "dataset/": "https://modelscope.cn/datasets/agibot_world/GenieSim3.0-Dataset/tree/master/dataset/",
+                  ModelScope: "https://modelscope.cn/datasets/agibot_world/GenieSim3.0-Dataset"
+                },
+                observations: ["LeRobot", "RGB-D", "Proprioception", "Depth", "Segmentation", "Videos"],
+                actions: ["Robot Manipulation Actions"],
+                demos: "10,000+ hours",
+                envs: "200+ tasks / task-robot folders",
+                license: "CC BY-NC-SA 4.0"
+              }
+            ]
+          },
+          {
+            id: "univtac",
+            project: "UniVTAC",
+            summary: "Simulation-based visuo-tactile benchmark for tactile-driven Franka manipulation policies with GelSight, ViTai, and Xense tactile sensors.",
+            projectLinks: {
+              ModelScope: "https://modelscope.cn/datasets/byml2024/UniVTAC",
+              Project: "https://univtac.github.io/",
+              GitHub: "https://github.com/univtac/UniVTAC",
+              Paper: "https://arxiv.org/abs/2602.10093"
+            },
+            citation: `@misc{chen2026univtac,
+  title={UniVTAC: A Unified Simulation Platform for Visuo-Tactile Manipulation Data Generation, Learning, and Benchmarking},
+  author={Chen, Baijun and Wan, Weijie and Chen, Tianxing and Guo, Xianda and Xu, Congsheng and Qi, Yuanyang and Zhang, Haojie and Wu, Longyan and Xu, Tianling and Li, Zixuan and Wu, Yizhe and Li, Rui and Yang, Xiaokang and Luo, Ping and Sui, Wei and Mu, Yao},
+  year={2026},
+  eprint={2602.10093},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2602.10093}
+}`,
+            defaultOpen: true,
+            rows: [
+              {
+                task: "UniVTAC Benchmark",
+                dataLinks: {
+                  ModelScope: "https://modelscope.cn/datasets/byml2024/UniVTAC"
+                },
+                observations: ["Vision", "Tactile", "GelSight", "ViTai", "Xense", "Simulation"],
+                actions: ["Franka Manipulation"],
+                demos: "100 episodes/task (800 total)",
+                envs: "8 benchmark tasks / Franka",
+                license: "MIT"
+              }
+            ]
+          },
+          {
+            id: "rm-bench",
+            project: "RMbench",
+            summary: "Benchmark row added from the requested Hugging Face link with user-provided robotics metadata: dual Agile setup, 9 tasks, and 50 demonstrations per task.",
+            projectLinks: {
+              HuggingFace: "https://huggingface.co/datasets/THU-KEG/RM-Bench",
+              Paper: "https://arxiv.org/abs/2410.16184",
+              GitHub: "https://github.com/THU-KEG/RM-Bench",
+              "HF Paper": "https://huggingface.co/papers/2410.16184"
+            },
+            citation: `@misc{liu2026rmbench,
+  title={RM-Bench: Benchmarking Reward Models of Language Models with Subtlety and Style},
+  author={Liu, Yantao and Yao, Zijun and Min, Rui and Cao, Yixin and Hou, Lei and Li, Juanzi},
+  year={2026},
+  eprint={2410.16184},
+  archivePrefix={arXiv},
+  primaryClass={cs.CL},
+  doi={10.48550/arXiv.2410.16184},
+  url={https://arxiv.org/abs/2410.16184}
+}`,
+            defaultOpen: true,
+            rows: [
+              {
+                task: "RMbench dual Agile benchmark",
+                dataLinks: {
+                  HuggingFace: "https://huggingface.co/datasets/THU-KEG/RM-Bench"
+                },
+                observations: ["Simulation", "Dual", "Agile"],
+                actions: ["Agile Manipulation"],
+                demos: "50 demonstrations/task (450 total)",
+                envs: "9 tasks / Agile",
+                license: "ODC-BY"
+              }
+            ]
+          },
+          {
+            id: "robomme",
+            project: "RoboMME",
+            summary: "Memory-focused robotic manipulation benchmark and H5 training data release for memory-augmented robotic generalist policies.",
+            projectLinks: {
+              HuggingFace: "https://huggingface.co/datasets/Yinpei/robomme_data_h5",
+              Paper: "https://arxiv.org/abs/2603.04639",
+              "HF Paper": "https://huggingface.co/papers/2603.04639",
+              Project: "https://robomme.github.io/",
+              "Benchmark Code": "https://github.com/RoboMME/robomme_benchmark",
+              "Policy Learning Code": "https://github.com/RoboMME/MemoryVLA"
+            },
+            citation: `@misc{dai2026robomme,
+  title={RoboMME: Benchmarking and Understanding Memory for Robotic Generalist Policies},
+  author={Dai, Yinpei and Fu, Hongze and Lee, Jayjun and Liu, Yuejiang and Zhang, Haoran and Yang, Jianing and Finn, Chelsea and Fazeli, Nima and Chai, Joyce},
+  year={2026},
+  eprint={2603.04639},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  doi={10.48550/arXiv.2603.04639},
+  url={https://arxiv.org/abs/2603.04639}
+}`,
+            defaultOpen: true,
+            rows: [
+              {
+                task: "RoboMME H5 training data",
+                dataLinks: {
+                  HuggingFace: "https://huggingface.co/datasets/Yinpei/robomme_data_h5"
+                },
+                observations: ["H5", "Simulation", "Memory Tasks", "Franka"],
+                actions: ["Franka Manipulation"],
+                demos: "100 episodes/task (1,600 total)",
+                envs: "16 tasks / Franka",
+                license: "Apache-2.0"
+              }
+            ]
+          },
+          {
+            id: "mikasa-robo-vla",
+            project: "MIKASA-Robo-VLA",
+            summary: "Language-conditioned memory-intensive tabletop manipulation benchmark extending MIKASA-Robo to VLA research with released RLDS and LeRobotDataset trajectories.",
+            projectLinks: {
+              GitHub: "https://github.com/CognitiveAISystems/MIKASA-Robo",
+              Documentation: "https://mikasarobo.github.io/",
+              HuggingFace: hfDatasetBase("mikasa-robo/mikasa-robo-vla-lerobot"),
+              Paper: "https://openreview.net/forum?id=9cLPurIZMj",
+              arXiv: "https://arxiv.org/abs/2502.10550"
+            },
+            citation: `@inproceedings{cherepanov2026memory,
+  title={Memory, Benchmark \\& Robots: A Benchmark for Solving Complex Tasks with Reinforcement Learning},
+  author={Cherepanov, Egor and Kachaev, Nikita and Kovalev, Alexey and Panov, Aleksandr I.},
+  booktitle={The Fourteenth International Conference on Learning Representations},
+  year={2026},
+  url={https://openreview.net/forum?id=9cLPurIZMj}
+}`,
+            defaultOpen: true,
+            rows: [
+              {
+                task: "MIKASA-Robo-VLA trajectory release",
+                dataLinks: {
+                  HuggingFace: hfDatasetBase("mikasa-robo/mikasa-robo-vla-lerobot"),
+                  GitHub: "https://github.com/CognitiveAISystems/MIKASA-Robo"
+                },
+                observations: ["RGB", "State", "Language Instructions", "Simulation", "Memory Tasks", "Franka"],
+                actions: ["Franka End-Effector Delta Pose"],
+                demos: "22,500 trajectories",
+                envs: "90 tasks / Franka",
+                license: "MIT"
+              }
+            ]
+          },
+          {
+            id: "bicoord",
+            project: "BiCoord",
+            summary: "Bimanual long-horizon spatial-temporal coordination benchmark built on RoboTwin 2.0. The Hugging Face release exposes 18 task folders with demo_clean trajectory data, task instructions, stages, and videos.",
+            projectLinks: {
+              HuggingFace: hfDatasetBase(bicoordRepo),
+              Project: "https://buaa-colalab.github.io/BiCoord/",
+              GitHub: "https://github.com/buaa-colalab/BiCoord-Bench",
+              Paper: "https://arxiv.org/abs/2604.05831",
+              Checkpoints: "https://huggingface.co/Oshwiciqwq/BiCoord-checkpoints"
+            },
+            citation: `@misc{peng2026bicoord,
+  title={BiCoord: A Bimanual Manipulation Benchmark towards Long-Horizon Spatial-Temporal Coordination},
+  author={Peng, Xingyu and Gao, Chen and Jin, Liankai and Li, Annan and Liu, Si},
+  year={2026},
+  eprint={2604.05831},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2604.05831}
+}`,
+            defaultOpen: true,
+            rows: bicoordRows
+          },
+          {
+            id: "roboverse",
+            project: "RoboVerse",
+            summary: "Unified simulation platform, dataset, and benchmark for scalable robot learning. The paper summarizes 500k unique trajectories, while its statistics table reports 510.5k manipulation trajectories across 276 task categories and 5.5k assets.",
+            projectLinks: {
+              HuggingFace: hfDatasetBase(roboVerseRepo),
+              "HF trajs/": hfDatasetTree(roboVerseRepo, "trajs"),
+              Project: "https://roboverseorg.github.io/",
+              Documentation: "https://roboverse.wiki/",
+              GitHub: "https://github.com/RoboVerseOrg/RoboVerse",
+              Paper: "https://arxiv.org/abs/2504.18904",
+              "HF Paper": "https://huggingface.co/papers/2504.18904"
+            },
+            citation: `@misc{geng2025roboverse,
+  title={RoboVerse: Towards a Unified Platform, Dataset and Benchmark for Scalable and Generalizable Robot Learning},
+  author={Geng, Haoran and Wang, Feishi and Wei, Songlin and Li, Yuyang and Wang, Bangjun and An, Boshi and Cheng, Charlie Tianyue and Lou, Haozhe and Li, Peihao and Wang, Yen-Jen and Liang, Yutong and Goetting, Dylan and Xu, Chaoyi and Chen, Haozhe and Qian, Yuxi and Geng, Yiran and Mao, Jiageng and Wan, Weikang and Zhang, Mingtong and Lyu, Jiangran and Zhao, Siheng and Zhang, Jiazhao and Zhang, Jialiang and Zhao, Chengyang and Lu, Haoran and Ding, Yufei and Gong, Ran and Wang, Yuran and Kuang, Yuxuan and Wu, Ruihai and Jia, Baoxiong and Sferrazza, Carlo and Dong, Hao and Huang, Siyuan and Wang, Yue and Malik, Jitendra and Abbeel, Pieter},
+  year={2025},
+  eprint={2504.18904},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2504.18904}
+}`,
+            defaultOpen: true,
+            rows: [
+              {
+                task: "RoboVerse unified manipulation corpus",
+                dataLinks: {
+                  HuggingFace: hfDatasetBase(roboVerseRepo),
+                  "trajs/": hfDatasetTree(roboVerseRepo, "trajs")
+                },
+                observations: ["Simulation", "Multi-Embodiment", "Assets", "Scenes", "Trajectories"],
+                actions: ["Multi-Embodiment Robot Manipulation"],
+                demos: "510.5k manipulation trajectories",
+                envs: "1 unified benchmark / 276 task categories / gripper arms, dexterous hands, bimanual systems, Unitree Dog, JetBot, humanoid setups",
+                license: "Apache-2.0"
+              }
+            ]
+          },
+          {
+            id: "genmanip-bench",
+            project: "GenManip / GenManip-Bench",
+            summary: "LLM-driven Isaac Sim manipulation suite and benchmark for instruction-following policy generalization. The paper reports 200 benchmark scenarios and 10K annotated 3D object assets; the HF OOC_Bench release contains about 1.07k demos/episodes.",
+            projectLinks: {
+              HuggingFace: hfDatasetBase(genManipRepo),
+              "HF data/": hfDatasetTree(genManipRepo, "data"),
+              "HF meta/": hfDatasetTree(genManipRepo, "meta"),
+              Project: "https://genmanip.com/",
+              GitHub: "https://github.com/InternRobotics/GenManip",
+              Paper: "https://arxiv.org/abs/2506.10966",
+              "HF Paper": "https://huggingface.co/papers/2506.10966"
+            },
+            citation: `@inproceedings{gao2025genmanip,
+  title={GenManip: LLM-driven Simulation for Generalizable Instruction-Following Manipulation},
+  author={Gao, Ning and Chen, Yilun and Yang, Shuai and Chen, Xinyi and Tian, Yang and Li, Hao and Huang, Haifeng and Wang, Hanqing and Wang, Tai and Pang, Jiangmiao},
+  booktitle={CVPR},
+  year={2025}
+}`,
+            defaultOpen: true,
+            rows: [
+              {
+                task: "GenManip OOC_Bench dataset",
+                dataLinks: {
+                  HuggingFace: hfDatasetBase(genManipRepo),
+                  "data/": hfDatasetTree(genManipRepo, "data"),
+                  "meta/": hfDatasetTree(genManipRepo, "meta"),
+                  "videos/": hfDatasetTree(genManipRepo, "videos")
+                },
+                observations: ["LeRobot/GR00T Format", "Parquet", "Videos", "Simulation", "Isaac Sim"],
+                actions: ["Single Franka Arm Manipulation"],
+                demos: "~1.07k demos/episodes",
+                envs: "1 OOC_Bench / single Franka Arm in Isaac Sim / 200 benchmark scenarios / 10K annotated 3D object assets",
+                license: "TBD"
+              }
+            ]
+          },
+          {
+            id: "robocerebra",
+            project: "RoboCerebra",
+            summary: "Long-horizon robotic manipulation benchmark for System 2 reasoning. The project reports 1,000 human-annotated trajectories across 100 task variants, with trajectories up to 3,000 simulation steps and an average length of 2,972 steps.",
+            projectLinks: {
+              HuggingFace: hfDatasetBase(roboCerebraRepo),
+              "HF trainset/": hfDatasetTree(roboCerebraRepo, "RoboCerebra_trainset"),
+              "HF RLDS exports": hfDatasetTree(roboCerebraRepo, "RoboCerebra_trainset_coffee_table_p1p2_rlds"),
+              "HF benchmark cases": hfDatasetTree(roboCerebraRepo, "RoboCerebraBench"),
+              Project: "https://robocerebra.github.io/",
+              GitHub: "https://github.com/buaa-colalab/RoboCerebra",
+              Paper: "https://arxiv.org/abs/2506.06677"
+            },
+            citation: `@article{han2025robocerebra,
+  title={RoboCerebra: A Large-scale Benchmark for Long-horizon Robotic Manipulation Evaluation},
+  author={Han, Songhao and Qiu, Boxiang and Liao, Yue and Huang, Siyuan and Gao, Chen and Yan, Shuicheng and Liu, Si},
+  journal={arXiv preprint arXiv:2506.06677},
+  year={2025}
+}`,
+            defaultOpen: true,
+            rows: [
+              {
+                task: "RoboCerebra long-horizon trainset and benchmark",
+                dataLinks: {
+                  HuggingFace: hfDatasetBase(roboCerebraRepo),
+                  "trainset/": hfDatasetTree(roboCerebraRepo, "RoboCerebra_trainset"),
+                  "benchmark cases": hfDatasetTree(roboCerebraRepo, "RoboCerebraBench")
+                },
+                observations: ["RGB", "Language Instructions", "Subtask Annotations", "Simulation", "RLDS"],
+                actions: ["LIBERO/robosuite Franka Panda-style Manipulation"],
+                demos: "1,000 human-annotated trajectories",
+                envs: "100 task variants / LIBERO/robosuite single tabletop arm / Franka Panda-style setup",
+                license: "MIT"
+              }
+            ]
+          },
+          {
+            id: "robotwin-2",
+            project: "RoboTwin 2.0",
+            summary: "Scalable data generator and benchmark for robust bimanual robotic manipulation. The official release describes 50 dual-arm tasks across 5 robot embodiments and over 100,000 pre-collected trajectories; the Hugging Face dataset currently exposes 50 task folders with 460 zip files, covering 230 embodiment-task clean/randomized pairs.",
+            projectLinks: {
+              HuggingFace: hfDatasetBase(roboTwin2Repo),
+              "HF dataset/": hfDatasetTree(roboTwin2Repo, "dataset"),
+              Project: "https://robotwin-platform.github.io/",
+              Documentation: "https://robotwin-platform.github.io/doc/",
+              "Tasks Doc": "https://robotwin-platform.github.io/doc/tasks/",
+              GitHub: "https://github.com/robotwin-Platform/RoboTwin",
+              Paper: "https://arxiv.org/abs/2506.18088"
+            },
+            citation: `@article{chen2025robotwin,
+  title={Robotwin 2.0: A scalable data generator and benchmark with strong domain randomization for robust bimanual robotic manipulation},
+  author={Chen, Tianxing and Chen, Zanxin and Chen, Baijun and Cai, Zijian and Liu, Yibin and Li, Zixuan and Liang, Qiwei and Lin, Xianliang and Ge, Yiheng and Gu, Zhenyu and others},
+  journal={arXiv preprint arXiv:2506.18088},
+  year={2025}
+}`,
+            defaultOpen: true,
+            rows: roboTwin2Rows
+          },
+          {
+            id: "vlabench",
+            project: "VLABench",
+            summary: "Large-scale language-conditioned manipulation benchmark for long-horizon reasoning. The benchmark covers 100 task categories with strong randomization and 2,000+ objects; the primitive fine-tuning release provides 10 tasks with 500 episodes each, totaling 5,000 demos for a Franka Panda robot.",
+            projectLinks: {
+              "HF primitive FT": hfDatasetBase(vlaBenchPrimitiveRepo),
+              "HF VLM eval": hfDatasetBase(vlaBenchVlmEvalRepo),
+              Project: "https://vlabench.github.io/",
+              GitHub: "https://github.com/OpenMOSS/VLABench",
+              Paper: "https://arxiv.org/abs/2412.18194"
+            },
+            citation: `@misc{zhang2024vlabench,
+  title={VLABench: A Large-Scale Benchmark for Language-Conditioned Robotics Manipulation with Long-Horizon Reasoning Tasks},
+  author={Zhang, Shiduo and Xu, Zhe and Liu, Peiju and Yu, Xiaopeng and Li, Yuan and Gao, Qinghui and Fei, Zhaoye and Yin, Zhangyue and Wu, Zuxuan and Jiang, Yu-Gang and Qiu, Xipeng},
+  year={2024},
+  eprint={2412.18194},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2412.18194}
+}`,
+            defaultOpen: true,
+            rows: vlaBenchPrimitiveRows
+          },
+          {
+            id: "the-colosseum",
+            project: "The Colosseum",
+            summary: "RLBench-based simulation benchmark for evaluating robotic manipulation generalization. The dataset contains 20 RLBench tasks, 100 training demonstrations for the vanilla task setting, and 25 test demonstrations for each applicable variation factor across perturbations such as object, tabletop, background, lighting, distractors, physics, and camera pose.",
+            projectLinks: {
+              HuggingFace: hfDatasetBase(colosseumRepo),
+              Project: "https://robot-colosseum.github.io/",
+              Documentation: "https://robot-colosseum.readthedocs.io/en/latest/overview.html",
+              GitHub: "https://github.com/robot-colosseum/robot-colosseum",
+              Paper: "https://arxiv.org/abs/2402.08191"
+            },
+            citation: `@article{pumacay2024colosseum,
+  title={THE COLOSSEUM: A Benchmark for Evaluating Generalization for Robotic Manipulation},
+  author={Pumacay, Wilbert and Singh, Ishika and Duan, Jiafei and Krishna, Ranjay and Thomason, Jesse and Fox, Dieter},
+  booktitle={arXiv preprint arXiv:2402.08191},
+  year={2024}
+}`,
+            defaultOpen: true,
+            rows: colosseumRows
+          },
+          {
+            id: "maniskill-hab",
+            project: "ManiSkill-HAB",
+            summary: "ICLR 2025 ManiSkill-HAB benchmark for low-level manipulation in home rearrangement tasks. The project dataset table exposes three long-horizon task datasets with 2x 128x128 RGB-D plus state, 1000 episodes per target object/articulation, and event labels on all trajectories.",
+            projectLinks: {
+              Project: "https://arth-shukla.github.io/mshab/",
+              Dataset: "https://arth-shukla.github.io/mshab/#dataset-section",
+              GitHub: "https://github.com/arth-shukla/mshab",
+              Paper: "https://arxiv.org/abs/2412.13211",
+              OpenReview: "https://openreview.net/forum?id=6bKEWevgSd",
+              "TidyHouse HF": hfDatasetBase(msHabRepos.TidyHouse),
+              "PrepareGroceries HF": hfDatasetBase(msHabRepos.PrepareGroceries),
+              "SetTable HF": hfDatasetBase(msHabRepos.SetTable)
+            },
+            citation: `@inproceedings{shukla2025maniskillhab,
+  author={Arth Shukla and Stone Tao and Hao Su},
+  title={ManiSkill-HAB: {A} Benchmark for Low-Level Manipulation in Home Rearrangement Tasks},
+  booktitle={The Thirteenth International Conference on Learning Representations, {ICLR} 2025, Singapore, April 24-28, 2025},
+  publisher={OpenReview.net},
+  year={2025},
+  url={https://openreview.net/forum?id=6bKEWevgSd},
+  biburl={https://dblp.org/rec/conf/iclr/ShuklaTS25.bib},
+  bibsource={dblp computer science bibliography, https://dblp.org}
+}`,
+            defaultOpen: true,
+            rows: msHabRows
+          },
+          {
+            id: "libero",
+            project: "LIBERO",
+            summary: "NeurIPS 2023 Datasets and Benchmarks benchmark for knowledge transfer in lifelong robot learning. The official dataset page lists four task suites with 130 tasks and 65,000 high-quality demonstrations; the official Hugging Face mirror exposes one HDF5 file per task.",
+            projectLinks: {
+              Project: "https://libero-project.github.io/",
+              Datasets: "https://libero-project.github.io/datasets",
+              Documentation: "https://lifelong-robot-learning.github.io/LIBERO/html/getting_started/overview.html",
+              GitHub: "https://github.com/Lifelong-Robot-Learning/LIBERO",
+              Paper: "https://arxiv.org/abs/2306.03310",
+              HuggingFace: hfDatasetBase(liberoRepo),
+              "HF LIBERO-Spatial": hfDatasetTree(liberoRepo, "libero_spatial"),
+              "HF LIBERO-Object": hfDatasetTree(liberoRepo, "libero_object"),
+              "HF LIBERO-Goal": hfDatasetTree(liberoRepo, "libero_goal"),
+              "HF LIBERO-90": hfDatasetTree(liberoRepo, "libero_90"),
+              "HF LIBERO-10": hfDatasetTree(liberoRepo, "libero_10")
+            },
+            citation: `@article{liu2023libero,
+  title={LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning},
+  author={Liu, Bo and Zhu, Yifeng and Gao, Chongkai and Feng, Yihao and Liu, Qiang and Zhu, Yuke and Stone, Peter},
+  journal={arXiv preprint arXiv:2306.03310},
+  year={2023}
+}`,
+            defaultOpen: true,
+            rows: liberoRows
+          },
+          {
+            id: "maniskill",
+            project: "ManiSkill",
+            summary: "Latest ManiSkill demonstration dataset release for GPU-parallelized robotics simulation. The official docs provide task-ID downloads from Hugging Face; the repo exposes 16 environment folders, each with zipped HDF5 trajectories, JSON metadata, and sample videos.",
+            projectLinks: {
+              Project: "https://maniskill.ai/",
+              Documentation: "https://maniskill.readthedocs.io/en/latest/",
+              "Demonstration docs": "https://maniskill.readthedocs.io/en/latest/user_guide/datasets/demos.html",
+              Tasks: "https://maniskill.readthedocs.io/en/latest/tasks/index.html",
+              GitHub: "https://github.com/haosulab/ManiSkill",
+              HuggingFace: hfDatasetBase(maniSkillDemoRepo),
+              "PePy stats": "https://pepy.tech/projects/mani_skill?timeRange=threeMonths&category=version&includeCIDownloads=true&granularity=weekly&viewType=line&versions=Total%2C3.*",
+              Paper: "https://arxiv.org/abs/2410.00425"
+            },
+            citation: `@article{taomaniskill3,
+  title={ManiSkill3: GPU Parallelized Robotics Simulation and Rendering for Generalizable Embodied AI},
+  author={Stone Tao and Fanbo Xiang and Arth Shukla and Yuzhe Qin and Xander Hinrichsen and Xiaodi Yuan and Chen Bao and Xinsong Lin and Yulin Liu and Tse-kai Chan and Yuan Gao and Xuanlin Li and Tongzhou Mu and Nan Xiao and Arnav Gurha and Viswesh Nagaswamy Rajesh and Yong Woo Choi and Yen-Ru Chen and Zhiao Huang and Roberto Calandra and Rui Chen and Shan Luo and Hao Su},
+  journal={Robotics: Science and Systems},
+  year={2025}
+}`,
+            defaultOpen: true,
+            rows: maniSkillDemoRows
+          },
+          {
+            id: "furniturebench",
+            project: "FurnitureBench",
+            summary: "RSS 2023 reproducible real-world furniture assembly benchmark with FurnitureSim support. The official dataset table reports 5,100 successful teleoperation demonstrations totaling 219.6 hours across 9 furniture models and 3 initial-randomness levels.",
+            projectLinks: {
+              Project: "https://clvrai.github.io/furniture-bench/",
+              Documentation: "https://clvrai.github.io/furniture-bench/docs/index.html",
+              Dataset: "https://clvrai.github.io/furniture-bench/docs/tutorials/dataset.html",
+              "Drive folder": furnitureBenchDriveFolder,
+              GitHub: "https://github.com/clvrai/furniture-bench",
+              Paper: "https://arxiv.org/abs/2305.12821"
+            },
+            citation: `@inproceedings{heo2023furniturebench,
+  title={FurnitureBench: Reproducible Real-World Benchmark for Long-Horizon Complex Manipulation},
+  author={Minho Heo and Youngwoon Lee and Doohyun Lee and Joseph J. Lim},
+  booktitle={Robotics: Science and Systems},
+  year={2023}
+}`,
+            defaultOpen: true,
+            rows: furnitureBenchRows
+          },
+          {
+            id: "roboset",
+            project: "RoboSet / RoboHive",
+            summary: "Large-scale real-world multi-task kitchen robotics dataset released with RoboHive/RoboAgent. The teleoperation page exposes 9,500 immediately downloadable teleoperated trajectories across 38 activity-task-scene rows, with 250 demonstrations per row; the page describes a broader 30,050-trajectory dataset.",
+            projectLinks: {
+              RoboSet: "https://robopen.github.io/roboset/",
+              Teleoperation: "https://robopen.github.io/roboset/teleoperation.html",
+              RoboHive: "https://sites.google.com/view/robohive",
+              RoboAgent: "https://robopen.github.io/",
+              Paper: "https://arxiv.org/abs/2309.01918"
+            },
+            citation: `@misc{bharadhwaj2023roboagent,
+  title={RoboAgent: Generalization and Efficiency in Robot Manipulation via Semantic Augmentations and Action Chunking},
+  author={Homanga Bharadhwaj and Jay Vakil and Mohit Sharma and Abhinav Gupta and Shubham Tulsiani and Vikash Kumar},
+  year={2023},
+  eprint={2309.01918},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO}
+}`,
+            defaultOpen: true,
+            rows: roboSetTeleopRows
+          }
+        ]
+      }
     ]
   },
   {
@@ -1577,10 +2666,19 @@ const datasetGroups = [
   }
 ];
 
+const getGroupSections = (group) => group.sectionGroups
+  ? group.sectionGroups.flatMap((sectionGroup) => sectionGroup.sections || [])
+  : (group.sections || []);
+
 const groupOpenState = Object.fromEntries(datasetGroups.map((group) => [group.id, group.defaultOpen]));
+const sectionGroupOpenState = Object.fromEntries(
+  datasetGroups.flatMap((group) =>
+    (group.sectionGroups || []).map((sectionGroup) => [sectionGroup.id, sectionGroup.defaultOpen])
+  )
+);
 const sectionOpenState = Object.fromEntries(
   datasetGroups.flatMap((group) =>
-    (group.sections || []).map((section) => [section.id, section.defaultOpen])
+    getGroupSections(group).map((section) => [section.id, section.defaultOpen])
   )
 );
 
@@ -1612,7 +2710,25 @@ const entryYears = {
   dexmimicgen: 2025,
   "dexgraspnet-2": 2024,
   mimicgen: 2023,
-  dexgraspnet: 2023
+  dexgraspnet: 2023,
+  robocasa365: 2024,
+  "geniesim-3": 2026,
+  univtac: 2026,
+  "rm-bench": 2026,
+  robomme: 2026,
+  "mikasa-robo-vla": 2026,
+  bicoord: 2026,
+  roboverse: 2025,
+  "genmanip-bench": 2025,
+  robocerebra: 2025,
+  "robotwin-2": 2025,
+  vlabench: 2024,
+  "the-colosseum": 2024,
+  "maniskill-hab": 2025,
+  libero: 2023,
+  maniskill: 2025,
+  furniturebench: 2023,
+  roboset: 2023
 };
 
 const formatNumber = (value) => {
@@ -1624,12 +2740,22 @@ const formatSource = (source) => sourceLabels[source] || source;
 
 const unique = (items) => [...new Set(items)];
 
-const getGroupRows = (group) => group.sections
+const getGroupRows = (group) => group.sectionGroups
+  ? group.sectionGroups.flatMap((sectionGroup) =>
+    (sectionGroup.sections || []).flatMap((section) => section.rows)
+  )
+  : group.sections
   ? group.sections.flatMap((section) => section.rows)
   : group.rows;
 
 const getAllRows = () => datasetGroups.flatMap((group) =>
-  group.sections
+  group.sectionGroups
+    ? group.sectionGroups.flatMap((sectionGroup) =>
+      (sectionGroup.sections || []).flatMap((section) =>
+        section.rows.map((row) => ({ ...row, group, section, sectionGroup }))
+      )
+    )
+    : group.sections
     ? group.sections.flatMap((section) => section.rows.map((row) => ({ ...row, group, section })))
     : group.rows.map((row) => ({ ...row, group }))
 );
@@ -1682,7 +2808,7 @@ const yearPill = (entry) => {
   return year ? `<span class="pill year-pill">${escapeHtml(year)}</span>` : "";
 };
 
-const rowMatchesFilters = (row, group, section) => {
+const rowMatchesFilters = (row, group, section, sectionGroup) => {
   const query = normalize(document.querySelector("#searchInput").value.trim());
   const source = document.querySelector("#sourceFilter").value;
   const task = document.querySelector("#taskFilter").value;
@@ -1690,6 +2816,8 @@ const rowMatchesFilters = (row, group, section) => {
     group.project,
     group.source,
     group.summary,
+    sectionGroup?.project,
+    sectionGroup?.summary,
     section?.project,
     section?.summary,
     getEntryYear(section),
@@ -1707,6 +2835,19 @@ const rowMatchesFilters = (row, group, section) => {
 
 const getFilteredGroups = () => datasetGroups
   .map((group) => {
+    if (group.sectionGroups) {
+      const sectionGroups = group.sectionGroups.map((sectionGroup) => {
+        const sections = (sectionGroup.sections || [])
+          .map((section) => ({
+            ...section,
+            rows: section.rows.filter((row) => rowMatchesFilters(row, group, section, sectionGroup))
+          }))
+          .filter((section) => section.rows.length);
+        return { ...sectionGroup, sections, rows: sections.flatMap((section) => section.rows) };
+      });
+      return { ...group, sectionGroups, rows: sectionGroups.flatMap((sectionGroup) => sectionGroup.rows) };
+    }
+
     if (group.sections) {
       const sections = group.sections
         .map((section) => ({
@@ -1776,6 +2917,7 @@ const renderRows = () => {
 
   document.querySelector("#datasetRows").innerHTML = groups.map((group) => {
     const isOpen = queryActive || sourceActive || taskActive || groupOpenState[group.id];
+    const hasSectionGroups = Boolean(group.sectionGroups?.length);
     const hasSections = Boolean(group.sections?.length);
     const groupRow = `
       <tr class="group-row" data-group="${group.id}">
@@ -1809,10 +2951,10 @@ const renderRows = () => {
       </tr>
     `;
 
-    const sectionRows = hasSections && isOpen ? group.sections.map((section) => {
+    const renderSectionRow = (section, parentId = section.id, extraClass = "") => {
       const isSectionOpen = queryActive || sourceActive || taskActive || sectionOpenState[section.id];
       const sectionRow = `
-        <tr class="section-row" data-group="${group.id}" data-section="${section.id}">
+        <tr class="section-row${extraClass}" data-group="${group.id}" data-section="${section.id}">
           <td colspan="7">
             <button class="section-toggle" type="button" data-section="${section.id}" aria-expanded="${isSectionOpen}">
               <span class="chevron" aria-hidden="true">${isSectionOpen ? "v" : ">"}</span>
@@ -1827,17 +2969,46 @@ const renderRows = () => {
         </tr>
       `;
       const tasks = isSectionOpen
-        ? section.rows.map((row) => renderTaskRow(row, section.id)).join("")
+        ? section.rows.map((row) => renderTaskRow(row, parentId)).join("")
         : "";
 
       return sectionRow + tasks;
+    };
+
+    const sectionGroupRows = hasSectionGroups && isOpen ? group.sectionGroups.map((sectionGroup) => {
+      const isSectionGroupOpen = queryActive || sourceActive || taskActive || sectionGroupOpenState[sectionGroup.id];
+      const showEmptyGroup = !queryActive && !taskActive;
+      if (!sectionGroup.rows.length && !showEmptyGroup) return "";
+
+      const sectionGroupRow = `
+        <tr class="subcategory-row" data-group="${group.id}" data-section-group="${sectionGroup.id}">
+          <td colspan="7">
+            <button class="subcategory-toggle" type="button" data-section-group="${sectionGroup.id}" aria-expanded="${isSectionGroupOpen}">
+              <span class="chevron" aria-hidden="true">${isSectionGroupOpen ? "v" : ">"}</span>
+              <span class="dataset-name">${sectionGroup.project}</span>
+              <span class="dataset-sub">${sectionGroup.rows.length} task rows</span>
+            </button>
+            <span class="group-summary">${sectionGroup.summary}</span>
+          </td>
+          <td><span class="muted">-</span></td>
+        </tr>
+      `;
+      const sections = isSectionGroupOpen
+        ? sectionGroup.sections.map((section) => renderSectionRow(section, section.id, " subgroup-section-row")).join("")
+        : "";
+
+      return sectionGroupRow + sections;
     }).join("") : "";
 
-    const childRows = !hasSections && isOpen
+    const sectionRows = hasSections && isOpen
+      ? group.sections.map((section) => renderSectionRow(section)).join("")
+      : "";
+
+    const childRows = !hasSectionGroups && !hasSections && isOpen
       ? group.rows.map((row) => renderTaskRow(row, group.id)).join("")
       : "";
 
-    return groupRow + sectionRows + childRows;
+    return groupRow + sectionGroupRows + sectionRows + childRows;
   }).join("") || `
     <tr>
       <td colspan="8" class="muted">No dataset rows match the current filters.</td>
@@ -1856,6 +3027,14 @@ const renderRows = () => {
     button.addEventListener("click", () => {
       const sectionId = button.dataset.section;
       sectionOpenState[sectionId] = !sectionOpenState[sectionId];
+      renderRows();
+    });
+  });
+
+  document.querySelectorAll(".subcategory-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      const sectionGroupId = button.dataset.sectionGroup;
+      sectionGroupOpenState[sectionGroupId] = !sectionGroupOpenState[sectionGroupId];
       renderRows();
     });
   });
