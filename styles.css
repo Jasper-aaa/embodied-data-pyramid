@@ -197,7 +197,6 @@ h3 {
 }
 
 .stat-grid,
-.principle-grid,
 .task-grid {
   display: grid;
   gap: 16px;
@@ -208,7 +207,6 @@ h3 {
 }
 
 .stat-card,
-.principle-grid article,
 .task-card {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -233,28 +231,6 @@ h3 {
   color: var(--muted);
   font-size: 14px;
   font-weight: 650;
-}
-
-.principles {
-  width: 100%;
-  max-width: none;
-  padding-right: max(24px, calc((100% - 1180px) / 2));
-  padding-left: max(24px, calc((100% - 1180px) / 2));
-  background: var(--surface-2);
-}
-
-.principle-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.principle-grid article {
-  padding: 24px;
-}
-
-.principle-grid p,
-.task-card p {
-  margin-bottom: 0;
-  color: var(--muted);
 }
 
 .task-grid {
@@ -449,12 +425,33 @@ tbody tr:hover {
 }
 
 .section-row td {
-  padding: 14px 18px 14px 42px;
+  padding: 14px 12px;
   border-bottom-color: #e7eeeb;
 }
 
-.subgroup-section-row td {
+.section-row td:first-child {
+  padding-left: 42px;
+}
+
+.subgroup-section-row td:first-child {
   padding-left: 62px;
+}
+
+.section-row .section-demo-total {
+  vertical-align: middle;
+  color: var(--ink);
+  font-weight: 760;
+  white-space: nowrap;
+}
+
+.self-counted-marker {
+  margin-left: 2px;
+  color: var(--teal);
+  font-size: 0.75em;
+}
+
+.section-row .section-demo-spacer {
+  padding: 0;
 }
 
 .section-toggle .dataset-name {
@@ -474,13 +471,6 @@ tbody tr:hover {
   font-size: 13px;
   font-weight: 850;
   line-height: 1;
-}
-
-.group-summary {
-  display: block;
-  max-width: 880px;
-  color: var(--muted);
-  font-size: 13px;
 }
 
 .group-links {
@@ -637,7 +627,6 @@ footer {
   }
 
   .stat-grid,
-  .principle-grid,
   .task-grid {
     grid-template-columns: 1fr;
   }

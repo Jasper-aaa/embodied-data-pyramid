@@ -7406,6 +7406,63 @@ const formatNumber = (value) => {
   return new Intl.NumberFormat("en-US").format(value);
 };
 
+const sectionDemoTotalOverrides = {
+  "agibot-world-2026": 20758,
+  "agibot-world-beta": 166237,
+  "daimon-infinity": 274669,
+  robocoin: 100230,
+  "open-galaxea": 20662,
+  "fast-umi": 9277,
+  robomind: 74211,
+  "robomind-2": 185432,
+  "open-x-embodiment": 316230,
+  "interndata-a1": 604722,
+  univtac: 800,
+  "rm-bench": 450,
+  robomme: 1600,
+  "mikasa-robo-vla": 22500,
+  bicoord: 1800,
+  roboverse: "510.5k trajectories",
+  "genmanip-bench": "~1.07k demos/episodes",
+  robocerebra: 1000,
+  "robotwin-2": 126500,
+  vlabench: 5000,
+  "the-colosseum": "2,000 train demos",
+  "maniskill-hab": 44000,
+  libero: 6500,
+  maniskill: 33304,
+  furniturebench: 5100,
+  roboset: 9500
+};
+
+const selfCountedSectionDemoTotals = new Set([
+  "agibot-world-2026",
+  "agibot-world-beta",
+  "daimon-infinity",
+  "robocoin",
+  "open-galaxea",
+  "fast-umi",
+  "robomind",
+  "robomind-2",
+  "open-x-embodiment",
+  "interndata-a1"
+]);
+
+const sectionTotalSources = new Set(["robot", "umi", "simulation"]);
+
+const getSectionDemoTotal = (section) => {
+  if (hasOwn(sectionDemoTotalOverrides, section.id)) {
+    return sectionDemoTotalOverrides[section.id];
+  }
+
+  const demos = (section.rows || []).map((row) => row.demos);
+  if (!demos.length || demos.some((value) => typeof value !== "number" || !Number.isFinite(value))) {
+    return "TBD";
+  }
+
+  return demos.reduce((total, value) => total + value, 0);
+};
+
 const formatSource = (source) => sourceLabels[source] || source;
 
 const unique = (items) => [...new Set(items)];
@@ -7438,6 +7495,12 @@ const escapeHtml = (value) => String(value || "")
   .replaceAll(">", "&gt;")
   .replaceAll('"', "&quot;")
   .replaceAll("'", "&#039;");
+
+const sectionDemoTotal = (section) => {
+  const total = escapeHtml(formatNumber(getSectionDemoTotal(section)));
+  if (!selfCountedSectionDemoTotals.has(section.id)) return total;
+  return `${total}<sup class="self-counted-marker" title="Self-counted total" aria-label="self-counted total">&dagger;</sup>`;
+};
 
 const tagList = (items) => `
   <div class="tag-list">
@@ -7562,7 +7625,6 @@ const renderTaskGroups = () => {
     return `
       <article class="task-card">
         <h3>${group.project}</h3>
-        <p>${group.summary}</p>
         <div class="task-meta">
           <span class="pill ${group.source}">${formatSource(group.source)}</span>
           <span class="pill">${rows.length} task ${rows.length === 1 ? "row" : "rows"}</span>
@@ -7601,7 +7663,6 @@ const renderRows = () => {
             <span class="pill ${group.source}">${formatSource(group.source)}</span>
             <span class="dataset-sub">${group.rows.length} task ${group.rows.length === 1 ? "row" : "rows"}</span>
           </button>
-          <span class="group-summary">${group.summary}</span>
           ${projectLinkList(group.projectLinks)}
         </td>
         <td>${citationBlock(group.citation)}</td>
@@ -7625,18 +7686,25 @@ const renderRows = () => {
 
     const renderSectionRow = (section, parentId = section.id, extraClass = "") => {
       const isSectionOpen = queryActive || sourceActive || taskActive || sectionOpenState[section.id];
+      const showDemoTotal = sectionTotalSources.has(group.source);
+      const demoTotalCells = showDemoTotal
+        ? `
+          <td class="section-demo-total" aria-label="Total demos">${sectionDemoTotal(section)}</td>
+          <td class="section-demo-spacer" colspan="2" aria-hidden="true"></td>
+        `
+        : "";
       const sectionRow = `
         <tr class="section-row${extraClass}" data-group="${group.id}" data-section="${section.id}">
-          <td colspan="7">
+          <td colspan="${showDemoTotal ? 4 : 7}">
             <button class="section-toggle" type="button" data-section="${section.id}" aria-expanded="${isSectionOpen}">
               <span class="chevron" aria-hidden="true">${isSectionOpen ? "v" : ">"}</span>
               <span class="dataset-name">${section.project}</span>
               ${yearPill(section)}
               <span class="dataset-sub">${section.rows.length} task ${section.rows.length === 1 ? "row" : "rows"}</span>
             </button>
-            ${section.summary ? `<span class="group-summary">${section.summary}</span>` : ""}
             ${projectLinkList(section.projectLinks)}
           </td>
+          ${demoTotalCells}
           <td>${citationBlock(section.citation)}</td>
         </tr>
       `;
@@ -7660,7 +7728,6 @@ const renderRows = () => {
               <span class="dataset-name">${sectionGroup.project}</span>
               <span class="dataset-sub">${sectionGroup.rows.length} task ${sectionGroup.rows.length === 1 ? "row" : "rows"}</span>
             </button>
-            <span class="group-summary">${sectionGroup.summary}</span>
           </td>
           <td><span class="muted">-</span></td>
         </tr>
