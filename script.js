@@ -7305,15 +7305,15 @@ const getGroupSections = (group) => group.sectionGroups
   ? group.sectionGroups.flatMap((sectionGroup) => sectionGroup.sections || [])
   : (group.sections || []);
 
-const groupOpenState = Object.fromEntries(datasetGroups.map((group) => [group.id, group.defaultOpen]));
+const groupOpenState = Object.fromEntries(datasetGroups.map((group) => [group.id, false]));
 const sectionGroupOpenState = Object.fromEntries(
   datasetGroups.flatMap((group) =>
-    (group.sectionGroups || []).map((sectionGroup) => [sectionGroup.id, sectionGroup.defaultOpen])
+    (group.sectionGroups || []).map((sectionGroup) => [sectionGroup.id, false])
   )
 );
 const sectionOpenState = Object.fromEntries(
   datasetGroups.flatMap((group) =>
-    getGroupSections(group).map((section) => [section.id, section.defaultOpen])
+    getGroupSections(group).map((section) => [section.id, false])
   )
 );
 
