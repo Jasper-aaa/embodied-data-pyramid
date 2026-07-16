@@ -3,21 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Embodied Data Pyramid</title>
+    <title>Data Pyramid: a survey</title>
     <link rel="icon" type="image/png" href="assets/embodied-data-pyramid-logo.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="#top" aria-label="Embodied Data Pyramid home">
+      <a class="brand" href="#top" aria-label="Data Pyramid: a survey">
         <img class="brand-mark" src="assets/embodied-data-pyramid-logo.png" alt="" />
-        <span>Embodied Data Pyramid</span>
+        <span>Data Pyramid: a survey</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#overview">Overview</a>
         <a href="#tasks">Tasks</a>
         <a href="#table">Dataset Table</a>
-        <a href="#format">Format</a>
+        <a href="#format">Bibliography</a>
       </nav>
     </header>
 
@@ -34,7 +34,7 @@
           </p>
           <div class="hero-actions">
             <a class="button primary" href="#table">Browse table</a>
-            <a class="button secondary" href="#format">Data schema</a>
+            <a class="button secondary" href="#format">Bibliography</a>
           </div>
         </div>
       </section>
@@ -128,27 +128,26 @@
       </section>
 
       <section id="format" class="section format-section">
-        <div class="section-heading">
-          <p class="eyebrow">Data Format</p>
-          <h2>Suggested fields for each dataset split</h2>
+        <div class="bibliography-layout">
+          <section class="reference-panel" aria-labelledby="bibliography-title">
+            <h2 id="bibliography-title">Bibliography</h2>
+          </section>
+          <section class="reference-panel" aria-labelledby="acknowledgement-title">
+            <h2 id="acknowledgement-title">Acknowledgement</h2>
+            <p>
+              Acknowledge to
+              <a href="https://umi-data.github.io/" target="_blank" rel="noreferrer">UMI-Data-Community</a>
+              and
+              <a href="https://github.com/IRMVLab/awesome-robot-learning-from-human-videos" target="_blank" rel="noreferrer">IRMVLab/awesome-robot-learning-from-human-videos</a>.
+            </p>
+          </section>
         </div>
-        <pre><code>{
-  project: "InternData-A1",
-  source: "simulation",
-  task: "close_the_electriccooker",
-  dataLinks: { HuggingFace: "https://..." },
-  observations: ["RGB", "Proprio", "Language"],
-  actions: ["End Effector Pose", "Gripper"],
-  demos: "TBD",
-  envs: "TBD",
-  license: "CC BY-NC-SA 4.0"
-}</code></pre>
       </section>
     </main>
 
     <footer>
-      <span>Embodied Data Pyramid</span>
-      <span>Static catalog prototype for real robot and simulation datasets.</span>
+      <span>Data Pyramid: a survey</span>
+      <span>Download link for various datasets.</span>
     </footer>
 
     <script src="script.js"></script>
