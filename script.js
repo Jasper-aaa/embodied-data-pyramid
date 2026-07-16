@@ -56,6 +56,7 @@ const openXDatasetNames = [
   "nyu_rot_dataset_converted_externally_to_rlds",
   "qut_dexterous_manpulation",
   "robo_net",
+  "robo_set",
   "robot_vqa",
   "roboturk",
   "stanford_hydra_dataset_converted_externally_to_rlds",
@@ -128,10 +129,14 @@ const openXDatasetAnnotations = {
       Project: "https://www.robonet.wiki/"
     }
   },
-  roboset: {
+  robo_set: {
     alias: "RoboSet",
+    path: null,
+    demos: 7500,
     links: {
-      Project: "https://robopen.github.io/roboset/teleoperation.html",
+      TFDS: "https://www.tensorflow.org/datasets/catalog/robo_set",
+      Project: "https://robopen.github.io/",
+      Source: "https://github.com/tensorflow/datasets/tree/master/tensorflow_datasets/robotics/rtx/robo_set"
     }
   },
   roboturk: {
@@ -150,15 +155,15 @@ const openXEmbodimentSources = openXDatasetNames.map((name) => ({
   ...(openXDatasetAnnotations[name] || {})
 }));
 
-const makeOpenXEmbodimentRow = ({ name, path, alias, actions, links = {} }) => ({
+const makeOpenXEmbodimentRow = ({ name, path, alias, actions, links = {}, demos = "TBD" }) => ({
   task: alias ? `${name} (${alias})` : name,
   dataLinks: {
-    "RLDS": path ? `${openXBucketConsoleBase}/${path}` : openXBucketConsoleBase,
+    ...(path ? { RLDS: `${openXBucketConsoleBase}/${path}` } : {}),
     ...links
   },
   observations: ["RGB-D", "Proprio", "Language", "Force", "Tactile"],
   actions,
-  demos: "TBD",
+  demos,
   envs: "",
   license: "See source"
 });
@@ -726,53 +731,24 @@ const makeLandingRow = ({ task, href, label = "Download", observations = ["TBD"]
 
 const roboMindRepo = "x-humanoid-robomind/RoboMIND";
 const roboMindGroups = [
-  { benchmark: "benchmark1_0_compressed", embodiment: "h5_agilex_3rgb", taskCount: 62 },
-  { benchmark: "benchmark1_0_compressed", embodiment: "h5_franka_1rgb", taskCount: 2 },
-  { benchmark: "benchmark1_0_compressed", embodiment: "h5_franka_3rgb", taskCount: 90 },
-  { benchmark: "benchmark1_0_compressed", embodiment: "h5_simulation", taskCount: 10 },
-  { benchmark: "benchmark1_0_compressed", embodiment: "h5_tienkung_gello_1rgb", taskCount: 26 },
-  { benchmark: "benchmark1_0_compressed", embodiment: "h5_tienkung_xsens_1rgb", taskCount: 23 },
-  { benchmark: "benchmark1_0_compressed", embodiment: "h5_ur_1rgb", taskCount: 77 },
-  { benchmark: "benchmark1_1_compressed", embodiment: "h5_agilex_3rgb", taskCount: 16 },
-  { benchmark: "benchmark1_1_compressed", embodiment: "h5_franka_3rgb", taskCount: 26 },
-  { benchmark: "benchmark1_1_compressed", embodiment: "h5_franka_fr3_dual", taskCount: 6 },
-  { benchmark: "benchmark1_1_compressed", embodiment: "h5_sim_franka_3rgb", taskCount: 11 },
-  { benchmark: "benchmark1_1_compressed", embodiment: "h5_sim_tienkung_1rgb", taskCount: 4 },
-  { benchmark: "benchmark1_1_compressed", embodiment: "h5_tienkung_gello_1rgb", taskCount: 19 },
-  { benchmark: "benchmark1_1_compressed", embodiment: "h5_tienkung_prod1_gello_1rgb", taskCount: 4 },
-  { benchmark: "benchmark1_1_compressed", embodiment: "h5_tienkung_xsens_1rgb", taskCount: 3 },
-  { benchmark: "benchmark1_1_compressed", embodiment: "h5_ur_1rgb", taskCount: 90 },
-  { benchmark: "benchmark1_2_compressed", embodiment: "h5_franka_3rgb", taskCount: 1 },
-  { benchmark: "benchmark1_2_compressed", embodiment: "h5_sim_franka_3rgb", taskCount: 9 },
-  { benchmark: "example_data", embodiment: "h5_agilex_3rgb", taskCount: 1 },
-  { benchmark: "example_data", embodiment: "h5_franka_3rgb", taskCount: 1 },
-  { benchmark: "example_data", embodiment: "h5_tienkung_gello_1rgb", taskCount: 1 },
-  { benchmark: "example_data", embodiment: "h5_ur_1rgb", taskCount: 1 }
+  { embodiment: "Franka Emika Panda single-arm robot", taskCount: 62, demos: 52926},
+  { embodiment: "Tien Kung humanoid robot", taskCount: 2, demos: 19152},
+  { embodiment: "AgileX Cobot Magic V2.0 dual-arm robot", taskCount: 90, demos:10629},
+  { embodiment: "UR-5e single-arm robot", taskCount: 10, demos: 25170},
 ];
 
 const roboMindRows = [
-  ...roboMindGroups.map(({ benchmark, embodiment, taskCount }) => ({
-    task: `${benchmark} / ${embodiment}`,
+  ...roboMindGroups.map(({embodiment, taskCount, demos }) => ({
+    task: `${embodiment}`,
     dataLinks: {
-      "HF folder": hfDatasetTree(roboMindRepo, `${benchmark}/${embodiment}`)
+      "tar.gz": "https://huggingface.co/datasets/x-humanoid-robomind/RoboMIND"
     },
     observations: ["HDF5", "RGB", "Robot Observations"],
     actions: ["Robot Actions"],
-    demos: "TBD",
+    demos: demos,
     envs: `${embodiment} / ${taskCount} task archives`,
     license: "Apache-2.0"
   })),
-  {
-    task: "Failure data",
-    dataLinks: {
-      HuggingFace: hfDatasetTree(roboMindRepo, "failure_data")
-    },
-    observations: ["HDF5", "RGB", "Robot Observations"],
-    actions: ["Robot Actions"],
-    demos: "TBD",
-    envs: "",
-    license: "Apache-2.0"
-  }
 ];
 
 const agiBotWorldRepo = "agibot-world/AgiBotWorld-Beta";
@@ -975,7 +951,7 @@ const agiBotWorldTaskEntries = [
 const agiBotWorldRows = agiBotWorldTaskEntries.map(({ name, ids, demos }) => ({
   task: name,
   dataLinks: {
-    HuggingFace: ids.map((id) => hfDatasetTree(agiBotWorldRepo, `observations/${id}`))
+    tar: ids.map((id) => hfDatasetTree(agiBotWorldRepo, `observations/${id}`))
   },
   observations: ["RGB-D", "Proprio", "Language"],
   actions: ["EEF Pose", "Joint"],
@@ -2369,7 +2345,7 @@ const roboCoinRows = roboCoinTaskEntries
   .map(({ path, task, demos }) => ({
     task,
     dataLinks: {
-      HuggingFace: `${roboCoinRepoBase}/${path}`
+      LeRobot: `${roboCoinRepoBase}/${path}`
     },
     observations: ["RGB-D", "Proprio", "Language"],
     actions: roboCoinActionsForPath(path),
@@ -2400,8 +2376,8 @@ const roboMind2Rows = roboMind2EmbodimentEntries.map(({ repo, dataset, embodimen
   makeLandingRow({
     task: `${dataset} / ${embodiment} (${tasks} tasks)`,
     href: modelScopeDatasetTree(repo, `data/${embodiment}`),
-    label: "ModelScope",
-    observations: ["RGB-D", "Proprio", "Language", "Force", "Torque"],
+    label: "hdf5",
+    observations: ["RGB-D", "Proprio", "Language", "Tactile", "Force", "Torque"],
     actions: ["Robot Actions"],
     demos,
     license: "Apache-2.0"
@@ -2457,7 +2433,7 @@ const ph2dDatasets = [
 const ph2dRows = ph2dDatasets.map(({ path, taskType, embodiment, demos }) => ({
   task: `${taskType} / ${path}`,
   dataLinks: {
-    HuggingFace: hfDatasetTree(ph2dRepo, path)
+    hdf5: hfDatasetTree(ph2dRepo, path)
   },
   observations: ["HDF5", "RGB", "Proprio"],
   actions: ["Robot Actions"],
@@ -2477,8 +2453,9 @@ const decoRows = decoTaskGroups.map(([path, envs]) =>
   makeHfFolderRow({
     repo: decoRepo,
     path,
-    task: `${path} / data-* folders`,
-    observations: ["RGB", "Proprio"],
+    task: `${path}`,
+    label: "tar.gz",
+    observations: ["RGB", "Proprio", "Tactile"],
     actions: ["Robot Actions"],
     envs,
     license: "Apache-2.0"
@@ -2496,6 +2473,7 @@ const dexoraRows = dexoraTopLevelFolders.map(({ path, demos }) =>
   makeHfFolderRow({
     repo: dexoraRepo,
     path,
+    label: "LeRobot",
     task: path,
     observations: ["RGB", "Proprio", "Language"],
     actions: ["EEF Pose", "Joint", "Dexterous hand joint"],
@@ -2542,11 +2520,81 @@ const baihuVTouchRows = baihuVTouchTaskEntries.map(({ task, sourceTask, demos })
     task,
     href: `${baihuVTouchDataBase}/${encodeURIComponent(sourceTask)}`,
     label: "hdf5",
-    observations: ["RGB-D", "Proprio", "Tactile"],
+    observations: ["RGB-D", "Proprio", "Language", "Tactile"],
     actions: ["EEF Pose", "Joint", "Parallel gripper"],
     demos,
     envs: 1,
     license: "TBD"
+  })
+);
+
+const letBaseRepo = "LejuRobotics/LET-Base-Dataset";
+const letDexRepo = "LejuRobotics/LET-Dex-Dataset";
+
+const letBaseTaskEntries = [
+  { environment: "real", split: "Labelled", task: "single_scan_code_for_weighing-P4-dex_hand", demos: 509 },
+  { environment: "real", split: "Unlabelled", task: "Parts_offline-P4-dex_hand", demos: 132 },
+  { environment: "real", split: "Unlabelled", task: "SMT_tray_rack_blanking-P4-claw", demos: 1206 },
+  { environment: "real", split: "Unlabelled", task: "SPS_parts_grab-P4-claw", demos: 540 },
+  { environment: "real", split: "Unlabelled", task: "SPS_parts_sorting-P4-claw", demos: 2259 },
+  { environment: "real", split: "Unlabelled", task: "SPS_parts_sorting-P4-dex_hand", demos: 348 },
+  { environment: "real", split: "Unlabelled", task: "assembly_line_sorting-P4-claw", demos: 217 },
+  { environment: "real", split: "Unlabelled", task: "countertop_cleaning-P4-claw", demos: 2819 },
+  { environment: "real", split: "Unlabelled", task: "delivery_room_card-P4-dex_hand", demos: 149 },
+  { environment: "real", split: "Unlabelled", task: "desktop_decluttering-P4-claw", demos: 610 },
+  { environment: "real", split: "Unlabelled", task: "drug_finishing-P4-claw", demos: 1316 },
+  { environment: "real", split: "Unlabelled", task: "express_logistics_scenario-P4-claw", demos: 551 },
+  { environment: "real", split: "Unlabelled", task: "loading_of_large_tooling-P4-dex_hand", demos: 165 },
+  { environment: "real", split: "Unlabelled", task: "loading_of_small_tooling-P4-dex_hand", demos: 49 },
+  { environment: "real", split: "Unlabelled", task: "more_FMCG_loading-P4-dex_hand", demos: 201 },
+  { environment: "real", split: "Unlabelled", task: "more_coil_sorting-P4-dex_hand", demos: 799 },
+  { environment: "real", split: "Unlabelled", task: "more_goods_orders-P4-claw", demos: 471 },
+  { environment: "real", split: "Unlabelled", task: "parts_off_line-P4-claw", demos: 1926 },
+  { environment: "real", split: "Unlabelled", task: "rubbish_sorting-P4-claw", demos: 413 },
+  { environment: "real", split: "Unlabelled", task: "shop_oversale-P4-claw", demos: 138 },
+  { environment: "real", split: "Unlabelled", task: "single_coil_sorting-P4-dex_hand", demos: 1698 },
+  { environment: "real", split: "Unlabelled", task: "single_goods_orders-P4-dex_hand", demos: 245 },
+  { environment: "real", split: "Unlabelled", task: "standardized_feeding_for_FMCG-P4-dex_hand", demos: 160 },
+  { environment: "real", split: "Unlabelled", task: "task_mass_check-P4-claw", demos: 530 },
+  { environment: "real", split: "Unlabelled", task: "water_line_sorting-P4-claw", demos: 373 },
+  { environment: "sim", split: "Unlabelled", task: "bottle_flip-P4-claw_Rq2f85", demos: 2000, path: "datasets/rosbag/sim/bottle_flip-P4-claw_Rq2f85" },
+  { environment: "sim", split: "Unlabelled", task: "package_weighing-P4-claw_Rq2f85", demos: 2000, path: "datasets/rosbag/sim/package_weighing-P4-claw_Rq2f85" },
+  { environment: "sim", split: "Unlabelled", task: "target_placement-P4-claw_Rq2f85", demos: 2000, path: "datasets/rosbag/sim/target_placement-P4-claw_Rq2f85" },
+  { environment: "sim", split: "Unlabelled", task: "TASK4-SPS", demos: 2000 }
+];
+
+const letDexTaskEntries = [
+  { task: "Clean-up_desktop_items-P4-Linker_Hand_L6", demos: 301 },
+  { task: "SF_Express_Parcel_Sorting-P4-Linker_Hand_L6", demos: 198 },
+  { task: "Smart_postal_packages-P4-Linker_Hand_L6", demos: 121 },
+  { task: "Smartandfast-forward-P4-Linker_Hand_L6", demos: 94 }
+];
+
+const letBaseRows = letBaseTaskEntries.map(({ environment, split, task, demos, path }) =>
+  makeHfFolderRow({
+    repo: letBaseRepo,
+    path: path || `datasets/rosbag/${environment}/${split}/${task}`,
+    task: `${environment} / ${split} / ${task}`,
+    label: "rosbag",
+    observations: ["RGB-D", "Proprio.", "Lang.", "IMU"],
+    actions: ["Joint", "Parallel gripper", "Dexterous hand joint"],
+    demos,
+    envs: "TBD",
+    license: "CC BY-NC-SA 4.0"
+  })
+);
+
+const letDexRows = letDexTaskEntries.map(({ task, demos }) =>
+  makeHfFolderRow({
+    repo: letDexRepo,
+    path: `datasets/rosbag/tactile/real/Labelled/${task}`,
+    task: `tactile / real / Labelled / ${task}`,
+    label: "rosbag",
+    observations: ["RGB-D", "Proprio.", "Lang.", "Tactile", "Force", "Torque", "IMU"],
+    actions: ["Joint", "Dexterous hand joint"],
+    demos,
+    envs: "TBD",
+    license: "CC BY-NC-SA 4.0"
   })
 );
 
@@ -2569,22 +2617,13 @@ const agiBotWorld2026Rows = [
       repo: agiBotWorld2026Repo,
       path,
       task,
-      observations: ["RGB-D", "Proprio", "Language"],
+      label: "tar.gz",
+      observations: ["RGB-D", "Proprio", "Language", "Tactile"],
       actions: ["Robot Actions"],
       envs: "AgiBot World 2026",
       license: "CC BY-NC-SA 4.0"
     })
   ),
-  makeHfBlobRow({
-    repo: agiBotWorld2026Repo,
-    path: "split_episodes_tool.zip",
-    task: "split_episodes_tool",
-    label: "zip",
-    observations: ["N/A"],
-    actions: ["N/A"],
-    envs: "tooling",
-    license: "CC BY-NC-SA 4.0"
-  })
 ];
 
 const unitreeUnifolmCollection = "https://huggingface.co/collections/unitreerobotics/unifolm-wbt-dataset";
@@ -2608,7 +2647,7 @@ const unitreeUnifolmRows = unitreeUnifolmRepos.map(({ repo, demos }) =>
   makeLandingRow({
     task: repo.split("/").at(-1).replaceAll("_", " "),
     href: hfDatasetBase(repo),
-    label: "HuggingFace",
+    label: "LeRobot",
     observations: ["Video", "Parquet", "Proprio", "Language"],
     actions: ["Robot Actions"],
     demos,
@@ -2702,7 +2741,7 @@ const hapTileRows = hapTileTaskZips.map((zipName) =>
     path: `Data/${zipName}`,
     task: zipName.replace(".zip", ""),
     label: "zip",
-    observations: ["RGB", "Proprio", "Language", "Haptic"],
+    observations: ["RGB", "Proprio", "Language", "Tactile"],
     actions: ["Robot Actions"],
     envs: "HapTile task zip",
     license: "CC BY 4.0"
@@ -2862,7 +2901,7 @@ const requestedRobotDataSections = [
         task: "RH20T",
         href: "https://rh20t.github.io/#download",
         label: "zip",
-        observations: ["RGB-D", "Proprio", "Language", "Force", "Audio"],
+        observations: ["RGB-D", "Proprio", "Language", "Tactile", "Force", "Audio"],
         actions: ["Robot Actions"],
         demos: 110000,
         envs: "4 embodiments / 147 tasks"
@@ -2891,9 +2930,9 @@ const requestedRobotDataSections = [
     defaultOpen: false,
     rows: [
       makeLandingRow({
-        task: "FMB benchmark data",
+        task: "FMB dataset",
         href: "https://rail.eecs.berkeley.edu/datasets/fmb/",
-        label: "Dataset",
+        label: "zip",
         observations: ["RGB-D", "Proprio", "Force", "Torque"],
         actions: ["Robot Actions"],
         demos: 22600,
@@ -3124,7 +3163,7 @@ const additionalRobotDataSections = [
       makeLandingRow({
         task: "ActionNet",
         href: hfDatasetBase("FourierIntelligence/ActionNet"),
-        label: "HuggingFace",
+        label: "tar",
         observations: ["RGB-D", "Proprio", "Language"],
         actions: ["Robot Actions"],
         demos: 30000,
@@ -3204,10 +3243,10 @@ const additionalRobotDataSections = [
     defaultOpen: false,
     rows: [
       makeLandingRow({
-        task: "Humanoid Everyday episodes",
+        task: "Humanoid Everyday",
         href: hfDatasetBase("USC-PSI-Lab/humanoid-everyday"),
-        label: "HuggingFace",
-        observations: ["Video", "Parquet", "Robot Observations"],
+        label: "LeRobot",
+        observations: ["RGB-D", "Language", "Tactile", "LiDAR", "IMU", "Odometry"],
         actions: ["Robot Actions"],
         envs: "Humanoid",
         license: "Apache-2.0"
@@ -3253,7 +3292,7 @@ const additionalRobotDataSections = [
       makeLandingRow({
         task: "MolmoAct2-BimanualYAM-Dataset",
         href: hfDatasetBase("allenai/MolmoAct2-BimanualYAM-Dataset"),
-        label: "HuggingFace",
+        label: "LeRobot",
         observations: ["Video", "Parquet", "Bimanual"],
         actions: ["Robot Actions"],
         demos: 32246,
@@ -3281,52 +3320,36 @@ const additionalRobotDataSections = [
     rows: baihuVTouchRows
   },
   {
-    id: "let-dataset",
-    project: "Let-Dataset",
-    summary: "Leju LET full-size humanoid robot dataset family, split into the Base, Dex, and Body subdatasets requested by the source naming.",
+    id: "let-base-dataset",
+    project: "LET-Base Dataset",
+    summary: "Leju LET-Base humanoid dataset. The official summary reports 92.6K / 1000+ and 31 tasks; rows below use the HuggingFace rosbag tree count available locally: 25,824 bags across real and sim task folders.",
     projectLinks: {
-      ModelScope: "https://modelscope.cn/organization/lejurobot",
-
+      HuggingFace: hfDatasetBase(letBaseRepo)
     },
-    citation: `@misc{LET2025,
-  title={LET:Full-Size Humanoid Robot Real-World Dataset},
+    citation: `@misc{lejurobotics2026letbase,
+  title={LET-Base-Dataset},
   author={LejuRobotics},
-  year={2025},
+  year={2026},
   howpublished={\\url{https://huggingface.co/datasets/LejuRobotics/LET-Base-Dataset}}
 }`,
     defaultOpen: false,
-    rows: [
-      makeLandingRow({
-        task: "LET-Base-Dataset",
-        href: "https://huggingface.co/datasets/LejuRobotics/LET-Base-Dataset",
-        label: "HuggingFace",
-        observations: ["RGB-D", "Proprio", "Language", "IMU"],
-        actions: ["TBD"],
-        demos: 92600,
-        envs: "55 tasks",
-        license: "CC BY-NC-SA 4.0"
-      }),
-      makeLandingRow({
-        task: "LET-Dex-Dataset",
-        href: "https://huggingface.co/datasets/LejuRobotics/LET-Dex-Dataset",
-        label: "HuggingFace",
-        observations: ["RGB-D", "Proprio", "Language", "Tactile", "Force"],
-        actions: ["TBD"],
-        demos: 3000,
-        envs: "14 tasks",
-        license: "CC BY-NC-SA 4.0"
-      }),
-      makeLandingRow({
-        task: "LET-Body-Dataset",
-        href: "https://modelscope.cn/datasets/lejurobot/LET-Body-Dataset",
-        label: "ModelScope",
-        observations: ["RGB-D", "Proprio", "Language", "Whole-body State"],
-        actions: ["TBD"],
-        demos: "TBD",
-        envs: "20+ tasks",
-        license: "CC BY-NC-SA 4.0"
-      })
-    ]
+    rows: letBaseRows
+  },
+  {
+    id: "let-dex-dataset",
+    project: "LET-Dex Dataset",
+    summary: "Leju LET-Dex humanoid tactile/dexterous dataset. The official summary reports 3K / 20 and 14 tasks; rows below use the HuggingFace tactile real labelled rosbag tree count available locally: 714 bags across 4 visible task folders.",
+    projectLinks: {
+      HuggingFace: hfDatasetBase(letDexRepo)
+    },
+    citation: `@misc{lejurobotics2026letdex,
+  title={LET-Dex-Dataset},
+  author={LejuRobotics},
+  year={2026},
+  howpublished={\\url{https://huggingface.co/datasets/LejuRobotics/LET-Dex-Dataset}}
+}`,
+    defaultOpen: false,
+    rows: letDexRows
   }
 ];
 
@@ -3937,7 +3960,8 @@ const robotSectionYears = {
   "aist-bimanual": 2025,
   fmb: 2025,
   "humanoid-everyday": 2025,
-  "let-dataset": 2025,
+  "let-base-dataset": 2026,
+  "let-dex-dataset": 2026,
   "open-galaxea": 2025,
   ph2d: 2025,
   reassemble: 2025,
@@ -3970,7 +3994,8 @@ const robotActionOverrides = {
   "realsource-world": ["EEF Pose", "Joint", "Parallel gripper"],
   "humanoid-everyday": ["Joint", "Dexterous hand joint"],
   "robomind-2": ["EEF Pose", "Joint", "Parallel gripper", "Dexterous hand joint"],
-  "let-dataset": ["Joint", "Parallel gripper", "Dexterous hand joint"],
+  "let-base-dataset": ["Joint", "Parallel gripper", "Dexterous hand joint"],
+  "let-dex-dataset": ["Joint", "Dexterous hand joint"],
   "deco-50": ["Joint", "Dexterous hand joint"],
   dexora: ["EEF Pose", "Joint", "Dexterous hand joint"],
   molmoact2: ["Joint", "Parallel gripper"],
@@ -7337,7 +7362,8 @@ const entryYears = {
   "robomind-2": 2025,
   molmoact2: 2026,
   "baihu-vtouch": 2026,
-  "let-dataset": 2025,
+  "let-base-dataset": 2026,
+  "let-dex-dataset": 2026,
   daml: 2018,
   mime: 2018,
   "mt-opt": 2021,
@@ -7413,7 +7439,6 @@ const sectionDemoTotalOverrides = {
   robocoin: 100230,
   "open-galaxea": 20662,
   "fast-umi": 9277,
-  robomind: 74211,
   "robomind-2": 185432,
   "open-x-embodiment": 316230,
   "interndata-a1": 604722,
