@@ -3,14 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Robot Data Index</title>
+    <title>Embodied Data Pyramid</title>
+    <link rel="icon" type="image/png" href="assets/embodied-data-pyramid-logo.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="#top" aria-label="Robot Data Index home">
-        <span class="brand-mark"></span>
-        <span>Robot Data Index</span>
+      <a class="brand" href="#top" aria-label="Embodied Data Pyramid home">
+        <img class="brand-mark" src="assets/embodied-data-pyramid-logo.png" alt="" />
+        <span>Embodied Data Pyramid</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#overview">Overview</a>
@@ -38,6 +39,30 @@
         </div>
       </section>
 
+      <section class="paper-banner" aria-labelledby="paper-title">
+        <div class="paper-banner-inner">
+          <h2 id="paper-title" class="paper-title">Data Pyramid of Embodied Manipulation: A Survey</h2>
+          <div class="paper-resources" aria-label="Paper resources">
+            <button class="paper-resource" type="button" disabled title="GitHub link coming soon">
+              <img src="assets/icon-github.png" alt="" />
+              <span>GitHub</span>
+            </button>
+            <button class="paper-resource" type="button" disabled title="arXiv link coming soon">
+              <img src="assets/icon-arxiv.svg" alt="" />
+              <span>arXiv</span>
+            </button>
+            <button class="paper-resource" type="button" disabled title="PDF link coming soon">
+              <img src="assets/icon-pdf.png" alt="" />
+              <span>PDF</span>
+            </button>
+            <a class="paper-resource" href="#table" aria-label="Jump to the dataset table">
+              <img src="assets/icon-table.svg" alt="" />
+              <span>Table</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
       <section id="overview" class="section overview">
         <div class="section-heading">
           <p class="eyebrow">Overview</p>
@@ -58,7 +83,7 @@
         <div class="table-header">
           <div>
             <p class="eyebrow">Dataset Table</p>
-            <h2>Robot data by task</h2>
+            <h2>Datasets by category and task</h2>
           </div>
           <div class="controls">
             <label class="search">
@@ -93,7 +118,6 @@
                 <th>Observations</th>
                 <th>Actions</th>
                 <th># Demos</th>
-                <th># Envs</th>
                 <th>License</th>
                 <th>Citation</th>
               </tr>
@@ -123,7 +147,7 @@
     </main>
 
     <footer>
-      <span>Robot Data Index</span>
+      <span>Embodied Data Pyramid</span>
       <span>Static catalog prototype for real robot and simulation datasets.</span>
     </footer>
 

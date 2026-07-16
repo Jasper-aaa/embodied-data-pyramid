@@ -4,16 +4,15 @@ This file is the required checklist for future dataset updates. Read this file b
 
 ## Current Fixed Format
 
-The website table has 8 fixed columns:
+The website table has 7 fixed visible columns:
 
 1. `Task`
 2. `Data Links`
 3. `Observations`
 4. `Actions`
 5. `# Demos`
-6. `# Envs`
-7. `License`
-8. `Citation`
+6. `License`
+7. `Citation`
 
 The table hierarchy is fixed:
 
@@ -71,6 +70,8 @@ Each task row should use this shape:
   license: "TBD"
 }
 ```
+
+The existing `envs` field may remain in row objects as non-rendered source metadata, but the website table does not display a `# Envs` column.
 
 Use `TBD` when the source does not clearly provide a value. Do not invent demo counts, environment counts, licenses, observations, or actions.
 
@@ -199,6 +200,13 @@ Use this queue for future additions. Keep newest requests at the top.
 
 | Status | Date | Parent Category | Section | Input Link | Indexing Plan | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| Done | 2026-07-15 | All categories | Paper resource banner | https://worldbench.github.io/worldlens | Static paper identity and resource controls | Added a full-width white band immediately below the Hero with the formal serif title `Data Pyramid of Embodied Manipulation: A Survey`; set the title to 40px on desktop and 28px on small screens; added locally stored GitHub and PDF icons from the WorldLens site repository, the Academicons arXiv mark, and a Lucide table icon; GitHub/arXiv/PDF are disabled pending URLs, while Table links directly to `#table`; no additional JavaScript dependency is required |
+| Done | 2026-07-15 | All categories | Remove `# Envs` column | N/A | Seven-column table rendering | Removed the `# Envs` header and every rendered task-row environment cell; updated parent, Simulation subcategory, dataset header, demo-total spacer, and empty-state colspans from the former eight-column layout to seven visible columns; retained existing `envs` values in JavaScript as non-rendered source metadata |
+| Done | 2026-07-15 | All categories | Dataset Table heading | N/A | Responsive presentation styling | Replaced `Robot data by task` with the category-wide title `Datasets by category and task`; kept the heading on one line with a table-specific 26px desktop size and an 18px small-screen size without changing other section headings |
+| Done | 2026-07-15 | All categories | Overview statistics | N/A | Runtime-derived summary cards | Replaced Parent categories with the total number of datasets across all five categories; retained Task rows; removed the separate Simulation rows and Robot rows cards; added one combined Robot + UMI + Simulation demos total using the same dynamic dataset-level demo aggregation as Task Groups; changed the desktop statistics grid from four to three columns |
+| Done | 2026-07-15 | All categories | Task Groups cards | N/A | Runtime-derived statistics and responsive layout | Removed each card's redundant source/category pill; arranged all five cards in one desktop row with vertically stacked metadata; dataset-row totals are calculated at render time from dataset sections, falling back to direct rows for unsectioned categories; demo totals are calculated at render time from the same dataset-level totals shown in section headers, including numeric overrides; Ego Data and General Data omit demos; narrower screens reduce the grid to two then one column |
+| Done | 2026-07-15 | All categories | White site background | N/A | Global presentation styling | Changed the global page background and fixed topbar background to solid white; retained the hero image and the table/control state colors needed to preserve content hierarchy |
+| Done | 2026-07-15 | All categories | Site branding | User-provided PNG | Shared header and document branding | Replaced the CSS-drawn header mark with `assets/embodied-data-pyramid-logo.png`; renamed `Robot Data Index` to `Embodied Data Pyramid` in the document title, header accessibility label, visible header brand, and footer; reused the logo as the browser favicon |
 | Done | 2026-07-15 | All categories | Initial collapsed state | N/A | Rendering-state initialization | Changed parent categories, Simulation subcategories, and dataset sections to initialize closed on first page load; clicking toggles still works and active search/source/task filters still expand matching results automatically |
 | Done | 2026-07-15 | Robot Data / UMI Data / Simulation Data | User-counted demo totals | User-provided counts | Dataset-section total overrides with `\dagger` marker | Set AgiBot World 2026 to 20,758, AgiBot World Beta to 166,237, Daimon-Infinity to 274,669, RoboCOIN to 100,230, Open Galaxea to 20,662, FastUMI to 9,277, RoboMIND to 74,211, RoboMIND 2.0 to 185,432, Open X-Embodiment / LeRobot OXE to 316,230, and InternData-A1 to 604,722; each value is displayed with a superscript dagger to identify a self-counted total; task-row demo values remain unchanged |
 | Done | 2026-07-15 | Robot Data / UMI Data / Simulation Data | Dataset total demos | N/A | Dataset-section total in the fixed `# Demos` column | Added dataset-level demo totals to section header rows for the three requested categories only; sections with entirely numeric task-row counts are summed, known simulation totals stored in non-numeric row labels use explicit totals, and incomplete or non-demo-only statistics display `TBD`; Ego Data and General Data remain unchanged |

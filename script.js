@@ -7463,6 +7463,23 @@ const getSectionDemoTotal = (section) => {
   return demos.reduce((total, value) => total + value, 0);
 };
 
+const getGroupDatasetCount = (group) => {
+  const sections = getGroupSections(group);
+  return sections.length || (group.rows || []).length;
+};
+
+const getGroupDemoTotal = (group) => {
+  const sections = getGroupSections(group);
+  const demoTotals = sections.length
+    ? sections.map(getSectionDemoTotal)
+    : (group.rows || []).map((row) => row.demos);
+
+  return demoTotals.reduce(
+    (total, value) => total + (typeof value === "number" && Number.isFinite(value) ? value : 0),
+    0
+  );
+};
+
 const formatSource = (source) => sourceLabels[source] || source;
 
 const unique = (items) => [...new Set(items)];
@@ -7602,12 +7619,14 @@ const getFilteredGroups = () => datasetGroups
 
 const renderStats = () => {
   const rows = getAllRows();
-  const totalDemos = rows.reduce((sum, item) => sum + (typeof item.demos === "number" ? item.demos : 0), 0);
+  const totalDatasets = datasetGroups.reduce((total, group) => total + getGroupDatasetCount(group), 0);
+  const totalDemos = datasetGroups
+    .filter((group) => ["robot", "umi", "simulation"].includes(group.source))
+    .reduce((total, group) => total + getGroupDemoTotal(group), 0);
   const stats = [
-    ["Parent categories", datasetGroups.length],
+    ["Datasets", totalDatasets],
     ["Task rows", rows.length],
-    ["Simulation rows", rows.filter((item) => item.group.source === "simulation").length],
-    ["Robot rows", rows.filter((item) => item.group.source === "robot").length]
+    ["Robot + UMI + Simulation demos", totalDemos]
   ];
 
   document.querySelector("#stats").innerHTML = stats.map(([label, value]) => `
@@ -7620,15 +7639,15 @@ const renderStats = () => {
 
 const renderTaskGroups = () => {
   document.querySelector("#taskGroups").innerHTML = datasetGroups.map((group) => {
-    const rows = getGroupRows(group);
-    const demos = rows.reduce((sum, item) => sum + (typeof item.demos === "number" ? item.demos : 0), 0);
+    const datasetCount = getGroupDatasetCount(group);
+    const demos = getGroupDemoTotal(group);
+    const showDemos = group.source !== "ego" && group.source !== "general";
     return `
       <article class="task-card">
         <h3>${group.project}</h3>
         <div class="task-meta">
-          <span class="pill ${group.source}">${formatSource(group.source)}</span>
-          <span class="pill">${rows.length} task ${rows.length === 1 ? "row" : "rows"}</span>
-          <span class="pill">${formatNumber(demos)} demos</span>
+          <span class="pill">${datasetCount} dataset ${datasetCount === 1 ? "row" : "rows"}</span>
+          ${showDemos ? `<span class="pill">${formatNumber(demos)} demos</span>` : ""}
         </div>
       </article>
     `;
@@ -7655,7 +7674,7 @@ const renderRows = () => {
     const hasSections = Boolean(group.sections?.length);
     const groupRow = `
       <tr class="group-row" data-group="${group.id}">
-        <td colspan="7">
+        <td colspan="6">
           <button class="group-toggle" type="button" data-group="${group.id}" aria-expanded="${isOpen}">
             <span class="chevron" aria-hidden="true">${isOpen ? "v" : ">"}</span>
             <span class="dataset-name">${group.project}</span>
@@ -7678,7 +7697,6 @@ const renderRows = () => {
         <td>${tagList(row.observations)}</td>
         <td>${tagList(row.actions)}</td>
         <td>${formatNumber(row.demos)}</td>
-        <td>${formatNumber(row.envs)}</td>
         <td>${row.license}</td>
         <td>${citationBlock(row.citation)}</td>
       </tr>
@@ -7690,12 +7708,12 @@ const renderRows = () => {
       const demoTotalCells = showDemoTotal
         ? `
           <td class="section-demo-total" aria-label="Total demos">${sectionDemoTotal(section)}</td>
-          <td class="section-demo-spacer" colspan="2" aria-hidden="true"></td>
+          <td class="section-demo-spacer" aria-hidden="true"></td>
         `
         : "";
       const sectionRow = `
         <tr class="section-row${extraClass}" data-group="${group.id}" data-section="${section.id}">
-          <td colspan="${showDemoTotal ? 4 : 7}">
+          <td colspan="${showDemoTotal ? 4 : 6}">
             <button class="section-toggle" type="button" data-section="${section.id}" aria-expanded="${isSectionOpen}">
               <span class="chevron" aria-hidden="true">${isSectionOpen ? "v" : ">"}</span>
               <span class="dataset-name">${section.project}</span>
@@ -7722,7 +7740,7 @@ const renderRows = () => {
 
       const sectionGroupRow = `
         <tr class="subcategory-row" data-group="${group.id}" data-section-group="${sectionGroup.id}">
-          <td colspan="7">
+          <td colspan="6">
             <button class="subcategory-toggle" type="button" data-section-group="${sectionGroup.id}" aria-expanded="${isSectionGroupOpen}">
               <span class="chevron" aria-hidden="true">${isSectionGroupOpen ? "v" : ">"}</span>
               <span class="dataset-name">${sectionGroup.project}</span>
@@ -7750,7 +7768,7 @@ const renderRows = () => {
     return groupRow + sectionGroupRows + sectionRows + childRows;
   }).join("") || `
     <tr>
-      <td colspan="8" class="muted">No dataset rows match the current filters.</td>
+      <td colspan="7" class="muted">No dataset rows match the current filters.</td>
     </tr>
   `;
 
