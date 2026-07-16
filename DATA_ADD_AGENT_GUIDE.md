@@ -24,16 +24,15 @@ Only `script.js` is normally required.
 
 ## Current Website Shape
 
-The table has exactly 8 columns:
+The table has exactly 7 visible columns:
 
 1. `Task`
 2. `Data Links`
 3. `Observations`
 4. `Actions`
 5. `# Demos`
-6. `# Envs`
-7. `License`
-8. `Citation`
+6. `License`
+7. `Citation`
 
 The hierarchy is:
 
@@ -53,7 +52,7 @@ Do not rename these categories unless the user explicitly asks.
 
 ## Row Schema
 
-Every rendered task row must match this shape:
+Every task row object should match this shape:
 
 ```js
 {
@@ -68,6 +67,8 @@ Every rendered task row must match this shape:
   license: "TBD"
 }
 ```
+
+`envs` is retained in source row objects for dataset metadata, but it is not rendered as a visible table column.
 
 Rules:
 

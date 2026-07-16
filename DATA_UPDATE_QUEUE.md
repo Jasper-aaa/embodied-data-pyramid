@@ -4,16 +4,15 @@ This file is the required checklist for future dataset updates. Read this file b
 
 ## Current Fixed Format
 
-The website table has 8 fixed columns:
+The website table has 7 fixed visible columns:
 
 1. `Task`
 2. `Data Links`
 3. `Observations`
 4. `Actions`
 5. `# Demos`
-6. `# Envs`
-7. `License`
-8. `Citation`
+6. `License`
+7. `Citation`
 
 The table hierarchy is fixed:
 
@@ -71,6 +70,8 @@ Each task row should use this shape:
   license: "TBD"
 }
 ```
+
+The existing `envs` field may remain in row objects as non-rendered source metadata, but the website table does not display a `# Envs` column.
 
 Use `TBD` when the source does not clearly provide a value. Do not invent demo counts, environment counts, licenses, observations, or actions.
 
@@ -199,6 +200,18 @@ Use this queue for future additions. Keep newest requests at the top.
 
 | Status | Date | Parent Category | Section | Input Link | Indexing Plan | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| Done | 2026-07-15 | All categories | Paper resource banner | https://worldbench.github.io/worldlens | Static paper identity and resource controls | Added a full-width white band immediately below the Hero with the formal serif title `Data Pyramid of Embodied Manipulation: A Survey`; set the title to 40px on desktop and 28px on small screens; added locally stored GitHub and PDF icons from the WorldLens site repository, the Academicons arXiv mark, and a Lucide table icon; GitHub/arXiv/PDF are disabled pending URLs, while Table links directly to `#table`; no additional JavaScript dependency is required |
+| Done | 2026-07-15 | All categories | Remove `# Envs` column | N/A | Seven-column table rendering | Removed the `# Envs` header and every rendered task-row environment cell; updated parent, Simulation subcategory, dataset header, demo-total spacer, and empty-state colspans from the former eight-column layout to seven visible columns; retained existing `envs` values in JavaScript as non-rendered source metadata |
+| Done | 2026-07-15 | All categories | Dataset Table heading | N/A | Responsive presentation styling | Replaced `Robot data by task` with the category-wide title `Datasets by category and task`; kept the heading on one line with a table-specific 26px desktop size and an 18px small-screen size without changing other section headings |
+| Done | 2026-07-15 | All categories | Overview statistics | N/A | Runtime-derived summary cards | Replaced Parent categories with the total number of datasets across all five categories; retained Task rows; removed the separate Simulation rows and Robot rows cards; added one combined Robot + UMI + Simulation demos total using the same dynamic dataset-level demo aggregation as Task Groups; changed the desktop statistics grid from four to three columns |
+| Done | 2026-07-15 | All categories | Task Groups cards | N/A | Runtime-derived statistics and responsive layout | Removed each card's redundant source/category pill; arranged all five cards in one desktop row with vertically stacked metadata; dataset-row totals are calculated at render time from dataset sections, falling back to direct rows for unsectioned categories; demo totals are calculated at render time from the same dataset-level totals shown in section headers, including numeric overrides; Ego Data and General Data omit demos; narrower screens reduce the grid to two then one column |
+| Done | 2026-07-15 | All categories | White site background | N/A | Global presentation styling | Changed the global page background and fixed topbar background to solid white; retained the hero image and the table/control state colors needed to preserve content hierarchy |
+| Done | 2026-07-15 | All categories | Site branding | User-provided PNG | Shared header and document branding | Replaced the CSS-drawn header mark with `assets/embodied-data-pyramid-logo.png`; renamed `Robot Data Index` to `Embodied Data Pyramid` in the document title, header accessibility label, visible header brand, and footer; reused the logo as the browser favicon |
+| Done | 2026-07-15 | All categories | Initial collapsed state | N/A | Rendering-state initialization | Changed parent categories, Simulation subcategories, and dataset sections to initialize closed on first page load; clicking toggles still works and active search/source/task filters still expand matching results automatically |
+| Done | 2026-07-15 | Robot Data / UMI Data / Simulation Data | User-counted demo totals | User-provided counts | Dataset-section total overrides with `\dagger` marker | Set AgiBot World 2026 to 20,758, AgiBot World Beta to 166,237, Daimon-Infinity to 274,669, RoboCOIN to 100,230, Open Galaxea to 20,662, FastUMI to 9,277, RoboMIND to 74,211, RoboMIND 2.0 to 185,432, Open X-Embodiment / LeRobot OXE to 316,230, and InternData-A1 to 604,722; each value is displayed with a superscript dagger to identify a self-counted total; task-row demo values remain unchanged |
+| Done | 2026-07-15 | Robot Data / UMI Data / Simulation Data | Dataset total demos | N/A | Dataset-section total in the fixed `# Demos` column | Added dataset-level demo totals to section header rows for the three requested categories only; sections with entirely numeric task-row counts are summed, known simulation totals stored in non-numeric row labels use explicit totals, and incomplete or non-demo-only statistics display `TBD`; Ego Data and General Data remain unchanged |
+| Done | 2026-07-14 | Ego Data | `ego-data` branch merge | https://github.com/Jasper-aaa/embodied-data-pyramid/tree/ego-data | Dataset sections with resource-level download/access rows | Merged commits `27f1e5b` and `b283fd6` from the GitHub `ego-data` branch into local `main` as merge commit `092600f`; added 37 Ego dataset sections and 178 resource rows spanning EgoHands through Xperience-10M; preserved existing Robot, UMI, Simulation, General Data, fixed 8-column rows, citations, year metadata, and the local display cleanup that hides section summaries |
+| Done | 2026-07-13 | All categories | Display cleanup | N/A | Rendering-only cleanup | Removed the complete Indexing Principles section and stopped rendering summary descriptions beneath Task Groups, parent categories, Simulation subcategories, and dataset section headings; retained summary fields as search metadata so filtering behavior and dataset content remain unchanged |
 | Done | 2026-07-05 | Simulation Data / Benchmark | RoboSet / RoboHive | https://robopen.github.io/roboset/teleoperation.html | Task-level rows from 38 official teleoperation table downloads | Added 38 activity/task/scene rows from the official teleoperation table; each row links its `dl.fbaipublicfiles.com` `.tar.gz` archive and records 250 demonstrations; page states 9,500 immediately downloadable teleoperated trajectories and a broader 30,050-trajectory RoboSet, with 12 skills across 38 tasks, 4 camera views per frame, language-defined tasks, scene variations, and Oculus Quest 2 teleoperation; RoboSet page marks MIT license; section uses RoboAgent/RoboSet arXiv BibTeX/BibLaTeX citation; note that this is real-world teleoperation data but is placed under Simulation Data / Benchmark per this thread's current benchmark ingestion flow |
 | Done | 2026-07-05 | Simulation Data / Benchmark | FurnitureBench | https://drive.google.com/drive/folders/1j59vFmgBsatu1PZK52HWX_9o5BCh_XDt?usp=sharing | Furniture/randomness-level rows from official dataset statistics and download script file IDs | Added 27 rows for 9 furniture models x low/medium/high initialization randomness; official project dataset table confirms 5,100 successful teleoperation demonstrations, 219.6 hours, and per-row demos/average length/total hours; docs confirm Google Drive structure `low/med/high/<furniture>/*.pkl`, compressed `*_compressed/<furniture>.tar.gz`, file format with wrist/front RGB, robot state, 8-D actions, rewards, skill flags, and metadata; download script provides stable gdown file IDs for each compressed tarball; section includes project/docs/GitHub/Drive/arXiv links and RSS 2023 BibTeX/BibLaTeX citation; dataset license is not clearly stated, so rows use `TBD` rather than code MIT |
 | Done | 2026-07-05 | Simulation Data / Benchmark | ManiSkill | https://pepy.tech/projects/mani_skill?timeRange=threeMonths&category=version&includeCIDownloads=true&granularity=weekly&viewType=line&versions=Total%2C3.* | Env-level rows from 16 Hugging Face demonstration folders | User link is package download statistics, not a dataset entry; added it as a PePy stats project link and used the official `haosulab/ManiSkill_Demonstrations` Hugging Face dataset for downloads; HF tree exposes 16 `demos/<env>` folders and matching `.zip` archives; row demo counts come from the official JSON metadata episode arrays; docs confirm task-ID demo downloads, HDF5 trajectory format, JSON metadata, env states, actions, optional observations, and sample videos; HF card records Apache-2.0 license, while ManiSkill README notes rigid-body environments are permissive and assets are CC BY-NC 4.0; section includes project/docs/tasks/GitHub/HF/PePy/arXiv links and ManiSkill3 RSS 2025 citation |
