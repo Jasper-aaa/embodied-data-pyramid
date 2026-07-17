@@ -2661,33 +2661,33 @@ const aistBimanualDataRoot = "https://www.dropbox.com/scl/fo/zumqdjhk47uk2k8kcef
 const aistBimanualHdf5Root = "https://www.dropbox.com/scl/fo/zumqdjhk47uk2k8kcefmu/AELiAf4iasSkcGyryGI8nDE/data/hdf5";
 const makeAistBimanualHdf5Url = (zipName) =>
   `${aistBimanualHdf5Root}?dl=0&preview=${encodeURIComponent(zipName)}&rlkey=bhkxfigxkt8fmbxb88qnq1og7&subfolder_nav_tracking=1`;
-const aistBimanualHdf5Zips = [
-  "brush_screws_into_dustpan_human_brush_left_hold.zip",
-  "brush_screws_into_dustpan_left_brush_human_hold.zip",
-  "close_cardboard_box.zip",
-  "close_toolbox.zip",
-  "find_hole_and_insert_into_gear.zip",
-  "find_insert_large_gear_shaft.zip",
-  "find_insert_small_gear_shaft.zip",
-  "fit_large_gear_shaft.zip",
-  "fit_small_gear_shaft.zip",
-  "fold_bath_towel.zip",
-  "fold_big_towel.zip",
-  "fold_blue_towel.zip",
-  "fold_green_towel.zip",
-  "fold_light_blue_towel.zip",
-  "fold_orange_towel.zip",
-  "fold_towel_assist.zip"
+const aistBimanualHdf5Entries = [
+  ["brush_screws_into_dustpan_human_brush_left_hold.zip", 50],
+  ["brush_screws_into_dustpan_left_brush_human_hold.zip", 50],
+  ["close_cardboard_box.zip", 100],
+  ["close_toolbox.zip", 100],
+  ["find_hole_and_insert_into_gear.zip", 100],
+  ["find_insert_large_gear_shaft.zip", 100],
+  ["find_insert_small_gear_shaft.zip", 100],
+  ["fit_large_gear_shaft.zip", 50],
+  ["fit_small_gear_shaft.zip", 50],
+  ["fold_bath_towel.zip", 50],
+  ["fold_big_towel.zip", 50],
+  ["fold_blue_towel.zip", 200],
+  ["fold_green_towel.zip", 100],
+  ["fold_light_blue_towel.zip", 100],
+  ["fold_orange_towel.zip", 100],
+  ["fold_towel_assist.zip", 100]
 ];
 const aistBimanualRows = [
-  ...aistBimanualHdf5Zips.map((zipName) =>
+  ...aistBimanualHdf5Entries.map(([zipName, demos]) =>
     makeDropboxRow({
       task: `hdf5 / ${zipName.replace(".zip", "")}`,
       href: makeAistBimanualHdf5Url(zipName),
       label: "zip",
       observations: ["RGB", "Proprio", "Language"],
       actions: ["Robot Actions"],
-      demos: "TBD",
+      demos,
       envs: "task zip",
       license: "TBD"
     })
@@ -2987,7 +2987,7 @@ const requestedRobotDataSections = [
   {
     id: "aist-bimanual",
     project: "AIST-Bimanual",
-    summary: "AIST bimanual manipulation dataset distributed through Dropbox. Rows include the public format folders plus task-named HDF5 ZIP files visible from the first shared-folder page.",
+    summary: "AIST bimanual manipulation dataset distributed through Dropbox. The official task CSV currently totals 12,025 episodes across 119 tasks; the 16 indexed HDF5 ZIP rows are a 1,400-episode subset.",
     projectLinks: {
       Project: "https://aistairc.github.io/aist_bimanip_site/",
       Data: aistBimanualDataRoot
@@ -3003,7 +3003,7 @@ const requestedRobotDataSections = [
   {
     id: "deco-50",
     project: "DECO-50",
-    summary: "DECO-50 real-world bimanual dexterous dataset. Rows follow the task folders exposed by Hugging Face.",
+    summary: "DECO-50 real-world bimanual dexterous dataset. Rows follow the task folders exposed by Hugging Face; the paper reports 8,000 successful trajectories in total across four scenarios.",
     projectLinks: {
       HuggingFace: hfDatasetBase(decoRepo),
       Paper: "https://arxiv.org/abs/2602.05513"
@@ -3071,7 +3071,7 @@ const requestedRobotDataSections = [
   {
     id: "haptile",
     project: "HapTile",
-    summary: "Haptic-informed vision-tactile-language-action dataset. Rows index the task-named ZIP files under the Data folder.",
+    summary: "Haptic-informed vision-tactile-language-action dataset. Rows index the task-named ZIP files under the Data folder; the paper reports 1,726 demonstrations across 38 tasks.",
     projectLinks: {
       HuggingFace: hfDatasetBase(hapTileRepo),
       Paper: "https://arxiv.org/abs/2606.04825"
@@ -3088,7 +3088,7 @@ const requestedRobotDataSections = [
   {
     id: "omnivitac",
     project: "OmniVitac",
-    summary: "Visuo-tactile manipulation dataset. Rows follow the six top-level task-family folders visible on Hugging Face.",
+    summary: "Visuo-tactile manipulation dataset. Rows follow the six top-level task-family folders visible on Hugging Face; the official dataset card reports 21,000+ trajectories.",
     projectLinks: {
       Project: "https://mrsecant.github.io/OmniVTA/",
       Code: "https://github.com/MrSecant/OmniVTA",
@@ -3228,7 +3228,7 @@ const additionalRobotDataSections = [
   {
     id: "humanoid-everyday",
     project: "Humanoid Everyday",
-    summary: "Humanoid everyday manipulation dataset. The public repo exposes episode parquet/video shards rather than task-named archives.",
+    summary: "Humanoid everyday manipulation dataset. The public repo exposes episode parquet/video shards rather than task-named archives; its LeRobot metadata reports 8,949 episodes.",
     projectLinks: {
       Poject: "https://humanoideveryday.github.io/",
       HuggingFace: hfDatasetBase("USC-PSI-Lab/humanoid-everyday"),
@@ -3248,6 +3248,7 @@ const additionalRobotDataSections = [
         label: "LeRobot",
         observations: ["RGB-D", "Language", "Tactile", "LiDAR", "IMU", "Odometry"],
         actions: ["Robot Actions"],
+        demos: 8949,
         envs: "Humanoid",
         license: "Apache-2.0"
       })
@@ -3793,7 +3794,7 @@ const makeDexMimicGenTask = (task) => ({
   },
   observations: ["Simulation Trajectories", "Images", "Robot State"],
   actions: ["Bimanual Dexterous Actions"],
-  demos: "TBD",
+  demos: 1000,
   envs: "Bimanual dexterous manipulation",
   license: "CC BY-NC-SA 4.0"
 });
@@ -6668,7 +6669,7 @@ const datasetGroups = [
       {
         id: "dexmimicgen",
         project: "DexMimicGen",
-        summary: "Generated bimanual dexterous manipulation demonstrations from DexMimicGen. Rows index the task-named HDF5 files under the Hugging Face generated folder.",
+        summary: "Generated bimanual dexterous manipulation demonstrations from DexMimicGen. The paper reports 21K demos across the full release; the nine indexed main-task HDF5 files contain 1,000 generated demonstrations per task.",
         projectLinks: {
           HuggingFace: hfDatasetBase(dexMimicGenRepo),
           generated: hfDatasetTree(dexMimicGenRepo, "generated"),
@@ -7433,6 +7434,7 @@ const formatNumber = (value) => {
 };
 
 const sectionDemoTotalOverrides = {
+  "aist-bimanual": 12025,
   "agibot-world-2026": 20758,
   "agibot-world-beta": 166237,
   "daimon-infinity": 274669,
@@ -7442,6 +7444,10 @@ const sectionDemoTotalOverrides = {
   "robomind-2": 185432,
   "open-x-embodiment": 316230,
   "interndata-a1": 604722,
+  "deco-50": 8000,
+  haptile: 1726,
+  omnivitac: "21,000+ trajectories",
+  dexmimicgen: "21K demos",
   univtac: 800,
   "rm-bench": 450,
   robomme: 1600,
