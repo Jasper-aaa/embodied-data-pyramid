@@ -4063,8 +4063,8 @@ const sortRobotSectionsByYear = (sections) =>
   sections
     .map(withRobotDataDisplayRules)
     .sort((left, right) => {
-      const leftYear = robotSectionYears[left.id] || Number.MAX_SAFE_INTEGER;
-      const rightYear = robotSectionYears[right.id] || Number.MAX_SAFE_INTEGER;
+      const leftYear = left.year || robotSectionYears[left.id] || Number.MAX_SAFE_INTEGER;
+      const rightYear = right.year || robotSectionYears[right.id] || Number.MAX_SAFE_INTEGER;
       return leftYear - rightYear || left.project.localeCompare(right.project);
     });
 
@@ -6529,6 +6529,660 @@ const makeEgoDatasetSection = ({
 
 const egoDataSections = egoDatasetRecords.map(makeEgoDatasetSection);
 
+// Keep dataset-level navigation separate from the concrete data artifact links
+// rendered in the innermost task row. An empty override intentionally renders
+// "Coming soon" instead of presenting a paper, project page, or code repository
+// as though it were a downloadable dataset.
+const representativeDatasetProjectLinks = {
+  robovqa: "https://robovqa.github.io/",
+  "robonet-video": "https://www.robonet.wiki/",
+  "rh20t-p": "https://sites.google.com/view/rh20t-primitive/main",
+  robava: "https://github.com/Sunbaoli/RobAVA",
+  robofail: "https://robot-reflect.github.io/",
+  "graspnet-1billion": "https://graspnet.net/",
+  "suctionnet-1billion": "https://graspnet.net/suction",
+  alfred: "https://askforalfred.com/",
+  "llarp-language-rearrangement": "https://github.com/apple/ml-llarp",
+  clevrer: "http://clevrer.csail.mit.edu/",
+  intphys: "https://intphys.cognitive-ml.fr/",
+  "llava-instruct-150k": "https://llava-vl.github.io/",
+  "llava-onevision-si": "https://llava-vl.github.io/blog/2024-08-05-llava-onevision/",
+  sharegpt4v: "https://sharegpt4v.github.io/",
+  pixmo: "https://molmo.allenai.org/",
+  "a-okvqa": "https://a-okvqa.allenai.org/",
+  "llava-video-178k": "https://llava-vl.github.io/blog/2024-09-30-llava-video/",
+  egotaskqa: "https://sites.google.com/view/egotaskqa",
+  "ocr-vqa": "https://ocr-vqa.github.io/",
+  textocr: "https://textvqa.org/textocr/",
+  docvqa: "https://www.docvqa.org/",
+  chartqa: "https://github.com/vis-nlp/ChartQA",
+  multiui: "https://neulab.github.io/MultiUI/",
+  objects365: "https://www.objects365.org/",
+  "sa-1b": "https://segment-anything.com/",
+  "paco-lvis": "https://github.com/facebookresearch/paco",
+  refcoco: "https://github.com/lichengunc/refer",
+  "pixmo-points": "https://molmo.allenai.org/",
+  robopoint: "https://robo-point.github.io/",
+  "roboafford-plus-plus": "https://roboafford-dataset.github.io/",
+  "charades-sta": "https://allenai.org/plato/charades/",
+  didemo: "https://github.com/LisaAnne/LocalizingMoments",
+  hirest: "https://hirest-cvpr2023.github.io/",
+  "moment-10m": "https://github.com/DCDmllm/Momentor",
+  coin: "https://coin-dataset.github.io/",
+  arkitscenes: "https://machinelearning.apple.com/research/arkitscenes",
+  mmscan: "https://tai-wang.github.io/mmscan/",
+  scanqa: "https://github.com/ATR-DBI/ScanQA",
+  sqa3d: "https://sqa3d.github.io/",
+  "egoplan-it": "https://github.com/ChenYi99/EgoPlan"
+};
+
+const representativeDatasetDataLinks = {
+  robovqa: {
+    HuggingFace: "https://huggingface.co/datasets/Tianli/robovqa/tree/main/tfrecord",
+    "GCS Bucket": "https://console.cloud.google.com/storage/browser/gdm-robovqa"
+  },
+  "rovid-x": {},
+  "robonet-video": {
+    Download: "https://drive.google.com/uc?id=1BkqHzfRkfzgzCfc73NbNnPMK_rg3i1n9&export=download"
+  },
+  "rh20t-p": {
+    Annotations: "https://drive.google.com/file/d/1ssNJikkaEYViz4yr-vIdQjmWoqiLWuwz/view?usp=sharing",
+    "RH20T Source Data": "https://rh20t.github.io/"
+  },
+  robava: {},
+  robofail: {},
+  "cornell-grasp-dataset": {
+    Download: "http://pr.cs.cornell.edu/grasping/rect_data/data.php"
+  },
+  "graspnet-1billion": {
+    Downloads: "https://graspnet.net/datasets.html"
+  },
+  "suctionnet-1billion": {
+    Downloads: "https://graspnet.net/suction"
+  },
+  alfred: {
+    Download: "https://ai2thor-dataset.s3-us-west-2.amazonaws.com/alfred_data_all.zip"
+  },
+  wap: {},
+  "llarp-language-rearrangement": {},
+  clevrer: {
+    Dataset: "http://clevrer.csail.mit.edu/"
+  },
+  intphys: {
+    Downloads: "https://intphys.cognitive-ml.fr/download.html"
+  },
+  inflevel: {
+    Benchmark: "https://github.com/allenai/inflevel"
+  },
+  "llava-instruct-150k": {
+    HuggingFace: "https://huggingface.co/datasets/liuhaotian/LLaVA-Instruct-150K"
+  },
+  "llava-onevision-si": {},
+  sharegpt4v: {
+    HuggingFace: "https://huggingface.co/datasets/Lin-Chen/ShareGPT4V"
+  },
+  pixmo: {
+    "HuggingFace Collection": "https://huggingface.co/collections/allenai/pixmo"
+  },
+  "a-okvqa": {
+    Download: "https://prior-datasets.s3.us-east-2.amazonaws.com/aokvqa/aokvqa_v1p0.tar.gz"
+  },
+  "llava-video-178k": {
+    HuggingFace: "https://huggingface.co/datasets/lmms-lab/LLaVA-Video-178K"
+  },
+  egotaskqa: {
+    "Access Request": "https://sites.google.com/view/egotaskqa/download"
+  },
+  "ocr-vqa": {
+    "Google Drive": "https://drive.google.com/drive/folders/1_GYPY5UkUy7HIcR0zq3ZCFgeZN7BAfm_?usp=sharing"
+  },
+  textocr: {
+    Dataset: "https://textvqa.org/textocr/"
+  },
+  docvqa: {
+    "Dataset Access": "https://site.docvqa.org/datasets/docvqa"
+  },
+  chartqa: {
+    HuggingFace: "https://huggingface.co/datasets/ahmed-masry/ChartQA",
+    "Dataset Tree": "https://github.com/vis-nlp/ChartQA/tree/main/ChartQA%20Dataset"
+  },
+  multiui: {
+    HuggingFace: "https://huggingface.co/datasets/neulab/MultiUI"
+  },
+  objects365: {
+    "Download / Access": "https://www.objects365.org/download.html"
+  },
+  "sa-1b": {
+    Dataset: "https://ai.meta.com/datasets/segment-anything/"
+  },
+  ade20k: {
+    Dataset: "https://ade20k.csail.mit.edu/"
+  },
+  "paco-lvis": {
+    Annotations: "https://github.com/facebookresearch/paco"
+  },
+  refcoco: {
+    Annotations: "https://github.com/lichengunc/refer"
+  },
+  "pixmo-points": {
+    HuggingFace: "https://huggingface.co/datasets/allenai/pixmo-points"
+  },
+  robopoint: {
+    HuggingFace: "https://huggingface.co/datasets/wentao-yuan/robopoint-data"
+  },
+  "roboafford-plus-plus": {},
+  "charades-sta": {
+    "Dataset Access": "https://allenai.org/plato/charades/"
+  },
+  didemo: {
+    Annotations: "https://github.com/LisaAnne/LocalizingMoments/tree/master/data"
+  },
+  hirest: {
+    Annotations: "https://github.com/j-min/HiREST"
+  },
+  "moment-10m": {},
+  coin: {
+    "Dataset Access": "https://coin-dataset.github.io/#download"
+  },
+  scannet: {
+    "Dataset Access": "http://www.scan-net.org/"
+  },
+  "scannet-plus-plus": {
+    "Dataset Access": "https://kaldir.vc.in.tum.de/scannetpp/"
+  },
+  arkitscenes: {
+    "Download Instructions": "https://github.com/apple/ARKitScenes#downloading-the-dataset"
+  },
+  "3rscan": {
+    "Dataset Access": "https://3rscan.io/"
+  },
+  mmscan: {
+    Dataset: "https://github.com/OpenRobotLab/MMScan"
+  },
+  scanqa: {
+    Annotations: "https://github.com/ATR-DBI/ScanQA/tree/main/data"
+  },
+  sqa3d: {
+    Dataset: "https://sqa3d.github.io/"
+  },
+  "egoplan-it": {
+    "Training Data": "https://github.com/ChenYi99/EgoPlan/tree/main/data"
+  }
+};
+
+const makeOfficialArxivBibtex = (key, title, authors, year, eprint, primaryClass, doi = "") => `@misc{${key},
+  title={${title}},
+  author={${authors}},
+  year={${year}},
+  eprint={${eprint}},
+  archivePrefix={arXiv},
+  primaryClass={${primaryClass}},
+${doi ? `  doi={${doi}},\n` : ""}  url={https://arxiv.org/abs/${eprint}}
+}`;
+
+const representativeDatasetCitations = {
+  robovqa: makeOfficialArxivBibtex(
+    "sermanet2023robovqamultimodallonghorizonreasoning",
+    "RoboVQA: Multimodal Long-Horizon Reasoning for Robotics",
+    "Pierre Sermanet and Tianli Ding and Jeffrey Zhao and Fei Xia and Debidatta Dwibedi and Keerthana Gopalakrishnan and Christine Chan and Gabriel Dulac-Arnold and Sharath Maddineni and Nikhil J Joshi and Pete Florence and Wei Han and Robert Baruch and Yao Lu and Suvir Mirchandani and Peng Xu and Pannag Sanketi and Karol Hausman and Izhak Shafran and Brian Ichter and Yuan Cao",
+    2023, "2311.00899", "cs.RO"
+  ),
+  "robonet-video": makeOfficialArxivBibtex(
+    "dasari2020robonetlargescalemultirobotlearning", "RoboNet: Large-Scale Multi-Robot Learning",
+    "Sudeep Dasari and Frederik Ebert and Stephen Tian and Suraj Nair and Bernadette Bucher and Karl Schmeckpeper and Siddharth Singh and Sergey Levine and Chelsea Finn",
+    2020, "1910.11215", "cs.RO"
+  ),
+  "rh20t-p": makeOfficialArxivBibtex(
+    "chen2025rh20tpprimitivelevelroboticdataset", "RH20T-P: A Primitive-Level Robotic Dataset Towards Composable Generalization Agents",
+    "Zeren Chen and Zhelun Shi and Xiaoya Lu and Lehan He and Sucheng Qian and Zhenfei Yin and Wanli Ouyang and Jing Shao and Yu Qiao and Cewu Lu and Lu Sheng",
+    2025, "2403.19622", "cs.RO"
+  ),
+  "cornell-grasp-dataset": makeOfficialArxivBibtex(
+    "redmon2015realtimegraspdetectionusing", "Real-Time Grasp Detection Using Convolutional Neural Networks",
+    "Joseph Redmon and Anelia Angelova", 2015, "1412.3128", "cs.RO"
+  ),
+  "graspnet-1billion": makeOfficialArxivBibtex(
+    "fang2020graspnetlargescaleclustereddensely", "GraspNet: A Large-Scale Clustered and Densely Annotated Dataset for Object Grasping",
+    "Hao-Shu Fang and Chenxi Wang and Minghao Gou and Cewu Lu", 2020, "1912.13470", "cs.CV"
+  ),
+  "suctionnet-1billion": makeOfficialArxivBibtex(
+    "cao2021suctionnet1billionlargescalebenchmarksuction", "SuctionNet-1Billion: A Large-Scale Benchmark for Suction Grasping",
+    "Hanwen Cao and Hao-Shu Fang and Wenhai Liu and Cewu Lu", 2021, "2103.12311", "cs.RO", "https://doi.org/10.1109/LRA.2021.3115406"
+  ),
+  alfred: makeOfficialArxivBibtex(
+    "shridhar2020alfredbenchmarkinterpretinggrounded", "ALFRED: A Benchmark for Interpreting Grounded Instructions for Everyday Tasks",
+    "Mohit Shridhar and Jesse Thomason and Daniel Gordon and Yonatan Bisk and Winson Han and Roozbeh Mottaghi and Luke Zettlemoyer and Dieter Fox",
+    2020, "1912.01734", "cs.CV"
+  ),
+  clevrer: makeOfficialArxivBibtex(
+    "yi2020clevrercollisioneventsvideo", "CLEVRER: CoLlision Events for Video REpresentation and Reasoning",
+    "Kexin Yi and Chuang Gan and Yunzhu Li and Pushmeet Kohli and Jiajun Wu and Antonio Torralba and Joshua B. Tenenbaum",
+    2020, "1910.01442", "cs.CV"
+  ),
+  intphys: makeOfficialArxivBibtex(
+    "riochet2020intphysframeworkbenchmarkvisual", "IntPhys: A Framework and Benchmark for Visual Intuitive Physics Reasoning",
+    "Ronan Riochet and Mario Ynocente Castro and Mathieu Bernard and Adam Lerer and Rob Fergus and Véronique Izard and Emmanuel Dupoux",
+    2020, "1803.07616", "cs.AI"
+  ),
+  inflevel: `@article{weihs2022benchmarking,
+  title={Benchmarking Progress to Infant-Level Physical Reasoning in AI},
+  author={Luca Weihs and Amanda Rose Yuile and Renée Baillargeon and Cynthia L. Fisher and Gary Marcus and Roozbeh Mottaghi and Aniruddha Kembhavi},
+  journal={Transactions on Machine Learning Research},
+  year={2022},
+  url={https://openreview.net/forum?id=9NjqD9i48M}
+}`,
+  "llava-instruct-150k": makeOfficialArxivBibtex(
+    "liu2023visualinstructiontuning", "Visual Instruction Tuning", "Haotian Liu and Chunyuan Li and Qingyang Wu and Yong Jae Lee",
+    2023, "2304.08485", "cs.CV"
+  ),
+  sharegpt4v: makeOfficialArxivBibtex(
+    "chen2023sharegpt4vimprovinglargemultimodal", "ShareGPT4V: Improving Large Multi-Modal Models with Better Captions",
+    "Lin Chen and Jinsong Li and Xiaoyi Dong and Pan Zhang and Conghui He and Jiaqi Wang and Feng Zhao and Dahua Lin",
+    2023, "2311.12793", "cs.CV"
+  ),
+  pixmo: makeOfficialArxivBibtex(
+    "deitke2024molmopixmoopenweights", "Molmo and PixMo: Open Weights and Open Data for State-of-the-Art Vision-Language Models",
+    "Matt Deitke and Christopher Clark and Sangho Lee and Rohun Tripathi and Yue Yang and Jae Sung Park and Mohammadreza Salehi and Niklas Muennighoff and Kyle Lo and Luca Soldaini and Jiasen Lu and Taira Anderson and Erin Bransom and Kiana Ehsani and Huong Ngo and YenSung Chen and Ajay Patel and Mark Yatskar and Chris Callison-Burch and Andrew Head and Rose Hendrix and Favyen Bastani and Eli VanderBilt and Nathan Lambert and Yvonne Chou and Arnavi Chheda and Jenna Sparks and Sam Skjonsberg and Michael Schmitz and Aaron Sarnat and Byron Bischoff and Pete Walsh and Chris Newell and Piper Wolters and Tanmay Gupta and Kuo-Hao Zeng and Jon Borchardt and Dirk Groeneveld and Crystal Nam and Sophie Lebrecht and Caitlin Wittlif and Carissa Schoenick and Oscar Michel and Ranjay Krishna and Luca Weihs and Noah A. Smith and Hannaneh Hajishirzi and Ross Girshick and Ali Farhadi and Aniruddha Kembhavi",
+    2024, "2409.17146", "cs.CV"
+  ),
+  "pixmo-points": null,
+  "a-okvqa": makeOfficialArxivBibtex(
+    "schwenk2022aokvqabenchmarkvisualquestion", "A-OKVQA: A Benchmark for Visual Question Answering using World Knowledge",
+    "Dustin Schwenk and Apoorv Khandelwal and Christopher Clark and Kenneth Marino and Roozbeh Mottaghi",
+    2022, "2206.01718", "cs.CV"
+  ),
+  "llava-video-178k": makeOfficialArxivBibtex(
+    "zhang2025llavavideovideoinstructiontuning", "LLaVA-Video: Video Instruction Tuning With Synthetic Data",
+    "Yuanhan Zhang and Jinming Wu and Wei Li and Bo Li and Zejun Ma and Ziwei Liu and Chunyuan Li",
+    2025, "2410.02713", "cs.CV"
+  ),
+  egotaskqa: makeOfficialArxivBibtex(
+    "jia2022egotaskqaunderstandinghumantasks", "EgoTaskQA: Understanding Human Tasks in Egocentric Videos",
+    "Baoxiong Jia and Ting Lei and Song-Chun Zhu and Siyuan Huang", 2022, "2210.03929", "cs.CV"
+  ),
+  "ocr-vqa": `@InProceedings{mishraICDAR19,
+  author={Anand Mishra and Shashank Shekhar and Ajeet Kumar Singh and Anirban Chakraborty},
+  title={OCR-VQA: Visual Question Answering by Reading Text in Images},
+  booktitle={ICDAR},
+  year={2019}
+}`,
+  textocr: makeOfficialArxivBibtex(
+    "singh2021textocrlargescaleendtoendreasoning", "TextOCR: Towards large-scale end-to-end reasoning for arbitrary-shaped scene text",
+    "Amanpreet Singh and Guan Pang and Mandy Toh and Jing Huang and Wojciech Galuba and Tal Hassner",
+    2021, "2105.05486", "cs.CV"
+  ),
+  docvqa: makeOfficialArxivBibtex(
+    "mathew2021docvqadatasetvqadocument", "DocVQA: A Dataset for VQA on Document Images",
+    "Minesh Mathew and Dimosthenis Karatzas and C. V. Jawahar", 2021, "2007.00398", "cs.CV"
+  ),
+  chartqa: makeOfficialArxivBibtex(
+    "masry2022chartqabenchmarkquestionanswering", "ChartQA: A Benchmark for Question Answering about Charts with Visual and Logical Reasoning",
+    "Ahmed Masry and Do Xuan Long and Jia Qing Tan and Shafiq Joty and Enamul Hoque", 2022, "2203.10244", "cs.CL"
+  ),
+  multiui: makeOfficialArxivBibtex(
+    "liu2024harnessingwebpageuistextrich", "Harnessing Webpage UIs for Text-Rich Visual Understanding",
+    "Junpeng Liu and Tianyue Ou and Yifan Song and Yuxiao Qu and Wai Lam and Chenyan Xiong and Wenhu Chen and Graham Neubig and Xiang Yue",
+    2024, "2410.13824", "cs.CV"
+  ),
+  objects365: `@InProceedings{Shao_2019_ICCV,
+  author={Shao, Shuai and Li, Zeming and Zhang, Tianyuan and Peng, Chao and Yu, Gang and Zhang, Xiangyu and Li, Jing and Sun, Jian},
+  title={Objects365: A Large-Scale, High-Quality Dataset for Object Detection},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+  month={October},
+  year={2019}
+}`,
+  "sa-1b": makeOfficialArxivBibtex(
+    "kirillov2023segment", "Segment Anything",
+    "Alexander Kirillov and Eric Mintun and Nikhila Ravi and Hanzi Mao and Chloe Rolland and Laura Gustafson and Tete Xiao and Spencer Whitehead and Alexander C. Berg and Wan-Yen Lo and Piotr Dollár and Ross Girshick",
+    2023, "2304.02643", "cs.CV"
+  ),
+  ade20k: makeOfficialArxivBibtex(
+    "zhou2018semanticunderstandingscenesade20k", "Semantic Understanding of Scenes through the ADE20K Dataset",
+    "Bolei Zhou and Hang Zhao and Xavier Puig and Tete Xiao and Sanja Fidler and Adela Barriuso and Antonio Torralba",
+    2018, "1608.05442", "cs.CV"
+  ),
+  "paco-lvis": makeOfficialArxivBibtex(
+    "ramanathan2023pacopartsattributescommon", "PACO: Parts and Attributes of Common Objects",
+    "Vignesh Ramanathan and Anmol Kalia and Vladan Petrovic and Yi Wen and Baixue Zheng and Baishan Guo and Rui Wang and Aaron Marquez and Rama Kovvuri and Abhishek Kadian and Amir Mousavi and Yiwen Song and Abhimanyu Dubey and Dhruv Mahajan",
+    2023, "2301.01795", "cs.CV"
+  ),
+  refcoco: makeOfficialArxivBibtex(
+    "yu2016modelingcontextreferringexpressions", "Modeling Context in Referring Expressions",
+    "Licheng Yu and Patrick Poirson and Shan Yang and Alexander C. Berg and Tamara L. Berg",
+    2016, "1608.00272", "cs.CV"
+  ),
+  robopoint: makeOfficialArxivBibtex(
+    "yuan2024robopointvisionlanguagemodelspatial", "RoboPoint: A Vision-Language Model for Spatial Affordance Prediction for Robotics",
+    "Wentao Yuan and Jiafei Duan and Valts Blukis and Wilbert Pumacay and Ranjay Krishna and Adithyavairavan Murali and Arsalan Mousavian and Dieter Fox",
+    2024, "2406.10721", "cs.RO"
+  ),
+  "charades-sta": makeOfficialArxivBibtex(
+    "gao2017talltemporalactivitylocalization", "TALL: Temporal Activity Localization via Language Query",
+    "Jiyang Gao and Chen Sun and Zhenheng Yang and Ram Nevatia", 2017, "1705.02101", "cs.CV"
+  ),
+  didemo: makeOfficialArxivBibtex(
+    "hendricks2017localizingmomentsvideonatural", "Localizing Moments in Video with Natural Language",
+    "Lisa Anne Hendricks and Oliver Wang and Eli Shechtman and Josef Sivic and Trevor Darrell and Bryan Russell",
+    2017, "1708.01641", "cs.CV"
+  ),
+  hirest: makeOfficialArxivBibtex(
+    "zala2023hierarchicalvideomomentretrievalstepcaptioning", "Hierarchical Video-Moment Retrieval and Step-Captioning",
+    "Abhay Zala and Jaemin Cho and Satwik Kottur and Xilun Chen and Barlas Oğuz and Yasher Mehdad and Mohit Bansal",
+    2023, "2303.16406", "cs.CV"
+  ),
+  coin: makeOfficialArxivBibtex(
+    "tang2019coinlargescaledatasetcomprehensive", "COIN: A Large-scale Dataset for Comprehensive Instructional Video Analysis",
+    "Yansong Tang and Dajun Ding and Yongming Rao and Yu Zheng and Danyang Zhang and Lili Zhao and Jiwen Lu and Jie Zhou",
+    2019, "1903.02874", "cs.CV"
+  ),
+  scannet: makeOfficialArxivBibtex(
+    "dai2017scannetrichlyannotated3dreconstructions", "ScanNet: Richly-annotated 3D Reconstructions of Indoor Scenes",
+    "Angela Dai and Angel X. Chang and Manolis Savva and Maciej Halber and Thomas Funkhouser and Matthias Nießner",
+    2017, "1702.04405", "cs.CV"
+  ),
+  "scannet-plus-plus": makeOfficialArxivBibtex(
+    "yeshwanth2023scannethighfidelitydataset3d", "ScanNet++: A High-Fidelity Dataset of 3D Indoor Scenes",
+    "Chandan Yeshwanth and Yueh-Cheng Liu and Matthias Nießner and Angela Dai",
+    2023, "2308.11417", "cs.CV"
+  ),
+  arkitscenes: makeOfficialArxivBibtex(
+    "baruch2022arkitscenesdiverserealworlddataset", "ARKitScenes: A Diverse Real-World Dataset For 3D Indoor Scene Understanding Using Mobile RGB-D Data",
+    "Gilad Baruch and Zhuoyuan Chen and Afshin Dehghan and Tal Dimry and Yuri Feigin and Peter Fu and Thomas Gebauer and Brandon Joffe and Daniel Kurz and Arik Schwartz and Elad Shulman",
+    2022, "2111.08897", "cs.CV"
+  ),
+  "3rscan": makeOfficialArxivBibtex(
+    "wald2019rio3dobjectinstance", "RIO: 3D Object Instance Re-Localization in Changing Indoor Environments",
+    "Johanna Wald and Armen Avetisyan and Nassir Navab and Federico Tombari and Matthias Nießner",
+    2019, "1908.06109", "cs.CV"
+  ),
+  mmscan: makeOfficialArxivBibtex(
+    "lyu2025mmscanmultimodal3dscene", "MMScan: A Multi-Modal 3D Scene Dataset with Hierarchical Grounded Language Annotations",
+    "Ruiyuan Lyu and Jingli Lin and Tai Wang and Shuai Yang and Xiaohan Mao and Yilun Chen and Runsen Xu and Haifeng Huang and Chenming Zhu and Dahua Lin and Jiangmiao Pang",
+    2025, "2406.09401", "cs.CV"
+  ),
+  scanqa: makeOfficialArxivBibtex(
+    "azuma2022scanqa3dquestionanswering", "ScanQA: 3D Question Answering for Spatial Scene Understanding",
+    "Daichi Azuma and Taiki Miyanishi and Shuhei Kurita and Motoaki Kawanabe",
+    2022, "2112.10482", "cs.CV"
+  ),
+  sqa3d: makeOfficialArxivBibtex(
+    "ma2023sqa3dsituatedquestionanswering", "SQA3D: Situated Question Answering in 3D Scenes",
+    "Xiaojian Ma and Silong Yong and Zilong Zheng and Qing Li and Yitao Liang and Song-Chun Zhu and Siyuan Huang",
+    2023, "2210.07474", "cs.CV"
+  ),
+  "egoplan-it": makeOfficialArxivBibtex(
+    "chen2024egoplanbenchbenchmarkingmultimodallarge", "EgoPlan-Bench: Benchmarking Multimodal Large Language Models for Human-Level Planning",
+    "Yi Chen and Yuying Ge and Yixiao Ge and Mingyu Ding and Bohao Li and Rui Wang and Ruifeng Xu and Ying Shan and Xihui Liu",
+    2024, "2312.06722", "cs.CV"
+  )
+};
+
+representativeDatasetCitations["pixmo-points"] = representativeDatasetCitations.pixmo;
+
+const makeSurveyDatasetSection = ({
+  id,
+  name,
+  year,
+  paper,
+  data,
+  dataLabel = "Dataset",
+  observations,
+  actions = ["N/A"],
+  note = "Official paper and dataset access entry from the representative supervision dataset table."
+}) => {
+  const projectLink = representativeDatasetProjectLinks[id];
+  const dataLinks = representativeDatasetDataLinks[id] ?? (data ? { [dataLabel]: data } : {});
+  const dataLinkTargets = new Set(Object.values(dataLinks));
+
+  return {
+    id,
+    project: name,
+    summary: note,
+    citation: representativeDatasetCitations[id],
+    projectLinks: {
+      ...(projectLink && !dataLinkTargets.has(projectLink) ? { Project: projectLink } : {}),
+      Paper: paper
+    },
+    defaultOpen: false,
+    rows: [
+      {
+        task: `${name} dataset`,
+        dataLinks,
+        observations,
+        actions,
+        demos: "TBD",
+        envs: "TBD",
+        license: "TBD"
+      }
+    ],
+    year
+  };
+};
+
+const representativeRobotDatasetRecords = [
+  {
+    id: "robovqa",
+    name: "RoboVQA",
+    year: 2024,
+    paper: "https://arxiv.org/abs/2311.00899",
+    data: "https://robovqa.github.io/",
+    dataLabel: "Project / Data",
+    observations: ["Robot/Human Video", "Language"],
+    actions: ["Planning QA", "Affordance QA"],
+    note: "Robot- and human-video visual question answering dataset. The project page provides the official Data and Hugging Face entry points."
+  },
+  {
+    id: "rovid-x",
+    name: "RoVid-X",
+    year: 2026,
+    paper: "https://arxiv.org/abs/2601.15282",
+    observations: ["Robot Video", "Depth", "Optical Flow", "Language"],
+    actions: ["N/A"],
+    note: "Robot-video generation corpus described in the paper. No independent official dataset download was verified, so this section intentionally exposes only the paper link."
+  },
+  {
+    id: "robonet-video",
+    name: "RoboNet",
+    year: 2020,
+    paper: "https://arxiv.org/abs/1910.11215",
+    data: "https://www.robonet.wiki/",
+    dataLabel: "Dataset",
+    observations: ["Robot Video"],
+    actions: ["Robot Actions"],
+    note: "Large-scale multi-robot experience dataset. This named section complements the RoboNet source row already indexed inside Open X-Embodiment."
+  },
+  {
+    id: "rh20t-p",
+    name: "RH20T-P",
+    year: 2024,
+    paper: "https://arxiv.org/abs/2403.19622",
+    data: "https://sites.google.com/view/rh20t-primitive/main",
+    dataLabel: "Project / Dataset",
+    observations: ["Robot Video", "Primitive Labels", "Temporal Segments"],
+    actions: ["Primitive Actions"],
+    note: "Primitive-level annotations derived from RH20T. The project page routes users to the official dataset access target."
+  },
+  {
+    id: "robava",
+    name: "RobAVA",
+    year: 2025,
+    paper: "https://openaccess.thecvf.com/content/ICCV2025/papers/Sun_RobAVA_A_Large-scale_Dataset_and_Baseline_Towards_Video_based_Robotic_ICCV_2025_paper.pdf",
+    data: "https://github.com/Sunbaoli/RobAVA",
+    dataLabel: "GitHub / Data",
+    observations: ["Robot Video", "Action Labels", "Anomaly Attributes"],
+    actions: ["Robot Arm Actions"],
+    note: "Real and simulated robotic-arm video action understanding dataset. The official repository is retained as a landing entry."
+  },
+  {
+    id: "robofail",
+    name: "RoboFail",
+    year: 2023,
+    paper: "https://arxiv.org/abs/2306.15724",
+    data: "https://robot-reflect.github.io/",
+    dataLabel: "Project / Data",
+    observations: ["Robot Video", "RGB-D", "Audio", "Robot State", "Language"],
+    actions: ["Failure Explanation", "Recovery Plan"],
+    note: "Simulation and real-robot failure scenarios released with REFLECT. The project page is used because no stable task-level artifact tree was verified."
+  },
+  {
+    id: "cornell-grasp-dataset",
+    name: "Cornell Grasp Dataset",
+    year: 2015,
+    paper: "https://arxiv.org/abs/1412.3128",
+    data: "http://pr.cs.cornell.edu/grasping/rect_data/data.php",
+    dataLabel: "Legacy Download",
+    observations: ["RGB-D", "2D Grasp Rectangles"],
+    actions: ["Parallel-Jaw Grasp"],
+    note: "Classic RGB-D grasp rectangle dataset. The official legacy Cornell server may be slow or intermittently unavailable."
+  },
+  {
+    id: "graspnet-1billion",
+    name: "GraspNet-1Billion",
+    year: 2020,
+    paper: "https://arxiv.org/abs/1912.13470",
+    data: "https://graspnet.net/",
+    dataLabel: "Dataset Portal",
+    observations: ["RGB-D", "Point Cloud", "6-DoF Grasps"],
+    actions: ["Parallel-Jaw Grasp"],
+    note: "Scene-level 6-DoF grasp dataset. Access is routed through the official GraspNet portal and its terms."
+  },
+  {
+    id: "suctionnet-1billion",
+    name: "SuctionNet-1Billion",
+    year: 2021,
+    paper: "https://arxiv.org/abs/2103.12311",
+    data: "https://graspnet.net/suction",
+    dataLabel: "Dataset Portal",
+    observations: ["RGB-D", "Point Cloud", "Suction Labels"],
+    actions: ["Suction Grasp"],
+    note: "Large-scale suction grasp benchmark. Access is routed through the official GraspNet portal and its terms."
+  }
+];
+
+const representativeSimulationDatasetRecords = [
+  {
+    id: "alfred",
+    name: "ALFRED",
+    year: 2020,
+    paper: "https://arxiv.org/abs/1912.01734",
+    data: "https://askforalfred.com/",
+    dataLabel: "Project / Data",
+    observations: ["Simulation Observations", "Language"],
+    actions: ["High-Level Plan", "Low-Level Actions"]
+  },
+  {
+    id: "wap",
+    name: "WAP",
+    year: 2025,
+    paper: "https://arxiv.org/abs/2506.21230",
+    observations: ["Simulation Observations", "Language", "Planning Narratives"],
+    actions: ["Symbolic Plan"],
+    note: "World-Aware Planning Narrative Enhancement evaluated on EB-ALFRED. No standalone official 80.9K-pair dataset release was verified, so only the paper is linked."
+  },
+  {
+    id: "llarp-language-rearrangement",
+    name: "LLaRP / Language Rearrangement",
+    year: 2024,
+    paper: "https://arxiv.org/abs/2310.17722",
+    data: "https://github.com/apple/ml-llarp",
+    dataLabel: "GitHub / Benchmark",
+    observations: ["3D Simulation", "Egocentric RGB", "Language"],
+    actions: ["Embodied Actions"],
+    note: "Language-conditioned rearrangement benchmark and generation code. Habitat assets are obtained separately under their own terms."
+  },
+  {
+    id: "clevrer",
+    name: "CLEVRER",
+    year: 2020,
+    paper: "https://arxiv.org/abs/1910.01442",
+    data: "http://clevrer.csail.mit.edu/",
+    dataLabel: "Project / Data",
+    observations: ["Synthetic Video", "Question Answering"],
+    actions: ["N/A"]
+  },
+  {
+    id: "intphys",
+    name: "IntPhys",
+    year: 2018,
+    paper: "https://arxiv.org/abs/1803.07616",
+    data: "https://intphys.com/",
+    dataLabel: "Project / Data",
+    observations: ["Synthetic Video", "Physical Plausibility Labels"],
+    actions: ["N/A"]
+  },
+  {
+    id: "inflevel",
+    name: "InfLevel",
+    year: 2022,
+    paper: "https://openreview.net/forum?id=9NjqD9i48M",
+    data: "https://github.com/allenai/inflevel",
+    dataLabel: "GitHub / Benchmark",
+    observations: ["Synthetic Video", "Physical Plausibility Labels"],
+    actions: ["N/A"],
+    note: "Infant-level physical reasoning benchmark. The paper explicitly describes InfLevel as evaluation-only, with no training set by design."
+  }
+];
+
+const representativeGeneralDatasetRecords = [
+  ["llava-instruct-150k", "LLaVA-Instruct-150K", 2023, "https://arxiv.org/abs/2304.08485", "https://huggingface.co/datasets/liuhaotian/LLaVA-Instruct-150K", "HuggingFace", ["Image", "Language", "Instruction Tuning"]],
+  ["llava-onevision-si", "LLaVA-OneVision-SI", 2024, "https://arxiv.org/abs/2408.03326", "https://github.com/LLaVA-VL/LLaVA-NeXT/blob/main/docs/LLaVA_OneVision.md", "Data Documentation", ["Image", "Language", "Instruction Tuning"], "The single-image training stage/configuration documented by LLaVA-OneVision, not a separately released dataset with this exact name."],
+  ["sharegpt4v", "ShareGPT4V", 2024, "https://arxiv.org/abs/2311.12793", "https://sharegpt4v.github.io/", "Project / Data", ["Image", "Detailed Captions"]],
+  ["pixmo", "PixMo", 2025, "https://arxiv.org/abs/2409.17146", "https://huggingface.co/collections/allenai/pixmo", "HuggingFace Collection", ["Image", "Language", "Question Answering", "Pointing"]],
+  ["a-okvqa", "A-OKVQA", 2022, "https://arxiv.org/abs/2206.01718", "https://github.com/allenai/aokvqa", "GitHub / Data", ["Image", "Knowledge VQA", "Rationales"]],
+  ["llava-video-178k", "LLaVA-Video-178K", 2024, "https://arxiv.org/abs/2410.02713", "https://huggingface.co/datasets/lmms-lab/LLaVA-Video-178K", "HuggingFace", ["Video", "Language", "Question Answering"]],
+  ["egotaskqa", "EgoTaskQA", 2022, "https://arxiv.org/abs/2210.03929", "https://sites.google.com/view/egotaskqa/download", "Access Request", ["Egocentric Video", "Task-State QA", "Causal QA"]],
+  ["ocr-vqa", "OCR-VQA", 2019, "https://ocr-vqa.github.io/", "https://ocr-vqa.github.io/", "Project / Download", ["Image", "OCR", "Question Answering"]],
+  ["textocr", "TextOCR", 2021, "https://arxiv.org/abs/2105.05486", "https://textvqa.org/textocr/", "Project / Download", ["Image", "Scene Text", "Transcription"]],
+  ["docvqa", "DocVQA", 2021, "https://arxiv.org/abs/2007.00398", "https://site.docvqa.org/datasets/docvqa", "Dataset / Access", ["Document Image", "Question Answering"]],
+  ["chartqa", "ChartQA", 2022, "https://arxiv.org/abs/2203.10244", "https://github.com/vis-nlp/ChartQA", "GitHub / Data", ["Chart Image", "Question Answering", "Numerical Reasoning"]],
+  ["multiui", "MultiUI", 2025, "https://arxiv.org/abs/2410.13824", "https://neulab.github.io/MultiUI/", "Project / Data", ["UI Screenshot", "Language", "Grounding"]],
+  ["objects365", "Objects365", 2019, "https://openaccess.thecvf.com/content_ICCV_2019/html/Shao_Objects365_A_Large-Scale_High-Quality_Dataset_for_Object_Detection_ICCV_2019_paper.html", "https://www.objects365.org/download.html", "Dataset / Access", ["Image", "Bounding Boxes", "Object Categories"]],
+  ["sa-1b", "SA-1B", 2023, "https://arxiv.org/abs/2304.02643", "https://ai.meta.com/datasets/segment-anything/", "Dataset", ["Image", "Segmentation Masks"]],
+  ["ade20k", "ADE20K", 2019, "https://arxiv.org/abs/1608.05442", "https://ade20k.csail.mit.edu/", "Dataset", ["Image", "Semantic Masks", "Scene Parsing"]],
+  ["paco-lvis", "PACO-LVIS", 2023, "https://arxiv.org/abs/2301.01795", "https://github.com/facebookresearch/paco", "GitHub / Annotations", ["Image", "Part Masks", "Attributes"]],
+  ["refcoco", "RefCOCO", 2016, "https://arxiv.org/abs/1608.00272", "https://github.com/lichengunc/refer", "GitHub / Annotations", ["Image", "Language", "Bounding Boxes"]],
+  ["pixmo-points", "PixMo-Points", 2025, "https://arxiv.org/abs/2409.17146", "https://huggingface.co/datasets/allenai/pixmo-points", "HuggingFace", ["Image", "Language", "Points"]],
+  ["robopoint", "RoboPoint", 2024, "https://arxiv.org/abs/2406.10721", "https://robo-point.github.io/", "Project / Data", ["Image", "Language", "Affordance Points"]],
+  ["roboafford-plus-plus", "RoboAfford++", 2025, "https://arxiv.org/abs/2511.12436", "https://roboafford-dataset.github.io/", "Project / Data", ["Image", "Language", "Affordance Points"]],
+  ["charades-sta", "Charades-STA", 2017, "https://arxiv.org/abs/1705.02101", "https://allenai.org/plato/charades/", "Dataset / Access", ["Video", "Language", "Temporal Segments"]],
+  ["didemo", "DiDeMo", 2017, "https://arxiv.org/abs/1708.01641", "https://github.com/LisaAnne/LocalizingMoments", "GitHub / Annotations", ["Video", "Language", "Temporal Segments"]],
+  ["hirest", "HiREST", 2023, "https://arxiv.org/abs/2303.16406", "https://hirest-cvpr2023.github.io/", "Project / Data", ["Video", "Language", "Step Segments"]],
+  ["moment-10m", "Moment-10M", 2024, "https://arxiv.org/abs/2402.11435", "https://github.com/DCDmllm/Momentor", "GitHub / Data", ["Video", "Language", "Temporal Segments"]],
+  ["coin", "COIN", 2019, "https://arxiv.org/abs/1903.02874", "https://coin-dataset.github.io/", "Project / Data", ["Video", "Procedure Steps", "Temporal Segments"]],
+  ["scannet", "ScanNet", 2017, "https://arxiv.org/abs/1702.04405", "http://www.scan-net.org/", "Dataset / Access", ["RGB-D", "Mesh", "Camera Pose", "3D Semantics"]],
+  ["scannet-plus-plus", "ScanNet++", 2023, "https://arxiv.org/abs/2308.11417", "https://kaldir.vc.in.tum.de/scannetpp/", "Dataset / Access", ["RGB-D", "Mesh", "Semantic Labels"]],
+  ["arkitscenes", "ARKitScenes", 2021, "https://arxiv.org/abs/2111.08897", "https://github.com/apple/ARKitScenes", "GitHub / Data", ["RGB-D", "LiDAR", "3D Boxes"]],
+  ["3rscan", "3RScan", 2019, "https://arxiv.org/abs/1908.06109", "https://3rscan.io/", "Dataset / Access", ["RGB-D", "Mesh", "Object Instances", "Scene Changes"]],
+  ["mmscan", "MMScan", 2024, "https://arxiv.org/abs/2406.09401", "https://tai-wang.github.io/mmscan/", "Project / Data", ["3D Scene", "Language", "Question Answering"]],
+  ["scanqa", "ScanQA", 2022, "https://arxiv.org/abs/2112.10482", "https://github.com/ATR-DBI/ScanQA", "GitHub / Annotations", ["3D Scene", "Question Answering"]],
+  ["sqa3d", "SQA3D", 2023, "https://arxiv.org/abs/2210.07474", "https://sqa3d.github.io/", "Project / Data", ["3D Scene", "Situated Question Answering"]],
+  ["egoplan-it", "EgoPlan-IT", 2024, "https://arxiv.org/abs/2312.06722", "https://github.com/ChenYi99/EgoPlan", "GitHub / Training Data", ["Egocentric Video", "Language", "Planning QA"]]
+].map(([id, name, year, paper, data, dataLabel, observations, note]) => ({
+  id,
+  name,
+  year,
+  paper,
+  data,
+  dataLabel,
+  observations,
+  ...(note ? { note } : {})
+}));
+
+const hasConcreteRepresentativeData = ({ id, data }) => {
+  const dataLinks = representativeDatasetDataLinks[id] ?? (data ? { Dataset: data } : {});
+  return Object.keys(dataLinks).length > 0;
+};
+
+const representativeRobotDatasetSections = representativeRobotDatasetRecords
+  .filter(hasConcreteRepresentativeData)
+  .map(makeSurveyDatasetSection);
+const representativeSimulationDatasetSections = representativeSimulationDatasetRecords
+  .filter(hasConcreteRepresentativeData)
+  .map(makeSurveyDatasetSection);
+const representativeGeneralDatasetSections = representativeGeneralDatasetRecords
+  .filter(hasConcreteRepresentativeData)
+  .map(makeSurveyDatasetSection);
+
 const datasetGroups = [
   {
     id: "robot-data",
@@ -6555,7 +7209,8 @@ const datasetGroups = [
         defaultOpen: true,
         rows: openXEmbodimentRows
       },
-      ...additionalRobotDataSections
+      ...additionalRobotDataSections,
+      ...representativeRobotDatasetSections
     ])
   },
   {
@@ -7294,7 +7949,8 @@ const datasetGroups = [
 }`,
             defaultOpen: true,
             rows: roboSetTeleopRows
-          }
+          },
+          ...representativeSimulationDatasetSections
         ]
       }
     ]
@@ -7313,17 +7969,7 @@ const datasetGroups = [
     source: "general",
     summary: "General-purpose datasets, metadata, schemas, and auxiliary robot-learning resources.",
     defaultOpen: false,
-    rows: [
-      {
-        task: "General Metadata",
-        dataLinks: {},
-        observations: ["Metadata", "Documentation"],
-        actions: ["N/A"],
-        demos: "TBD",
-        envs: "TBD",
-        license: "TBD"
-      }
-    ]
+    sections: representativeGeneralDatasetSections
   }
 ];
 
@@ -7352,6 +7998,13 @@ const sourceLabels = {
 };
 
 const entryYears = {
+  ...Object.fromEntries(
+    [
+      ...representativeRobotDatasetRecords,
+      ...representativeSimulationDatasetRecords,
+      ...representativeGeneralDatasetRecords
+    ].map(({ id, year }) => [id, year])
+  ),
   "open-x-embodiment": 2023,
   robomind: 2024,
   "agibot-world-beta": 2024,
