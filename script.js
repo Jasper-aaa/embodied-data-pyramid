@@ -5810,7 +5810,7 @@ const sortUmiSectionsByYear = (sections) =>
   });
 
 const egoDatasetRecords = [
-  { id: "egohands", name: "EgoHands", year: 2015, observations: ["Ego Video", "Hand Segmentation Masks"], summary: "First-person videos of two-person tabletop interactions with pixel-level hand masks for detecting and segmenting hands in natural activities.", paper: "https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Bambach_Lending_A_Hand_ICCV_2015_paper.pdf", dataLinks: { Dataset: "https://www.kaggle.com/api/v1/datasets/download/himaniishah/egohands?datasetVersionNumber=1" } },
+  { id: "egohands", name: "EgoHands", year: 2015, observations: ["Ego Video", "Hand Segmentation Masks"], summary: "First-person videos of two-person tabletop interactions with pixel-level hand masks for detecting and segmenting hands in natural activities.", paper: "https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Bambach_Lending_A_Hand_ICCV_2015_paper.pdf", dataLinks: { Dataset: "https://www.kaggle.com/datasets/himaniishah/egohands" } },
   { id: "krishnacam", name: "KrishnaCam", year: 2016, observations: ["Ego Video", "GPS", "Body Orientation", "Accelerometer"], summary: "A long-term Google Glass record of one person's daily life, pairing 7.6 million frames with location and inertial context.", project: "https://krsingh.cs.ucdavis.edu/krishna_files/papers/krishnacam/krishnacam.html", paper: "https://krsingh.cs.ucdavis.edu/krishna_files/papers/krishnacam/krishnacam_files/kcam_wacv16.pdf", dataLinks: { Videos: "https://drive.google.com/drive/folders/1q81yrQenY1dMul3ixJUbOrf9FPOTgMGW?usp=sharing" } },
   { id: "fpha", name: "FPHA", year: 2017, observations: ["Ego RGB-D Video", "3D Hand Pose", "Object Pose", "Action Labels"], summary: "First-person hand-action recordings of daily object interactions with 3D hand joints and pose annotations for selected manipulated objects.", project: "https://guiggh.github.io/publications/first-person-hands/", paper: "https://arxiv.org/abs/1704.02463", dataLinks: { "Access form": "https://docs.google.com/forms/d/e/1FAIpQLScoksYrmthDbJeAV0_ysXJDmfvZmzMMsX0_Uhkb6H6DHYGBtg/viewform" } },
   { id: "thu-read", name: "THU-READ", year: 2017, observations: ["Ego RGB-D Video", "Action Labels", "Hand Regions"], summary: "Egocentric RGB-D recordings covering 40 daily hand-action classes performed by eight subjects, with clip-level annotations and hand-region cues.", project: "https://ivg.au.tsinghua.edu.cn/dataset/THU_READ.php", paper: "https://ivg.au.tsinghua.edu.cn/samples_THU_READ/Action%20Recognition%20in%20RGB-D%20Egocentric%20Videos.pdf", dataLinks: { Dataset: "https://pan.baidu.com/s/1eR1EX9o" } },
@@ -5861,7 +5861,7 @@ const xperience10mRepo = "ropedia-ai/xperience-10m";
 
 const egoDatasetResourceSpecs = {
   egohands: [
-    egoResource("EgoHands dataset archive", { ZIP: "https://www.kaggle.com/api/v1/datasets/download/himaniishah/egohands?datasetVersionNumber=1" })
+    egoResource("EgoHands dataset", { "Kaggle dataset": "https://www.kaggle.com/datasets/himaniishah/egohands" })
   ],
   krishnacam: [
     egoResource("Videos", { "Google Drive folder": "https://drive.google.com/drive/folders/1q81yrQenY1dMul3ixJUbOrf9FPOTgMGW?usp=sharing" })
@@ -5874,11 +5874,11 @@ const egoDatasetResourceSpecs = {
     })
   ],
   "thu-read": [
-    egoResource("Depth", { BaiduYun: "https://pan.baidu.com/s/1eR1EX9o" }),
-    egoResource("RGBD1", { BaiduYun: "https://pan.baidu.com/s/1boT5vmn" }),
-    egoResource("RGBD2", { BaiduYun: "https://pan.baidu.com/s/1nvdu0Dr" }),
-    egoResource("Annotations", { "Google Drive": "https://drive.google.com/file/d/1G0oQsJRZ-wBt9o2RW75jDmmRgvUFMwG0/view?usp=drive_open", BaiduYun: "https://pan.baidu.com/s/1kWPp6rP" }),
-    egoResource("Train/Test Splits", { TXT: "https://ivg.au.tsinghua.edu.cn/dataset/samples_THU_READ/Train-Test-Splits.txt" })
+    egoResource("Depth videos", { BaiduYun: "https://pan.baidu.com/s/1eR1EX9o" }, { observations: ["Ego Depth Video"] }),
+    egoResource("RGB videos / part 1", { BaiduYun: "https://pan.baidu.com/s/1boT5vmn" }, { observations: ["Ego RGB Video"] }),
+    egoResource("RGB videos / part 2", { BaiduYun: "https://pan.baidu.com/s/1nvdu0Dr" }, { observations: ["Ego RGB Video"] }),
+    egoResource("Annotations", { "Google Drive": "https://drive.google.com/file/d/1G0oQsJRZ-wBt9o2RW75jDmmRgvUFMwG0/view?usp=drive_open", BaiduYun: "https://pan.baidu.com/s/1kWPp6rP" }, { observations: ["Action Labels", "Hand Regions"] }),
+    egoResource("Train/Test Splits", { TXT: "https://ivg.au.tsinghua.edu.cn/dataset/samples_THU_READ/Train-Test-Splits.txt" }, { observations: ["Train/Test Splits"] })
   ],
   "charades-ego": [
     egoResource("CharadesEgo_v1_480.tar", { "TAR archive": "https://ai2-public-datasets.s3-us-west-2.amazonaws.com/charades/CharadesEgo_v1_480.tar" })
@@ -5901,7 +5901,7 @@ const egoDatasetResourceSpecs = {
       "Complete ZIP": "https://data.bris.ac.uk/datasets/tar/2g1n6qdydwa9u22shpxqzp0t8m.zip",
       "Data repository": "https://data.bris.ac.uk/data/dataset/2g1n6qdydwa9u22shpxqzp0t8m",
       "Academic Torrent": "https://academictorrents.com/details/cc2d9afabcbbe33686d2ecd9844b534e3a899f4b"
-    }),
+    }, { observations: ["Ego Video", "RGB Frames", "Optical Flow", "Metadata"] }),
     egoResource("Official dataset downloader", {
       Python: "https://raw.githubusercontent.com/epic-kitchens/epic-kitchens-download-scripts/master/epic_downloader.py",
       Shell: "https://raw.githubusercontent.com/epic-kitchens/epic-kitchens-download-scripts/master/download_full_epic.sh"
@@ -5919,7 +5919,7 @@ const egoDatasetResourceSpecs = {
     egoResource("Automatic masks and hand-object detections", {
       "Complete ZIP": "https://data.bris.ac.uk/datasets/tar/3l8eci2oqgst92n14w2yqi5ytu.zip",
       "Data repository": "https://data.bris.ac.uk/data/dataset/3l8eci2oqgst92n14w2yqi5ytu"
-    })
+    }, { observations: ["Segmentation Masks", "Hand/Object Detections"] })
   ],
   ego4d: [
     egoResource("Dataset access — license approval required", {
@@ -5950,8 +5950,8 @@ const egoDatasetResourceSpecs = {
     egoResource("Annotations", { OneDrive: "https://1drv.ms/u/c/12e5c3dbeffd0594/EZQF_e_bw-UggBIuAQAAAAABELgpzxDxCz58Qov76-wpvw?e=qhyY0h" }),
     egoResource("Camera parameters", { OneDrive: "https://1drv.ms/u/c/12e5c3dbeffd0594/EZQF_e_bw-UggBIqAQAAAAABZBWQ3p5gxd-tu_3rOeSo_A?e=GjWeg8" }),
     egoResource("Hand poses", { OneDrive: "https://1drv.ms/u/c/12e5c3dbeffd0594/EZQF_e_bw-UggBIrAQAAAAABHyHqDhs5CpJAkWTAQoGWxQ?e=ALFMCD" }),
-    egoResource("Action segmentation test set", { OneDrive: "https://1drv.ms/f/c/12e5c3dbeffd0594/EpQF_e_bw-UggBIcAQAAAAABw2LzsilH0w3nTtEH3emGlA?e=dKDhCl" }),
-    egoResource("Semantic segmentation test set", { OneDrive: "https://1drv.ms/f/c/12e5c3dbeffd0594/EpQF_e_bw-UggBIjAQAAAAAB562IRa4P_xu7YZgSSU_vrA?e=tnIX8V" }),
+    egoResource("Action segmentation test set", { OneDrive: "https://1drv.ms/f/c/12e5c3dbeffd0594/EpQF_e_bw-UggBIcAQAAAAABw2LzsilH0w3nTtEH3emGlA?e=dKDhCl" }, { observations: ["Action Segmentation Labels"] }),
+    egoResource("Semantic segmentation test set", { OneDrive: "https://1drv.ms/f/c/12e5c3dbeffd0594/EpQF_e_bw-UggBIjAQAAAAAB562IRa4P_xu7YZgSSU_vrA?e=tnIX8V" }, { observations: ["Semantic Segmentation Labels"] }),
     egoResource("Dataset mirror", { BaiduYun: "https://pan.baidu.com/s/1ZeX8SzU-gnJ-wpO9ZukulQ?pwd=7gfs" })
   ],
   arctic: [
@@ -5977,7 +5977,7 @@ const egoDatasetResourceSpecs = {
     egoResource("Videos", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51-videos.zip" }),
     egoResource("Frames", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_frames.zip" }),
     egoResource("Annotations", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_annotations_master.zip" }),
-    egoResource("Textual Procedures", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_procedures.zip" }),
+    egoResource("Textual Procedures", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_procedures.zip" }, { observations: ["Text Procedures"] }),
     egoResource("3D models", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51%203D%20Models.zip" }),
     egoResource("Features / CLIP ViT-L", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_CLIP_exported_features_ViT-L.zip" }),
     egoResource("Features / DINOv2 ViT-g", { ZIP: "https://iplab.dmi.unict.it/sharing/ENIGMA-51/ENIGMA-51_DINOV2_exported_features_ViTg.zip" }),
@@ -6036,12 +6036,12 @@ const egoDatasetResourceSpecs = {
     egoResource("Test / Aria / BOP format", { "HF folder": hfDatasetTree(hot3dRepo, "test_aria_bop_format") }),
     egoResource("Test / Quest 3 / BOP format", { "HF folder": hfDatasetTree(hot3dRepo, "test_quest3_bop_format") }),
     egoResource("Object models", { "HF folder": hfDatasetTree(hot3dRepo, "object_models"), ZIP: hfDatasetBlob(hot3dRepo, "hot3d_models.zip") }),
-    egoResource("Object references / Aria / dynamic", { "HF folder": hfDatasetTree(hot3dRepo, "object_ref_aria_dynamic") }),
-    egoResource("Object references / Aria / static", { "HF folder": hfDatasetTree(hot3dRepo, "object_ref_aria_static") }),
-    egoResource("Object references / Quest 3 / dynamic", { "HF folder": hfDatasetTree(hot3dRepo, "object_ref_quest3_dynamic") }),
-    egoResource("Object references / Quest 3 / static", { "HF folder": hfDatasetTree(hot3dRepo, "object_ref_quest3_static") }),
+    egoResource("Object references / Aria / dynamic", { "HF folder": hfDatasetTree(hot3dRepo, "object_ref_aria_dynamic") }, { observations: ["Object Reference Images"] }),
+    egoResource("Object references / Aria / static", { "HF folder": hfDatasetTree(hot3dRepo, "object_ref_aria_static") }, { observations: ["Object Reference Images"] }),
+    egoResource("Object references / Quest 3 / dynamic", { "HF folder": hfDatasetTree(hot3dRepo, "object_ref_quest3_dynamic") }, { observations: ["Object Reference Images"] }),
+    egoResource("Object references / Quest 3 / static", { "HF folder": hfDatasetTree(hot3dRepo, "object_ref_quest3_static") }, { observations: ["Object Reference Images"] }),
     egoResource("Base metadata", { ZIP: hfDatasetBlob(hot3dRepo, "hot3d_base.zip"), "Clip definitions": hfDatasetBlob(hot3dRepo, "clip_definitions.json"), "Split definitions": hfDatasetBlob(hot3dRepo, "clip_splits.json") }),
-    egoResource("Photorealistic train renderings", { ZIP: hfDatasetBlob(hot3dRepo, "hot3d_train_pbr.zip") })
+    egoResource("Photorealistic train renderings", { ZIP: hfDatasetBlob(hot3dRepo, "hot3d_train_pbr.zip") }, { observations: ["Rendered Images"] })
   ],
   industreal: [
     egoResource("Action recognition labels", { ZIP: "https://data.4tu.nl/file/b008dd74-020d-4ea4-a8ba-7bb60769d224/778d7d5f-6631-4cb6-9451-f88c574c7991" }),
@@ -6090,15 +6090,15 @@ const egoDatasetResourceSpecs = {
     egoResource("Videos, VRS, digital twin, SLAM, gaze, audio, and hand masks", {
       "Data repository": "https://data.bris.ac.uk/data/dataset/3cqb5b81wk2dc2379fx1mrxh47",
       "OneDrive without VRS": "https://uob-my.sharepoint.com/:f:/g/personal/wq23021_bristol_ac_uk/IgA0PLwURLmfQZOl_J256iZtAY_uzFr0gTXVMWCWY4MSGd0?e=6C6wNa"
-    }),
+    }, { observations: ["Ego Video", "VRS", "Digital Twin", "SLAM", "Gaze", "Audio", "Hand Masks"] }),
     egoResource("Dataset downloader", { Python: "https://raw.githubusercontent.com/hd-epic/hd-epic-downloader/main/hd-epic-downloader.py" }),
-    egoResource("Narrations and action segments", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/narrations-and-action-segments" }),
+    egoResource("Narrations and action segments", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/narrations-and-action-segments" }, { observations: ["Narrations", "Action Segments"] }),
     egoResource("Audio annotations", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/audio-annotations" }),
     egoResource("High-level recipe annotations", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/high-level" }),
-    egoResource("Scene and object movements", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/scene-and-object-movements" }),
+    egoResource("Scene and object movements", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/scene-and-object-movements" }, { observations: ["Scene/Object Movement Annotations"] }),
     egoResource("Eye-gaze priming", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/eye-gaze-priming" }),
     egoResource("VQA benchmark", { "GitHub folder": "https://github.com/hd-epic/hd-epic-annotations/tree/main/vqa-benchmark" }),
-    egoResource("Frame-wise calibration, camera pose, and gaze", { OneDrive: "https://uob-my.sharepoint.com/:f:/g/personal/jc17360_bristol_ac_uk/IgCCGb5qDbiOR7cmj1R9OyUWAXQFYL7FP_d0eMzB4ENPVQk?e=5ONiE8" })
+    egoResource("Frame-wise calibration, camera pose, and gaze", { OneDrive: "https://uob-my.sharepoint.com/:f:/g/personal/jc17360_bristol_ac_uk/IgCCGb5qDbiOR7cmj1R9OyUWAXQFYL7FP_d0eMzB4ENPVQk?e=5ONiE8" }, { observations: ["Camera Calibration", "Camera Pose", "Gaze"] })
   ],
   indego: [
     ...[
@@ -6475,15 +6475,38 @@ const egoDatasetCitations = {
 }`
 };
 
-const egoDatasetAccessLinkLabels = {
-  fpha: "Access Form",
-  ego4d: "Access Form",
-  h2o: "Register / Download",
-  arctic: "Login / Download",
-  "ego-exo4d": "Access Form",
-  egosurgery: "Access Form",
-  egolive: "Login / Dataset Portal",
-  egomagic: "Request Form"
+const inferEgoResourceObservations = (task, fallback = []) => {
+  const normalizedTask = task.toLowerCase();
+  const mediaFallback = fallback.filter((item) =>
+    /video|image|rgb|depth|audio|recording/.test(item.toLowerCase())
+  );
+
+  if (/access|application|required|login|request/.test(normalizedTask)) return [];
+  if (/download(er| tool| script)|manifest/.test(normalizedTask)) return [];
+  if (/readme|recipe definitions/.test(normalizedTask)) return ["Documentation"];
+  if (/train.*test split|train \/ validation \/ test split|split definitions|test split/.test(normalizedTask)) return ["Train/Test Splits"];
+  if (/action recognition \/ (train|validation)/.test(normalizedTask)) return ["Action Annotations"];
+  if (/test timestamps/.test(normalizedTask)) return ["Timestamps"];
+  if (/annotation|action recognition label|\blabels\b|skill labels/.test(normalizedTask)) return [task];
+  if (/caption|question answering|\bvqa\b/.test(normalizedTask)) return [task];
+  if (/segmentation mask|hand mask/.test(normalizedTask)) return ["Segmentation Masks"];
+  if (/gaze/.test(normalizedTask)) return ["Gaze"];
+  if (/hand pose|hands keypoint|\bhands\b/.test(normalizedTask)) return ["Hand Pose"];
+  if (/head pose/.test(normalizedTask)) return ["Head Pose"];
+  if (/camera calibration|camera parameter|cam_info|calibration/.test(normalizedTask)) return ["Camera Calibration"];
+  if (/\bimu\b/.test(normalizedTask)) return ["IMU"];
+  if (/depth/.test(normalizedTask)) return ["Depth"];
+  if (/optical flow/.test(normalizedTask)) return ["Optical Flow"];
+  if (/feature/.test(normalizedTask)) return ["Visual Features"];
+  if (/3d model|cad model|object model|part geometr/.test(normalizedTask)) return ["3D Models"];
+  if (/pose/.test(normalizedTask)) return ["Pose"];
+  if (/metadata|class definitions|noun and verb classes/.test(normalizedTask)) return ["Metadata"];
+  if (/rgb/.test(normalizedTask)) return ["RGB Video"];
+  if (/exocentric/.test(normalizedTask)) return ["Exo Video"];
+  if (/egocentric/.test(normalizedTask)) return ["Ego Video"];
+  if (/video|recording|frames|images/.test(normalizedTask)) return mediaFallback.length ? mediaFallback : ["Video"];
+  if (/dataset archive|full dataset|dataset mirror|alternative dataset mirror|openego dataset/.test(normalizedTask)) return fallback;
+  return fallback;
 };
 
 const makeEgoDatasetSection = ({
@@ -6494,17 +6517,12 @@ const makeEgoDatasetSection = ({
   paper,
   project,
   dataLinks,
-  license = "TBD"
+  license = ""
 }) => {
   const resourceSpecs = egoDatasetResourceSpecs[id] || [
     egoResource(`${name} dataset`, dataLinks)
   ];
-  const datasetUrl = resourceSpecs
-    .flatMap((resource) => Object.values(resource.dataLinks || {}))
-    .find(Boolean);
-  const datasetLinkLabel = egoDatasetAccessLinkLabels[id] || "Dataset";
   const projectLinks = {
-    ...(datasetUrl ? { [datasetLinkLabel]: datasetUrl } : {}),
     ...(project ? { Project: project } : {}),
     ...(paper && paper !== project ? { Paper: paper } : {})
   };
@@ -6519,11 +6537,11 @@ const makeEgoDatasetSection = ({
     rows: resourceSpecs.map((resource) => ({
       task: resource.task,
       dataLinks: resource.dataLinks,
-      observations: resource.observations || observations,
-      actions: resource.actions || ["TBD"],
-      demos: resource.demos || "TBD",
+      observations: resource.observations || inferEgoResourceObservations(resource.task, observations),
+      actions: resource.actions || [],
+      demos: resource.demos ?? "",
       envs: resource.envs || name,
-      license: resource.license || license,
+      license: resource.license ?? license,
       ...(resource.availability ? { availability: resource.availability } : {})
     }))
   };
@@ -6566,7 +6584,7 @@ const representativeDatasetProjectLinks = {
   "pixmo-points": "https://molmo.allenai.org/",
   robopoint: "https://robo-point.github.io/",
   "roboafford-plus-plus": "https://roboafford-dataset.github.io/",
-  "charades-sta": "https://allenai.org/plato/charades/",
+  "charades-sta": "https://prior.allenai.org/projects/charades",
   didemo: "https://github.com/LisaAnne/LocalizingMoments",
   hirest: "https://hirest-cvpr2023.github.io/",
   "moment-10m": "https://github.com/DCDmllm/Momentor",
@@ -6589,7 +6607,7 @@ const representativeDatasetDataLinks = {
   },
   "rh20t-p": {
     Annotations: "https://drive.google.com/file/d/1ssNJikkaEYViz4yr-vIdQjmWoqiLWuwz/view?usp=sharing",
-    "RH20T Source Data": "https://rh20t.github.io/"
+    "RH20T Source Downloads": "https://rh20t.github.io/#download"
   },
   robava: {},
   robofail: {},
@@ -6600,7 +6618,9 @@ const representativeDatasetDataLinks = {
     Downloads: "https://graspnet.net/datasets.html"
   },
   "suctionnet-1billion": {
-    Downloads: "https://graspnet.net/suction"
+    "Seal / wrench labels": "https://drive.google.com/file/d/1BaZ60u5ZkudDlYHvH2mcu2EVfUc9wGK_/view?usp=sharing",
+    "Dense point clouds": "https://drive.google.com/file/d/1VuyNiJKwwt_lUlTk7BPT_uZsEI8o_Y2W/view?usp=sharing",
+    "Train / test images": "https://graspnet.net/datasets.html"
   },
   alfred: {
     Download: "https://ai2thor-dataset.s3-us-west-2.amazonaws.com/alfred_data_all.zip"
@@ -6608,13 +6628,14 @@ const representativeDatasetDataLinks = {
   wap: {},
   "llarp-language-rearrangement": {},
   clevrer: {
-    Dataset: "http://clevrer.csail.mit.edu/"
+    "Official Dataset Portal": "http://clevrer.csail.mit.edu/"
   },
   intphys: {
     Downloads: "https://intphys.cognitive-ml.fr/download.html"
   },
   inflevel: {
-    Benchmark: "https://github.com/allenai/inflevel"
+    "InfLevel-Lab": "https://pub-7320908bcb5b4cdea63c22bc2a38600c.r2.dev/inflevel_lab.tar.gz",
+    "InfLevel-Sim": "https://pub-7320908bcb5b4cdea63c22bc2a38600c.r2.dev/inflevel_sim.tar.gz"
   },
   "llava-instruct-150k": {
     HuggingFace: "https://huggingface.co/datasets/liuhaotian/LLaVA-Instruct-150K"
@@ -6639,7 +6660,7 @@ const representativeDatasetDataLinks = {
     "Google Drive": "https://drive.google.com/drive/folders/1_GYPY5UkUy7HIcR0zq3ZCFgeZN7BAfm_?usp=sharing"
   },
   textocr: {
-    Dataset: "https://textvqa.org/textocr/"
+    "Official Dataset Portal": "https://textvqa.org/textocr/"
   },
   docvqa: {
     "Dataset Access": "https://site.docvqa.org/datasets/docvqa"
@@ -6661,10 +6682,10 @@ const representativeDatasetDataLinks = {
     Dataset: "https://ade20k.csail.mit.edu/"
   },
   "paco-lvis": {
-    Annotations: "https://github.com/facebookresearch/paco"
+    "PACO-LVIS annotations": "https://dl.fbaipublicfiles.com/paco/annotations/paco_lvis_v1.zip"
   },
   refcoco: {
-    Annotations: "https://github.com/lichengunc/refer"
+    "Download Instructions": "https://github.com/lichengunc/refer#download"
   },
   "pixmo-points": {
     HuggingFace: "https://huggingface.co/datasets/allenai/pixmo-points"
@@ -6674,7 +6695,9 @@ const representativeDatasetDataLinks = {
   },
   "roboafford-plus-plus": {},
   "charades-sta": {
-    "Dataset Access": "https://allenai.org/plato/charades/"
+    "Train annotations": "https://drive.google.com/file/d/1ZjG7wJpPSMIBYnW7BAG2u9VVEoNvFm5c/view?usp=sharing",
+    "Test annotations": "https://drive.google.com/file/d/1QG4MXFkoj6JFU0YK5olTY75xTARKSW5e/view?usp=sharing",
+    "Charades videos / 480p": "https://ai2-public-datasets.s3-us-west-2.amazonaws.com/charades/Charades_v1_480.zip"
   },
   didemo: {
     Annotations: "https://github.com/LisaAnne/LocalizingMoments/tree/master/data"
@@ -6705,7 +6728,8 @@ const representativeDatasetDataLinks = {
     Annotations: "https://github.com/ATR-DBI/ScanQA/tree/main/data"
   },
   sqa3d: {
-    Dataset: "https://sqa3d.github.io/"
+    "SQA annotations": "https://zenodo.org/records/7792397/files/sqa_task.zip?download=1",
+    "Egocentric videos": "https://zenodo.org/records/7792397/files/video.zip?download=1"
   },
   "egoplan-it": {
     "Training Data": "https://github.com/ChenYi99/EgoPlan/tree/main/data"
@@ -6952,9 +6976,9 @@ const makeSurveyDatasetSection = ({
         dataLinks,
         observations,
         actions,
-        demos: "TBD",
-        envs: "TBD",
-        license: "TBD"
+        demos: "",
+        envs: "",
+        license: ""
       }
     ],
     year
@@ -7146,7 +7170,7 @@ const representativeGeneralDatasetRecords = [
   ["pixmo-points", "PixMo-Points", 2025, "https://arxiv.org/abs/2409.17146", "https://huggingface.co/datasets/allenai/pixmo-points", "HuggingFace", ["Image", "Language", "Points"]],
   ["robopoint", "RoboPoint", 2024, "https://arxiv.org/abs/2406.10721", "https://robo-point.github.io/", "Project / Data", ["Image", "Language", "Affordance Points"]],
   ["roboafford-plus-plus", "RoboAfford++", 2025, "https://arxiv.org/abs/2511.12436", "https://roboafford-dataset.github.io/", "Project / Data", ["Image", "Language", "Affordance Points"]],
-  ["charades-sta", "Charades-STA", 2017, "https://arxiv.org/abs/1705.02101", "https://allenai.org/plato/charades/", "Dataset / Access", ["Video", "Language", "Temporal Segments"]],
+  ["charades-sta", "Charades-STA", 2017, "https://arxiv.org/abs/1705.02101", "https://prior.allenai.org/projects/charades", "Dataset / Access", ["Video", "Language", "Temporal Segments"]],
   ["didemo", "DiDeMo", 2017, "https://arxiv.org/abs/1708.01641", "https://github.com/LisaAnne/LocalizingMoments", "GitHub / Annotations", ["Video", "Language", "Temporal Segments"]],
   ["hirest", "HiREST", 2023, "https://arxiv.org/abs/2303.16406", "https://hirest-cvpr2023.github.io/", "Project / Data", ["Video", "Language", "Step Segments"]],
   ["moment-10m", "Moment-10M", 2024, "https://arxiv.org/abs/2402.11435", "https://github.com/DCDmllm/Momentor", "GitHub / Data", ["Video", "Language", "Temporal Segments"]],
@@ -7175,13 +7199,11 @@ const hasConcreteRepresentativeData = ({ id, data }) => {
   return Object.keys(dataLinks).length > 0;
 };
 
-const representativeRobotDatasetSections = representativeRobotDatasetRecords
-  .filter(hasConcreteRepresentativeData)
-  .map(makeSurveyDatasetSection);
-const representativeSimulationDatasetSections = representativeSimulationDatasetRecords
-  .filter(hasConcreteRepresentativeData)
-  .map(makeSurveyDatasetSection);
-const representativeGeneralDatasetSections = representativeGeneralDatasetRecords
+const representativeGeneralDatasetSections = [
+  ...representativeRobotDatasetRecords,
+  ...representativeSimulationDatasetRecords,
+  ...representativeGeneralDatasetRecords
+]
   .filter(hasConcreteRepresentativeData)
   .map(makeSurveyDatasetSection);
 
@@ -7212,8 +7234,7 @@ const datasetGroups = [
         defaultOpen: true,
         rows: openXEmbodimentRows
       },
-      ...additionalRobotDataSections,
-      ...representativeRobotDatasetSections
+      ...additionalRobotDataSections
     ])
   },
   {
@@ -7952,8 +7973,7 @@ const datasetGroups = [
 }`,
             defaultOpen: true,
             rows: roboSetTeleopRows
-          },
-          ...representativeSimulationDatasetSections
+          }
         ]
       }
     ]
