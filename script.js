@@ -166,7 +166,7 @@ const makeOpenXEmbodimentRow = ({ name, path, alias, actions, links = {}, demos 
   actions,
   demos,
   envs: "",
-  license: "See source"
+  license: "Apache-2.0 license"
 });
 
 const openXEmbodimentRows = openXEmbodimentSources.map(makeOpenXEmbodimentRow);
@@ -2690,7 +2690,7 @@ const aistBimanualRows = [
       actions: ["Robot Actions"],
       demos,
       envs: "task zip",
-      license: "TBD"
+      license: "CC BY 4.0"
     })
   )
 ];
@@ -2828,6 +2828,7 @@ const requestedRobotDataSections = [
         task: "DAML one-shot imitation tasks",
         href: "https://rail.eecs.berkeley.edu/datasets/mil_data.zip",
         label: "zip",
+        license: "MIT",
         observations: ["RGB", "Proprio"],
         actions: ["Robot Actions"],
         demos: 2900,
@@ -2905,6 +2906,7 @@ const requestedRobotDataSections = [
         observations: ["RGB-D", "Proprio", "Language", "Tactile", "Force", "Audio"],
         actions: ["Robot Actions"],
         demos: 110000,
+        license: "MIT",
         envs: "4 embodiments / 147 tasks"
       })
     ]
@@ -2936,6 +2938,7 @@ const requestedRobotDataSections = [
         label: "zip",
         observations: ["RGB-D", "Proprio", "Force", "Torque"],
         actions: ["Robot Actions"],
+        license: "CC BY 4.0",
         demos: 22600,
         envs: "2 tasks"
       })
@@ -2964,6 +2967,7 @@ const requestedRobotDataSections = [
         observations: ["RGB", "Proprio", "Audio", "Force", "Torque"],
         actions: ["Robot Actions"],
         demos: 4600,
+        license: "CC BY 4.0",
         envs: "121 tasks"
       })
     ]
@@ -4070,8 +4074,6 @@ const sortRobotSectionsByYear = (sections) =>
       return leftYear - rightYear || left.project.localeCompare(right.project);
     });
 
-const umiCommunityUrl = "https://umi-data.github.io/#datasets";
-
 const makeUmiRow = ({ task, dataLinks = {}, observations, actions, demos = "TBD", envs = "TBD", license = "TBD" }) => ({
   task,
   dataLinks,
@@ -4088,7 +4090,6 @@ const umiDatasetSections = [
     project: "UMI",
     summary: "2024 UMI-style dataset; arm type: Single / Bimanual; end effector: Gripper; listed tasks: 5.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://umi-gripper.github.io/"
     },
     citation: "@inproceedings{chi2024universal,\n    title={Universal Manipulation Interface: In-The-Wild Robot Teaching Without In-The-Wild Robots},\n    author={Chi, Cheng and Xu, Zhenjia and Pan, Chuer and Cousineau, Eric and Burchfiel, Benjamin and Feng, Siyuan and Tedrake, Russ and Song, Shuran},\n    booktitle={Proceedings of Robotics: Science and Systems (RSS)},\n    year={2024}\n}",
@@ -4146,7 +4147,6 @@ const umiDatasetSections = [
     project: "ManiWAV",
     summary: "2024 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 5.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://mani-wav.github.io/"
     },
     citation: "@article{liu2024maniwav,\n    title={ManiWAV: Learning Robot Manipulation from In-the-Wild Audio-Visual Data},\n    author={Liu, Zeyi and Chi, Cheng and Cousineau, Eric and Kuppuswamy, Naveen and Burchfiel, Benjamin and Song, Shuran},\n    journal={arXiv preprint arXiv:2406.19464},\n    year={2024}\n}",
@@ -4204,7 +4204,6 @@ const umiDatasetSections = [
     project: "UMI on Legs",
     summary: "2024 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 2.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://umi-on-legs.github.io/"
     },
     citation: "@inproceedings{ha2024umilegs,\n  title={{UMI} on Legs: Making Manipulation Policies Mobile with Manipulation-Centric Whole-body Controllers},\n  author={Huy Ha and Yihuai Gao and Zipeng Fu and Jie Tan and Shuran Song},\n  year={2024},\n  booktitle={Proceedings of the 2024 Conference on Robot Learning},\n}",
@@ -4235,7 +4234,6 @@ const umiDatasetSections = [
     project: "FastUMI",
     summary: "2024 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 22.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://fastumi.com/"
     },
     citation: "@article{wu2024fast,\n    title={Fast-UMI: A Scalable and Hardware-Independent Universal Manipulation Interface},\n    author={Wu, Ziniu and Wang, Tianyu and Guan, Chuyue and Jia, Zhongjie and Liang, Shuai and Song, Haoming and Qu, Delin and Wang, Dong and Wang, Zhigang and Cao, Nieqing and others},\n    journal={arXiv preprint arXiv:2409.19499},\n    year={2024}\n}",
@@ -4446,7 +4444,6 @@ const umiDatasetSections = [
     project: "Data Scaling Laws",
     summary: "2024 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 6.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://data-scaling-laws.github.io/"
     },
     citation: "@article{lin2024data,\n    title={Data Scaling Laws in Imitation Learning for Robotic Manipulation},\n    author={Lin, Fanqi and Hu, Yingdong and Sheng, Pingyue and Wen, Chuan and You,\n    Jiacheng and Gao, Yang},\n    journal={arXiv preprint arXiv:2410.18647},\n    year={2024}\n}",
@@ -4513,7 +4510,6 @@ const umiDatasetSections = [
     project: "LEGATO",
     summary: "2024 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 6.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://ut-hcrl.github.io/LEGATO/"
     },
     citation: "@article{seo2024legato,\n    title={LEGATO: Cross-Embodiment Imitation Using a Grasping Tool},\n    author={Seo, Mingyo and Park, H. Andy and Yuan, Shenli and Zhu, Yuke and\n    and Sentis, Luis},\n    journal={IEEE Robotics and Automation Letters (RA-L)},\n    year={2025}\n}",
@@ -4580,7 +4576,6 @@ const umiDatasetSections = [
     project: "ViTaMIn",
     summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 8.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://chuanyune.github.io/ViTaMIn_page/"
     },
     citation: "@article{liu2025vitamin,\n  title={ViTaMIn: Learning Contact-Rich Tasks Through Robot-Free Visuo-Tactile Manipulation Interface},\n  author={Liu, Fangchen and Li, Chuanyu and Qin, Yihua and Shaw, Ankit and Xu, Jing and Abbeel, Pieter and Chen, Rui},\n  journal={arXiv preprint arXiv:2504.06156},\n  year={2025}\n}",
@@ -4665,7 +4660,6 @@ const umiDatasetSections = [
     project: "DexWild",
     summary: "2025 UMI-style dataset; arm type: Single; end effector: Dexterous Hand; listed tasks: 10.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://dexwild.github.io/"
     },
     citation: "@article{tao2025dexwild,\n      title={DexWild: Dexterous Human Interactions for In-the-Wild Robot Policies},\n      author={Tao, Tony and Srirama, Mohan Kumar and Liu, Jason Jingzhou and Shaw, Kenneth and Pathak, Deepak},\n      journal={Robotics: Science and Systems (RSS)},\n      year={2025}}",
@@ -4768,7 +4762,6 @@ const umiDatasetSections = [
     project: "DexUMI",
     summary: "2025 UMI-style dataset; arm type: Single; end effector: Dexterous Hand; listed tasks: 5.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://umi-data.github.io/"
     },
     citation: "@article{xu2025dexumi,\n  title={DexUMI: Using Human Hand as the Universal Manipulation Interface for Dexterous Manipulation},\n  author={Xu, Mengda and Zhang, Han and Hou, Yifan and Xu, Zhenjia and Fan, Linxi and Veloso, Manuela and Song, Shuran},\n  journal={arXiv preprint arXiv:2505.21864},\n  year={2025}\n}",
@@ -4825,9 +4818,6 @@ const umiDatasetSections = [
     id: "freetacman",
     project: "FreeTacMan",
     summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 50.",
-    projectLinks: {
-      Community: umiCommunityUrl
-    },
     citation: "TBD",
     defaultOpen: false,
     rows: [
@@ -4847,7 +4837,6 @@ const umiDatasetSections = [
     project: "Touch in the Wild",
     summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 20.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://binghao-huang.github.io/touch_in_the_wild/"
     },
     citation: "@article{zhu2025touch,\n  title={Touch in the Wild: Learning Fine-Grained Manipulation with a Portable Visuo-Tactile Gripper},\n  author={Zhu, Xinyue and Huang, Binghao and Li, Yunzhu},\n  journal={arXiv preprint arXiv:2507.15062},\n  year={2025}\n}",
@@ -5040,7 +5029,6 @@ const umiDatasetSections = [
     project: "exUMI",
     summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 8.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://silicx.github.io/exUMI/"
     },
     citation: "@inproceedings{xu2025exumi,\n  title={exUMI: Extensible Robot Teaching System with Action-aware Task-agnostic Tactile Representation},\n  author={Xu, Yue and Wei, Litao and An, Pengyu and Zhang, Qingyu and Li, Yong-Lu},\n  booktitle={Conference on Robot Learning},\n  pages={2536--2554},\n  year={2025},\n  organization={PMLR}\n}",
@@ -5125,7 +5113,6 @@ const umiDatasetSections = [
     project: "MV-UMI",
     summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 4.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://mv-umi.github.io"
     },
     citation: "@article{rayyan2025mv,\n  title={MV-UMI: A Scalable Multi-View Interface for Cross-Embodiment Learning},\n  author={Rayyan, Omar and Abanes, John and Hafez, Mahmoud and Tzes, Anthony and Abu-Dakka, Fares},\n  journal={arXiv preprint arXiv:2509.18757},\n  year={2025}\n}",
@@ -5174,7 +5161,6 @@ const umiDatasetSections = [
     project: "ManipForce",
     summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 6.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://sites.google.com/view/manipforce/"
     },
     citation: "@article{lee2025manipforce,\n  title={ManipForce: Force-Guided Policy Learning with Frequency-Aware Representation for Contact-Rich Manipulation},\n  author={Lee, Geonhyup and Lee, Yeongjin and Kim, Kangmin and Lee, Seongju and Noh, Sangjun and Back, Seunghyeok and Lee, Kyoobin},\n  journal={arXiv preprint arXiv:2509.19047}, \n  year={2025}\n}",
@@ -5241,7 +5227,6 @@ const umiDatasetSections = [
     project: "FastUMI-100K",
     summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 32.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://github.com/MrKeee/FastUMI-100K"
     },
     citation: "@article{liu2025fastumi100k,\n    title={FastUMI-100K: Advancing Data-driven Robotic Manipulation with a Large-scale UMI-style Dataset},\n    author={Liu, Kehui and Jia, Zhongjie and Li, Yang and Zhaxizhuoma and Chen, Pengan and Liu, Song and Liu, Xin and Zhang, Pingrui and Song, Haoming and Ye, Xinyi and others},\n    journal={arXiv preprint arXiv:2510.08022},\n    year={2025}\n}",
@@ -5542,7 +5527,6 @@ const umiDatasetSections = [
     project: "ViTaMIn-B",
     summary: "2025 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 4.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://chuanyune.github.io/ViTaMIn-B_page/"
     },
     citation: "@article{li2025vitamin,\ntitle={ViTaMIn-B: A Reliable and Efficient Visuo-Tactile Bimanual Manipulation Interface},\nauthor={Li, Chuanyu and Liu, Chaoyi and Wang, Daotan and Zhang, Shuyu and Li, Lusong and Zeng, Zecui and Liu, Fangchen and Xu, Jing and Chen, Rui},\njournal={arXiv preprint arXiv:2511.05858},\nyear={2025}\n}",
@@ -5591,7 +5575,6 @@ const umiDatasetSections = [
     project: "HuMI",
     summary: "2026 UMI-style dataset; arm type: Bimanual; end effector: Gripper; listed tasks: 5.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://humanoid-manipulation-interface.github.io/"
     },
     citation: "@article{nai2026humanoid,\n  title={Humanoid Manipulation Interface: Humanoid Whole-Body Manipulation from Robot-Free Demonstrations},\n  author={Nai, Ruiqian and Zheng, Boyuan and Zhao, Junming and Zhu, Haodong and Dai, Sicong and Chen, Zunhao and Hu, Yihang and Hu, Yingdong and Zhang, Tong and Wen, Chuan and others},\n  journal={arXiv preprint arXiv:2602.06643},\n  year={2026}\n}",
@@ -5649,7 +5632,6 @@ const umiDatasetSections = [
     project: "GenRobot",
     summary: "2026 UMI-style dataset; arm type: Bimanual; end effector: Gripper; listed tasks: Diverse.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://www.genrobot.ai/"
     },
     citation: "TBD",
@@ -5671,7 +5653,6 @@ const umiDatasetSections = [
     project: "UMI-3D",
     summary: "2026 UMI-style dataset; arm type: Single; end effector: Gripper; listed tasks: 3.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://umi-3d.github.io/"
     },
     citation: "@misc{wang2026umi3dextendinguniversalmanipulation,\n  title={UMI-3D: Extending Universal Manipulation Interface from Vision-Limited to 3D Spatial Perception},\n  author={Ziming Wang},\n  year={2026},\n  eprint={2604.14089},\n  archivePrefix={arXiv},\n  primaryClass={cs.RO},\n  url={https://arxiv.org/abs/2604.14089}\n}",
@@ -5711,7 +5692,6 @@ const umiDatasetSections = [
     project: "TAMEn",
     summary: "2026 UMI-style dataset; arm type: Bimanual; end effector: Gripper; listed tasks: 4.",
     projectLinks: {
-      Community: umiCommunityUrl,
       Project: "https://opendrivelab.com/TAMEn"
     },
     citation: "@misc{wu2026tamentactileawaremanipulationengine,\n      title={TAMEn: Tactile-Aware Manipulation Engine for Closed-Loop Data Collection in Contact-Rich Tasks},\n      author={Longyan Wu and Jieji Ren and Chenghang Jiang and Junxi Zhou and Shijia Peng and Ran Huang and Guoying Gu and Li Chen and Hongyang Li},\n      year={2026},\n      eprint={2604.07335},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2604.07335},\n}",
@@ -5760,14 +5740,16 @@ const umiDatasetSections = [
     project: "Daimon-Infinity",
     summary: "2026 UMI-style dataset; arm type: Bimanual; end effector: Gripper; listed tasks: TBD.",
     projectLinks: {
-      Community: umiCommunityUrl
+      Project: "https://modelscope.cn/datasets/daimonrobotics/Daimon-Infinity"
     },
     citation: "TBD",
     defaultOpen: false,
     rows: [
       makeUmiRow({
-        task: "Daimon-Infinity dataset",
-        dataLinks: {},
+        task: "Daimon-Infinity",
+        dataLinks: {
+          LeRobot: "https://modelscope.cn/datasets/daimonrobotics/Daimon-Infinity"
+        },
         observations: ["Image","Proprio","Bimanual","Tactile"],
         actions: ["6 DoF EEF Pose","Parallel Gripper","Bimanual"],
         demos: "TBD",
@@ -8122,7 +8104,7 @@ const sectionDemoTotalOverrides = {
   "interndata-a1": 604722,
   "deco-50": 8000,
   haptile: 1726,
-  omnivitac: "21,000+ trajectories",
+  omnivitac: 21000,
   dexmimicgen: "21K demos",
   univtac: 800,
   "rm-bench": 450,
