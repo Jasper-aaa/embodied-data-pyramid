@@ -83,6 +83,18 @@ main {
   padding-top: 64px;
 }
 
+.hero {
+  width: 100%;
+  overflow: hidden;
+  background: #030608;
+}
+
+.hero-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .paper-banner {
   background: #ffffff;
   border-bottom: 1px solid var(--line);
