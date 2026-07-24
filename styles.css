@@ -84,6 +84,8 @@ main {
 }
 
 .hero {
+  display: flex;
+  justify-content: center;
   width: 100%;
   overflow: hidden;
   background: #030608;
@@ -92,6 +94,7 @@ main {
 .hero-image {
   display: block;
   width: 100%;
+  max-width: 1672px;
   height: auto;
 }
 
